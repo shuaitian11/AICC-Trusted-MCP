@@ -6,18 +6,25 @@ for the same three tools backed by ``bytedance.tdx_api.tdx_api``.
 
 from __future__ import annotations
 
+import base64
 import datetime
 import sys
 from pathlib import Path
 from typing import Any, Callable, Dict
 
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from bytedance.tdx_api.tdx_api import fetch_td_eventlog, get_raw_tdx_quote, get_tee_status
+from bytedance.tdx_api.tdx_api import (
+    appraise_quote_from_raw,
+    fetch_td_eventlog,
+    get_raw_tdx_quote,
+    get_tee_status,
+)
 
 
 TOOL_HANDLERS: Dict[str, Callable[[], Dict[str, Any]]] = {
@@ -30,12 +37,14 @@ TOOL_DESCRIPTIONS = {
     "fetchTDEventlog": "Retrieve TD event log data using the shared TDX API bundle.",
     "getRawTDXQuote": "Retrieve raw TDX quote data using the shared TDX API bundle.",
     "getTEEStatus": "Check whether the current host is running as a TDX guest using the shared TDX API bundle.",
+    "quoteAppraisal": "Run quote appraisal via appraise_quote_from_raw using a base64-encoded quote.",
 }
 
 TOOL_ENDPOINTS = {
     "fetchTDEventlog": "/api/fetchTDEventlog",
     "getRawTDXQuote": "/api/getRawTDXQuote",
     "getTEEStatus": "/api/getTEEStatus",
+    "quoteAppraisal": "/api/quoteAppraisal",
 }
 
 app = FastAPI(
@@ -46,6 +55,22 @@ app = FastAPI(
 
 def _invoke_tool(name: str) -> Dict[str, Any]:
     return TOOL_HANDLERS[name]()
+
+
+def _decode_base64_payload(payload: str) -> bytes:
+    payload = payload.strip()
+    padding_needed = (-len(payload)) % 4
+    if padding_needed:
+        payload += "=" * padding_needed
+    return base64.b64decode(payload, validate=True)
+
+
+class QuoteAppraisalRequest(BaseModel):
+    quote: str
+    tenant_policy: str
+    platform_policy: str | None = None
+    policy_pubkeys: list[str] | None = None
+    verbose: bool = False
 
 
 @app.post("/api/fetchTDEventlog")
@@ -63,9 +88,42 @@ async def http_get_tee_status() -> Dict[str, Any]:
     return _invoke_tool("getTEEStatus")
 
 
+@app.post("/api/quoteAppraisal")
+async def http_quote_appraisal(request: QuoteAppraisalRequest) -> Dict[str, Any]:
+    try:
+        quote_data = _decode_base64_payload(request.quote)
+    except Exception as exc:
+        return {
+            "status": 400,
+            "error": f"Invalid base64 quote payload: {str(exc)}",
+        }
+
+    policy_pubkeys = None
+    if request.policy_pubkeys:
+        try:
+            policy_pubkeys = [
+                _decode_base64_payload(pubkey_b64) for pubkey_b64 in request.policy_pubkeys
+            ]
+        except Exception as exc:
+            return {
+                "status": 400,
+                "error": f"Invalid base64 policy_pubkeys payload: {str(exc)}",
+            }
+
+    return appraise_quote_from_raw(
+        quote_data=quote_data,
+        tenant_policy=request.tenant_policy.encode("utf-8"),
+        platform_policy=(
+            request.platform_policy.encode("utf-8") if request.platform_policy is not None else None
+        ),
+        policy_pubkeys=policy_pubkeys,
+        verbose=request.verbose,
+    )
+
+
 @app.get("/api/tools")
 async def list_available_tools() -> list[dict[str, Any]]:
-    return [
+    tools = [
         {
             "name": name,
             "description": TOOL_DESCRIPTIONS[name],
@@ -76,6 +134,24 @@ async def list_available_tools() -> list[dict[str, Any]]:
         }
         for name in TOOL_HANDLERS
     ]
+
+    tools.append(
+        {
+            "name": "quoteAppraisal",
+            "description": TOOL_DESCRIPTIONS["quoteAppraisal"],
+            "endpoint": TOOL_ENDPOINTS["quoteAppraisal"],
+            "method": "POST",
+            "required_params": ["quote", "tenant_policy"],
+            "example_request": {
+                "quote": "<base64-encoded-quote>",
+                "tenant_policy": "<tenant-policy-jwt-text>",
+                "platform_policy": "<optional-platform-policy-jwt-text>",
+                "policy_pubkeys": ["<optional-base64-pubkey>"],
+                "verbose": False,
+            },
+        }
+    )
+    return tools
 
 
 @app.get("/health")
@@ -108,5 +184,6 @@ if __name__ == "__main__":
     print("  POST /api/fetchTDEventlog - Retrieve TD Eventlog")
     print("  POST /api/getRawTDXQuote  - Get raw TDX Quote")
     print("  POST /api/getTEEStatus    - Check TEE status")
+    print("  POST /api/quoteAppraisal  - Quote appraisal with base64 quote")
     print("\nServer starting on http://0.0.0.0:8800")
     uvicorn.run(app, host="0.0.0.0", port=8800)

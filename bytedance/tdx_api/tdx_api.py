@@ -63,6 +63,27 @@ def _import_quote_generator():
         ) from exc
 
 
+def _import_quote_appraisal():
+    repo_root = Path(__file__).resolve().parent
+    appraisal_path = repo_root / "lib" / "appraisal"
+    _add_path(appraisal_path)
+    try:
+        import quote_appraisal  # type: ignore
+        return quote_appraisal
+    except ImportError as exc:
+        raise ImportError(
+            "Failed to import quote_appraisal. Build the Cython extension in lib/appraisal/ first."
+        ) from exc
+
+
+def _read_binary(path: str, add_nul: bool = False) -> bytes:
+    with open(path, "rb") as file_handle:
+        data = file_handle.read()
+    if add_nul and not data.endswith(b"\x00"):
+        data += b"\x00"
+    return data
+
+
 def _encode_evidence(evidence: Dict[str, Any]) -> str:
     evidence_json = json.dumps(evidence)
     return base64.urlsafe_b64encode(evidence_json.encode("utf-8")).decode("utf-8").rstrip("=")
@@ -263,10 +284,168 @@ def fetch_td_eventlog(output_file: Optional[str] = None) -> Dict[str, Any]:
         return {"status": 500, "error": f"TD Eventlog retrieval failed: {str(exc)}"}
 
 
+def appraise_quote_from_files(
+    quote_file: str,
+    tenant_policy_file: str,
+    platform_policy_file: Optional[str] = None,
+    pubkey_file: Optional[str] = None,
+    verbose: bool = False,
+) -> Dict[str, Any]:
+    """Run quote appraisal using quote/policy files.
+
+    Args:
+        quote_file: Path to quote binary.
+        tenant_policy_file: Path to tenant policy token (jwt/json string content).
+        platform_policy_file: Optional path to platform policy token. When omitted,
+            quote_appraisal uses default strict platform policy.
+        pubkey_file: Optional policy owner public key path.
+        verbose: Whether to print verbose logs from quote_appraisal.
+    """
+    try:
+        quote_appraisal = _import_quote_appraisal()
+
+        quote_data = _read_binary(quote_file, add_nul=False)
+        tenant_policy = _read_binary(tenant_policy_file, add_nul=False)
+        platform_policy = (
+            _read_binary(platform_policy_file, add_nul=True)
+            if platform_policy_file
+            else None
+        )
+        pub_key = _read_binary(pubkey_file, add_nul=True) if pubkey_file else None
+
+        if pub_key is None:
+            # Run verification + appraisal without policy-owner auth when no pubkey is provided.
+            jwt_token = quote_appraisal.verify_quote_qvt(quote_data)
+
+            policies = [tenant_policy]
+            if platform_policy is not None:
+                policies.append(platform_policy)
+
+            appraisal_token = quote_appraisal.appraise_verification_token(jwt_token, policies)
+
+            appraisal_result = {
+                "verify_success": True,
+                "appraisal_success": bool(appraisal_token),
+                "auth_success": None,
+                "owner_auth_success": None,
+                "overall_success": True,
+                "warning": "Skipped policy owner authentication because pubkey_file was not provided.",
+            }
+
+            if platform_policy is not None:
+                auth_result = quote_appraisal.authenticate_appraisal_result(
+                    appraisal_token,
+                    tenant_policy,
+                    platform_policy,
+                )
+                appraisal_result["auth_result"] = auth_result
+                appraisal_result["auth_success"] = auth_result == 0
+                if auth_result != 0:
+                    appraisal_result["overall_success"] = False
+                    appraisal_result["error"] = (
+                        f"Policy authentication failed with result code: {auth_result}"
+                    )
+        else:
+            appraisal_result = quote_appraisal.ecdsa_quote_verify(
+                quote_data,
+                tenant_policy,
+                platform_policy,
+                [pub_key],
+                verbose=verbose,
+            )
+
+        if isinstance(appraisal_result, dict) and not appraisal_result.get("overall_success", False):
+            return {
+                "status": 500,
+                "error": appraisal_result.get("error", "Quote appraisal failed"),
+                "result": appraisal_result,
+            }
+
+        return {
+            "status": 200,
+            "message": "Quote appraisal completed",
+            "result": appraisal_result,
+        }
+    except FileNotFoundError as exc:
+        return {"status": 404, "error": f"File not found: {str(exc)}"}
+    except Exception as exc:
+        return {"status": 500, "error": f"Quote appraisal failed: {str(exc)}"}
+
+
+def appraise_quote_from_raw(
+    quote_data: bytes,
+    tenant_policy: bytes,
+    platform_policy: Optional[bytes] = None,
+    policy_pubkeys: Optional[list[bytes]] = None,
+    verbose: bool = False,
+) -> Dict[str, Any]:
+    """Run quote appraisal using in-memory bytes payloads."""
+    try:
+        quote_appraisal = _import_quote_appraisal()
+
+        if policy_pubkeys:
+            result = quote_appraisal.ecdsa_quote_verify(
+                quote_data,
+                tenant_policy,
+                platform_policy,
+                policy_pubkeys,
+                verbose=verbose,
+            )
+        else:
+            # Run verification + appraisal without policy-owner auth when no pubkeys are provided.
+            jwt_token = quote_appraisal.verify_quote_qvt(quote_data)
+
+            policies = [tenant_policy]
+            if platform_policy is not None:
+                policies.append(platform_policy)
+
+            appraisal_token = quote_appraisal.appraise_verification_token(jwt_token, policies)
+
+            result = {
+                "verify_success": True,
+                "appraisal_success": bool(appraisal_token),
+                "auth_success": None,
+                "owner_auth_success": None,
+                "overall_success": True,
+                "warning": "Skipped policy owner authentication because policy_pubkeys were not provided.",
+            }
+
+            if platform_policy is not None:
+                auth_result = quote_appraisal.authenticate_appraisal_result(
+                    appraisal_token,
+                    tenant_policy,
+                    platform_policy,
+                )
+                result["auth_result"] = auth_result
+                result["auth_success"] = auth_result == 0
+                if auth_result != 0:
+                    result["overall_success"] = False
+                    result["error"] = (
+                        f"Policy authentication failed with result code: {auth_result}"
+                    )
+
+        if isinstance(result, dict) and not result.get("overall_success", False):
+            return {
+                "status": 500,
+                "error": result.get("error", "Quote appraisal failed"),
+                "result": result,
+            }
+
+        return {
+            "status": 200,
+            "message": "Quote appraisal completed",
+            "result": result,
+        }
+    except Exception as exc:
+        return {"status": 500, "error": f"Quote appraisal failed: {str(exc)}"}
+
+
 __all__ = [
     "DEFAULT_ATTEST_SERVICE_ENDPOINT",
     "get_raw_tdx_quote",
     "attest_tdx_quote",
     "get_tee_status",
     "fetch_td_eventlog",
+    "appraise_quote_from_files",
+    "appraise_quote_from_raw",
 ]

@@ -1231,6 +1231,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include <stdlib.h>
 #include <stddef.h>
 #include <time.h>
+#include "dlfcn.h"
 #include "sgx_dcap_quoteverify.h"
 #include "sgx_dcap_qal.h"
 #ifdef _OPENMP
@@ -1942,32 +1943,6 @@ static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
 #define __Pyx_PyList_Append(L,x) PyList_Append(L,x)
 #endif
 
-/* UnpackUnboundCMethod.proto */
-typedef struct {
-    PyObject *type;
-    PyObject **method_name;
-    PyCFunction func;
-    PyObject *method;
-    int flag;
-} __Pyx_CachedCFunction;
-
-/* CallUnboundCMethod1.proto */
-static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg);
-#else
-#define __Pyx_CallUnboundCMethod1(cfunc, self, arg)  __Pyx__CallUnboundCMethod1(cfunc, self, arg)
-#endif
-
-/* RaiseUnexpectedTypeError.proto */
-static int __Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj);
-
-/* bytes_tailmatch.proto */
-static int __Pyx_PyBytes_SingleTailmatch(PyObject* self, PyObject* arg,
-                                         Py_ssize_t start, Py_ssize_t end, int direction);
-static int __Pyx_PyBytes_Tailmatch(PyObject* self, PyObject* substr,
-                                   Py_ssize_t start, Py_ssize_t end, int direction);
-
 /* DictGetItem.proto */
 #if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
 static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
@@ -2000,6 +1975,9 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key);
         likely(PyUnicode_CheckExact(s)) ? (Py_INCREF(s), s) :\
         PyObject_Format(s, f))
 #endif
+
+/* PyUnicode_Unicode.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj);
 
 /* FastTypeChecks.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -2244,6 +2222,9 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_uint32_t(uint32_t value);
 
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
+
 /* FormatTypeName.proto */
 #if CYTHON_COMPILING_IN_LIMITED_API
 typedef PyObject *__Pyx_TypeName;
@@ -2256,9 +2237,6 @@ typedef const char *__Pyx_TypeName;
 #define __Pyx_PyType_GetName(tp) ((tp)->tp_name)
 #define __Pyx_DECREF_TypeName(obj)
 #endif
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
@@ -2283,6 +2261,11 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 /* Module declarations from "libc.time" */
 
 /* Module declarations from "quote_appraisal" */
+static int __pyx_v_15quote_appraisal__version_checked;
+static int __pyx_v_15quote_appraisal__has_policy_owner_func;
+static int __pyx_f_15quote_appraisal_check_dcap_version(void); /*proto*/
+static int __pyx_f_15quote_appraisal__authenticate_policy_owner_new(PyObject *, PyObject *, PyObject *); /*proto*/
+static int __pyx_f_15quote_appraisal__authenticate_policy_owner_legacy(PyObject *, PyObject *); /*proto*/
 /* #### Code section: typeinfo ### */
 /* #### Code section: before_global_var ### */
 #define __Pyx_MODULE_NAME "quote_appraisal"
@@ -2304,10 +2287,11 @@ static const char __pyx_k_04x[] = "04x";
 static const char __pyx_k_Key[] = "Key ";
 static const char __pyx_k_SGX[] = "SGX";
 static const char __pyx_k_TDX[] = "TDX";
-static const char __pyx_k__22[] = "?";
+static const char __pyx_k__24[] = "?";
 static const char __pyx_k_doc[] = "__doc__";
-static const char __pyx_k_key[] = "key";
 static const char __pyx_k_ret[] = "ret";
+static const char __pyx_k_1_22[] = "1.22+";
+static const char __pyx_k_None[] = "None";
 static const char __pyx_k_dict[] = "__dict__";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -2319,6 +2303,7 @@ static const char __pyx_k_quote[] = " quote";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_super[] = "super";
 static const char __pyx_k_utf_8[] = "utf-8";
+static const char __pyx_k_1_22_2[] = "<1.22";
 static const char __pyx_k_Policy[] = "Policy ";
 static const char __pyx_k_bundle[] = "bundle";
 static const char __pyx_k_encode[] = "encode";
@@ -2332,9 +2317,9 @@ static const char __pyx_k_result[] = "result";
 static const char __pyx_k_p_quote[] = "p_quote";
 static const char __pyx_k_prepare[] = "__prepare__";
 static const char __pyx_k_verbose[] = "verbose";
+static const char __pyx_k_api_name[] = "api_name";
 static const char __pyx_k_endswith[] = "endswith";
 static const char __pyx_k_jwt_size[] = "jwt_size";
-static const char __pyx_k_key_refs[] = "key_refs";
 static const char __pyx_k_p_result[] = "p_result";
 static const char __pyx_k_policies[] = "policies";
 static const char __pyx_k_qualname[] = "__qualname__";
@@ -2349,19 +2334,24 @@ static const char __pyx_k_quote_data[] = "quote_data";
 static const char __pyx_k_quote_size[] = "quote_size";
 static const char __pyx_k_quote_type[] = "quote_type";
 static const char __pyx_k_MemoryError[] = "MemoryError";
+static const char __pyx_k_api_version[] = "api_version";
 static const char __pyx_k_auth_result[] = "auth_result";
+static const char __pyx_k_has_new_api[] = "has_new_api";
 static const char __pyx_k_mro_entries[] = "__mro_entries__";
 static const char __pyx_k_policy_keys[] = "policy_keys";
 static const char __pyx_k_policy_refs[] = "policy_refs";
 static const char __pyx_k_result_size[] = "result_size";
+static const char __pyx_k_use_new_api[] = "use_new_api";
 static const char __pyx_k_AUTH_FAILURE[] = "AUTH_FAILURE";
 static const char __pyx_k_AUTH_SUCCESS[] = "AUTH_SUCCESS";
 static const char __pyx_k_auth_success[] = "auth_success";
 static const char __pyx_k_current_time[] = "current_time";
+static const char __pyx_k_dcap_version[] = "dcap_version";
 static const char __pyx_k_is_coroutine[] = "_is_coroutine";
 static const char __pyx_k_owner_result[] = "owner_result";
 static const char __pyx_k_policy_files[] = "policy_files";
 static const char __pyx_k_result_token[] = "result_token";
+static const char __pyx_k_version_info[] = "version_info";
 static const char __pyx_k_init_subclass[] = "__init_subclass__";
 static const char __pyx_k_tenant_policy[] = "tenant_policy";
 static const char __pyx_k_SGX_QUOTE_TYPE[] = "SGX_QUOTE_TYPE";
@@ -2386,36 +2376,45 @@ static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
 static const char __pyx_k_ecdsa_quote_verify[] = "ecdsa_quote_verify";
 static const char __pyx_k_owner_auth_success[] = "owner_auth_success";
 static const char __pyx_k_Appraisal_failed_0x[] = "Appraisal failed: 0x";
+static const char __pyx_k_Info_Using_function[] = "Info: Using function - ";
 static const char __pyx_k_quote_appraisal_pyx[] = "quote_appraisal.pyx";
 static const char __pyx_k_must_be_bytes_or_str[] = " must be bytes or str";
+static const char __pyx_k_recommended_function[] = "recommended_function";
+static const char __pyx_k_Info_DCAP_API_version[] = "Info: DCAP API version - ";
 static const char __pyx_k_POLICY_DEFAULT_STRICT[] = "POLICY_DEFAULT_STRICT";
-static const char __pyx_k_Quote_verfication_error[] = "Quote verfication error";
+static const char __pyx_k_get_dcap_version_info[] = "get_dcap_version_info";
+static const char __pyx_k_legacy_authentication[] = "legacy authentication";
 static const char __pyx_k_Authentication_failed_0x[] = "Authentication failed: 0x";
+static const char __pyx_k_Quote_verification_error[] = "Quote verification error";
 static const char __pyx_k_authenticate_policy_owner[] = "authenticate_policy_owner";
+static const char __pyx_k_has_policy_owner_function[] = "has_policy_owner_function";
 static const char __pyx_k_appraise_verification_token[] = "appraise_verification_token";
 static const char __pyx_k_Failed_to_allocate_key_array[] = "Failed to allocate key array";
 static const char __pyx_k_Quote_verification_failed_0x[] = "Quote verification failed: 0x";
 static const char __pyx_k_authenticate_appraisal_result[] = "authenticate_appraisal_result";
+static const char __pyx_k_tee_authenticate_policy_owner[] = "tee_authenticate_policy_owner";
 static const char __pyx_k_Failed_to_allocate_policy_array[] = "Failed to allocate policy array";
 static const char __pyx_k_Info_Policies_are_authenticated[] = "Info: Policies are authenticated Successfully";
-static const char __pyx_k_TDX_Quote_Verification_Appraisa[] = "\nTDX Quote Verification & Appraisal - Cython Extension\n";
+static const char __pyx_k_TDX_Quote_Verification_Appraisa[] = "\nTDX Quote Verification & Appraisal - Cython Extension\nCompatible with DCAP 1.22+ and earlier versions\n";
 static const char __pyx_k_At_least_one_policy_file_is_requ[] = "At least one policy file is required";
 static const char __pyx_k_At_least_one_policy_key_is_requi[] = "At least one policy key is required";
 static const char __pyx_k_Authenticate_policy_owner_failed[] = "Authenticate policy owner failed: ";
 static const char __pyx_k_Authentication_failures_occur_in[] = "Authentication failures occur in some policies";
-static const char __pyx_k_Info_Authenticate_policy_owner_s[] = "Info: Authenticate policy owner successfully";
+static const char __pyx_k_Info_Authenticate_policy_owner_s[] = "Info: Authenticate policy owner successfully using ";
 static const char __pyx_k_Info_tee_appraise_verification_t[] = "Info: tee_appraise_verification_token successfully returned";
 static const char __pyx_k_Info_tee_verify_quote_qvt_succes[] = "Info: tee_verify_quote_qvt successfully returned";
+static const char __pyx_k_Legacy_policy_authentication_fai[] = "Legacy policy authentication failed: 0x";
 static const char __pyx_k_Policy_owner_authentication_fail[] = "Policy owner authentication failed: 0x";
 static const char __pyx_k_There_are_some_policies_un_authe[] = "There are some policies un-authenticated";
+static const char __pyx_k_tee_authenticate_appraisal_resul[] = "tee_authenticate_appraisal_result";
 /* #### Code section: decls ### */
 static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data); /* proto */
 static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_jwt_token, PyObject *__pyx_v_policy_files, time_t __pyx_v_check_date); /* proto */
 static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_appraisal_result, PyObject *__pyx_v_tenant_policy, PyObject *__pyx_v_platform_policy); /* proto */
 static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data, PyObject *__pyx_v_appraisal_result, PyObject *__pyx_v_policy_keys); /* proto */
 static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data); /* proto */
-static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data, PyObject *__pyx_v_tenant_policy, PyObject *__pyx_v_platform_policy, PyObject *__pyx_v_policy_keys, int __pyx_v_verbose); /* proto */
-static __Pyx_CachedCFunction __pyx_umethod_PyBytes_Type_encode = {0, 0, 0, 0, 0};
+static PyObject *__pyx_pf_15quote_appraisal_10get_dcap_version_info(CYTHON_UNUSED PyObject *__pyx_self); /* proto */
+static PyObject *__pyx_pf_15quote_appraisal_12ecdsa_quote_verify(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data, PyObject *__pyx_v_tenant_policy, PyObject *__pyx_v_platform_policy, PyObject *__pyx_v_policy_keys, int __pyx_v_verbose); /* proto */
 /* #### Code section: late_includes ### */
 /* #### Code section: module_state ### */
 typedef struct {
@@ -2456,6 +2455,8 @@ typedef struct {
   #if CYTHON_USE_MODULE_STATE
   #endif
   PyObject *__pyx_kp_u_04x;
+  PyObject *__pyx_kp_u_1_22;
+  PyObject *__pyx_kp_u_1_22_2;
   PyObject *__pyx_n_s_AUTH_FAILURE;
   PyObject *__pyx_n_s_AUTH_INCOMPLETE;
   PyObject *__pyx_n_s_AUTH_SUCCESS;
@@ -2468,18 +2469,22 @@ typedef struct {
   PyObject *__pyx_kp_u_Failed_to_allocate_key_array;
   PyObject *__pyx_kp_u_Failed_to_allocate_policy_array;
   PyObject *__pyx_kp_u_Info_Authenticate_policy_owner_s;
+  PyObject *__pyx_kp_u_Info_DCAP_API_version;
   PyObject *__pyx_kp_u_Info_Policies_are_authenticated;
   PyObject *__pyx_kp_u_Info_Quote_type;
+  PyObject *__pyx_kp_u_Info_Using_function;
   PyObject *__pyx_kp_u_Info_tee_appraise_verification_t;
   PyObject *__pyx_kp_u_Info_tee_verify_quote_qvt_succes;
   PyObject *__pyx_kp_u_Key;
+  PyObject *__pyx_kp_u_Legacy_policy_authentication_fai;
   PyObject *__pyx_n_s_MemoryError;
+  PyObject *__pyx_kp_u_None;
   PyObject *__pyx_n_s_POLICY_CUSTOMIZED;
   PyObject *__pyx_n_s_POLICY_DEFAULT_STRICT;
   PyObject *__pyx_kp_u_Policy;
   PyObject *__pyx_kp_u_Policy_owner_authentication_fail;
   PyObject *__pyx_n_s_QuoteVerifyError;
-  PyObject *__pyx_kp_s_Quote_verfication_error;
+  PyObject *__pyx_kp_s_Quote_verification_error;
   PyObject *__pyx_kp_u_Quote_verification_failed_0x;
   PyObject *__pyx_n_u_SGX;
   PyObject *__pyx_n_s_SGX_QUOTE_TYPE;
@@ -2490,8 +2495,10 @@ typedef struct {
   PyObject *__pyx_kp_u_Unexpected_error;
   PyObject *__pyx_kp_u_Unknown_quote_type;
   PyObject *__pyx_n_s_ValueError;
-  PyObject *__pyx_n_s__22;
+  PyObject *__pyx_n_s__24;
   PyObject *__pyx_kp_b__3;
+  PyObject *__pyx_n_s_api_name;
+  PyObject *__pyx_n_u_api_version;
   PyObject *__pyx_n_s_appraisal_result;
   PyObject *__pyx_n_u_appraisal_success;
   PyObject *__pyx_n_s_appraise_verification_token;
@@ -2506,6 +2513,7 @@ typedef struct {
   PyObject *__pyx_n_s_check_quote_type;
   PyObject *__pyx_n_s_cline_in_traceback;
   PyObject *__pyx_n_s_current_time;
+  PyObject *__pyx_n_u_dcap_version;
   PyObject *__pyx_n_s_dict;
   PyObject *__pyx_n_s_doc;
   PyObject *__pyx_n_s_e;
@@ -2513,14 +2521,16 @@ typedef struct {
   PyObject *__pyx_n_s_encode;
   PyObject *__pyx_n_s_endswith;
   PyObject *__pyx_n_u_error;
+  PyObject *__pyx_n_s_get_dcap_version_info;
+  PyObject *__pyx_n_s_has_new_api;
+  PyObject *__pyx_n_u_has_policy_owner_function;
   PyObject *__pyx_n_s_i;
   PyObject *__pyx_n_s_init_subclass;
   PyObject *__pyx_n_s_is_coroutine;
   PyObject *__pyx_n_s_jwt_size;
   PyObject *__pyx_n_s_jwt_token;
-  PyObject *__pyx_n_s_key;
   PyObject *__pyx_n_s_key_count;
-  PyObject *__pyx_n_s_key_refs;
+  PyObject *__pyx_kp_u_legacy_authentication;
   PyObject *__pyx_n_s_main;
   PyObject *__pyx_n_s_metaclass;
   PyObject *__pyx_n_s_module;
@@ -2555,18 +2565,23 @@ typedef struct {
   PyObject *__pyx_n_s_quote_type;
   PyObject *__pyx_n_u_quote_type;
   PyObject *__pyx_n_s_range;
+  PyObject *__pyx_n_u_recommended_function;
   PyObject *__pyx_n_s_result;
   PyObject *__pyx_n_s_result_size;
   PyObject *__pyx_n_s_result_token;
   PyObject *__pyx_n_s_ret;
   PyObject *__pyx_n_s_set_name;
   PyObject *__pyx_n_s_super;
+  PyObject *__pyx_n_u_tee_authenticate_appraisal_resul;
+  PyObject *__pyx_n_u_tee_authenticate_policy_owner;
   PyObject *__pyx_n_s_tenant_policy;
   PyObject *__pyx_n_s_test;
+  PyObject *__pyx_n_s_use_new_api;
   PyObject *__pyx_kp_u_utf_8;
   PyObject *__pyx_n_s_verbose;
   PyObject *__pyx_n_s_verify_quote_qvt;
   PyObject *__pyx_n_u_verify_success;
+  PyObject *__pyx_n_s_version_info;
   PyObject *__pyx_int_0;
   PyObject *__pyx_int_1;
   PyObject *__pyx_int_129;
@@ -2579,18 +2594,20 @@ typedef struct {
   PyObject *__pyx_tuple__7;
   PyObject *__pyx_tuple__8;
   PyObject *__pyx_tuple__9;
-  PyObject *__pyx_tuple__10;
-  PyObject *__pyx_tuple__12;
-  PyObject *__pyx_tuple__14;
+  PyObject *__pyx_tuple__11;
+  PyObject *__pyx_tuple__13;
+  PyObject *__pyx_tuple__15;
   PyObject *__pyx_tuple__16;
   PyObject *__pyx_tuple__18;
   PyObject *__pyx_tuple__20;
-  PyObject *__pyx_codeobj__11;
-  PyObject *__pyx_codeobj__13;
-  PyObject *__pyx_codeobj__15;
+  PyObject *__pyx_tuple__22;
+  PyObject *__pyx_codeobj__10;
+  PyObject *__pyx_codeobj__12;
+  PyObject *__pyx_codeobj__14;
   PyObject *__pyx_codeobj__17;
   PyObject *__pyx_codeobj__19;
   PyObject *__pyx_codeobj__21;
+  PyObject *__pyx_codeobj__23;
 } __pyx_mstate;
 
 #if CYTHON_USE_MODULE_STATE
@@ -2634,6 +2651,8 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_FusedFunctionType);
   #endif
   Py_CLEAR(clear_module_state->__pyx_kp_u_04x);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_1_22);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_1_22_2);
   Py_CLEAR(clear_module_state->__pyx_n_s_AUTH_FAILURE);
   Py_CLEAR(clear_module_state->__pyx_n_s_AUTH_INCOMPLETE);
   Py_CLEAR(clear_module_state->__pyx_n_s_AUTH_SUCCESS);
@@ -2646,18 +2665,22 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_kp_u_Failed_to_allocate_key_array);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Failed_to_allocate_policy_array);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Info_Authenticate_policy_owner_s);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_Info_DCAP_API_version);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Info_Policies_are_authenticated);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Info_Quote_type);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_Info_Using_function);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Info_tee_appraise_verification_t);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Info_tee_verify_quote_qvt_succes);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Key);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_Legacy_policy_authentication_fai);
   Py_CLEAR(clear_module_state->__pyx_n_s_MemoryError);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_None);
   Py_CLEAR(clear_module_state->__pyx_n_s_POLICY_CUSTOMIZED);
   Py_CLEAR(clear_module_state->__pyx_n_s_POLICY_DEFAULT_STRICT);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Policy);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Policy_owner_authentication_fail);
   Py_CLEAR(clear_module_state->__pyx_n_s_QuoteVerifyError);
-  Py_CLEAR(clear_module_state->__pyx_kp_s_Quote_verfication_error);
+  Py_CLEAR(clear_module_state->__pyx_kp_s_Quote_verification_error);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Quote_verification_failed_0x);
   Py_CLEAR(clear_module_state->__pyx_n_u_SGX);
   Py_CLEAR(clear_module_state->__pyx_n_s_SGX_QUOTE_TYPE);
@@ -2668,8 +2691,10 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_kp_u_Unexpected_error);
   Py_CLEAR(clear_module_state->__pyx_kp_u_Unknown_quote_type);
   Py_CLEAR(clear_module_state->__pyx_n_s_ValueError);
-  Py_CLEAR(clear_module_state->__pyx_n_s__22);
+  Py_CLEAR(clear_module_state->__pyx_n_s__24);
   Py_CLEAR(clear_module_state->__pyx_kp_b__3);
+  Py_CLEAR(clear_module_state->__pyx_n_s_api_name);
+  Py_CLEAR(clear_module_state->__pyx_n_u_api_version);
   Py_CLEAR(clear_module_state->__pyx_n_s_appraisal_result);
   Py_CLEAR(clear_module_state->__pyx_n_u_appraisal_success);
   Py_CLEAR(clear_module_state->__pyx_n_s_appraise_verification_token);
@@ -2684,6 +2709,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_check_quote_type);
   Py_CLEAR(clear_module_state->__pyx_n_s_cline_in_traceback);
   Py_CLEAR(clear_module_state->__pyx_n_s_current_time);
+  Py_CLEAR(clear_module_state->__pyx_n_u_dcap_version);
   Py_CLEAR(clear_module_state->__pyx_n_s_dict);
   Py_CLEAR(clear_module_state->__pyx_n_s_doc);
   Py_CLEAR(clear_module_state->__pyx_n_s_e);
@@ -2691,14 +2717,16 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_encode);
   Py_CLEAR(clear_module_state->__pyx_n_s_endswith);
   Py_CLEAR(clear_module_state->__pyx_n_u_error);
+  Py_CLEAR(clear_module_state->__pyx_n_s_get_dcap_version_info);
+  Py_CLEAR(clear_module_state->__pyx_n_s_has_new_api);
+  Py_CLEAR(clear_module_state->__pyx_n_u_has_policy_owner_function);
   Py_CLEAR(clear_module_state->__pyx_n_s_i);
   Py_CLEAR(clear_module_state->__pyx_n_s_init_subclass);
   Py_CLEAR(clear_module_state->__pyx_n_s_is_coroutine);
   Py_CLEAR(clear_module_state->__pyx_n_s_jwt_size);
   Py_CLEAR(clear_module_state->__pyx_n_s_jwt_token);
-  Py_CLEAR(clear_module_state->__pyx_n_s_key);
   Py_CLEAR(clear_module_state->__pyx_n_s_key_count);
-  Py_CLEAR(clear_module_state->__pyx_n_s_key_refs);
+  Py_CLEAR(clear_module_state->__pyx_kp_u_legacy_authentication);
   Py_CLEAR(clear_module_state->__pyx_n_s_main);
   Py_CLEAR(clear_module_state->__pyx_n_s_metaclass);
   Py_CLEAR(clear_module_state->__pyx_n_s_module);
@@ -2733,18 +2761,23 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_quote_type);
   Py_CLEAR(clear_module_state->__pyx_n_u_quote_type);
   Py_CLEAR(clear_module_state->__pyx_n_s_range);
+  Py_CLEAR(clear_module_state->__pyx_n_u_recommended_function);
   Py_CLEAR(clear_module_state->__pyx_n_s_result);
   Py_CLEAR(clear_module_state->__pyx_n_s_result_size);
   Py_CLEAR(clear_module_state->__pyx_n_s_result_token);
   Py_CLEAR(clear_module_state->__pyx_n_s_ret);
   Py_CLEAR(clear_module_state->__pyx_n_s_set_name);
   Py_CLEAR(clear_module_state->__pyx_n_s_super);
+  Py_CLEAR(clear_module_state->__pyx_n_u_tee_authenticate_appraisal_resul);
+  Py_CLEAR(clear_module_state->__pyx_n_u_tee_authenticate_policy_owner);
   Py_CLEAR(clear_module_state->__pyx_n_s_tenant_policy);
   Py_CLEAR(clear_module_state->__pyx_n_s_test);
+  Py_CLEAR(clear_module_state->__pyx_n_s_use_new_api);
   Py_CLEAR(clear_module_state->__pyx_kp_u_utf_8);
   Py_CLEAR(clear_module_state->__pyx_n_s_verbose);
   Py_CLEAR(clear_module_state->__pyx_n_s_verify_quote_qvt);
   Py_CLEAR(clear_module_state->__pyx_n_u_verify_success);
+  Py_CLEAR(clear_module_state->__pyx_n_s_version_info);
   Py_CLEAR(clear_module_state->__pyx_int_0);
   Py_CLEAR(clear_module_state->__pyx_int_1);
   Py_CLEAR(clear_module_state->__pyx_int_129);
@@ -2757,18 +2790,20 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_tuple__7);
   Py_CLEAR(clear_module_state->__pyx_tuple__8);
   Py_CLEAR(clear_module_state->__pyx_tuple__9);
-  Py_CLEAR(clear_module_state->__pyx_tuple__10);
-  Py_CLEAR(clear_module_state->__pyx_tuple__12);
-  Py_CLEAR(clear_module_state->__pyx_tuple__14);
+  Py_CLEAR(clear_module_state->__pyx_tuple__11);
+  Py_CLEAR(clear_module_state->__pyx_tuple__13);
+  Py_CLEAR(clear_module_state->__pyx_tuple__15);
   Py_CLEAR(clear_module_state->__pyx_tuple__16);
   Py_CLEAR(clear_module_state->__pyx_tuple__18);
   Py_CLEAR(clear_module_state->__pyx_tuple__20);
-  Py_CLEAR(clear_module_state->__pyx_codeobj__11);
-  Py_CLEAR(clear_module_state->__pyx_codeobj__13);
-  Py_CLEAR(clear_module_state->__pyx_codeobj__15);
+  Py_CLEAR(clear_module_state->__pyx_tuple__22);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__10);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__12);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__14);
   Py_CLEAR(clear_module_state->__pyx_codeobj__17);
   Py_CLEAR(clear_module_state->__pyx_codeobj__19);
   Py_CLEAR(clear_module_state->__pyx_codeobj__21);
+  Py_CLEAR(clear_module_state->__pyx_codeobj__23);
   return 0;
 }
 #endif
@@ -2790,6 +2825,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_FusedFunctionType);
   #endif
   Py_VISIT(traverse_module_state->__pyx_kp_u_04x);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_1_22);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_1_22_2);
   Py_VISIT(traverse_module_state->__pyx_n_s_AUTH_FAILURE);
   Py_VISIT(traverse_module_state->__pyx_n_s_AUTH_INCOMPLETE);
   Py_VISIT(traverse_module_state->__pyx_n_s_AUTH_SUCCESS);
@@ -2802,18 +2839,22 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_kp_u_Failed_to_allocate_key_array);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Failed_to_allocate_policy_array);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Info_Authenticate_policy_owner_s);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_Info_DCAP_API_version);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Info_Policies_are_authenticated);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Info_Quote_type);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_Info_Using_function);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Info_tee_appraise_verification_t);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Info_tee_verify_quote_qvt_succes);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Key);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_Legacy_policy_authentication_fai);
   Py_VISIT(traverse_module_state->__pyx_n_s_MemoryError);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_None);
   Py_VISIT(traverse_module_state->__pyx_n_s_POLICY_CUSTOMIZED);
   Py_VISIT(traverse_module_state->__pyx_n_s_POLICY_DEFAULT_STRICT);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Policy);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Policy_owner_authentication_fail);
   Py_VISIT(traverse_module_state->__pyx_n_s_QuoteVerifyError);
-  Py_VISIT(traverse_module_state->__pyx_kp_s_Quote_verfication_error);
+  Py_VISIT(traverse_module_state->__pyx_kp_s_Quote_verification_error);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Quote_verification_failed_0x);
   Py_VISIT(traverse_module_state->__pyx_n_u_SGX);
   Py_VISIT(traverse_module_state->__pyx_n_s_SGX_QUOTE_TYPE);
@@ -2824,8 +2865,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_kp_u_Unexpected_error);
   Py_VISIT(traverse_module_state->__pyx_kp_u_Unknown_quote_type);
   Py_VISIT(traverse_module_state->__pyx_n_s_ValueError);
-  Py_VISIT(traverse_module_state->__pyx_n_s__22);
+  Py_VISIT(traverse_module_state->__pyx_n_s__24);
   Py_VISIT(traverse_module_state->__pyx_kp_b__3);
+  Py_VISIT(traverse_module_state->__pyx_n_s_api_name);
+  Py_VISIT(traverse_module_state->__pyx_n_u_api_version);
   Py_VISIT(traverse_module_state->__pyx_n_s_appraisal_result);
   Py_VISIT(traverse_module_state->__pyx_n_u_appraisal_success);
   Py_VISIT(traverse_module_state->__pyx_n_s_appraise_verification_token);
@@ -2840,6 +2883,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_check_quote_type);
   Py_VISIT(traverse_module_state->__pyx_n_s_cline_in_traceback);
   Py_VISIT(traverse_module_state->__pyx_n_s_current_time);
+  Py_VISIT(traverse_module_state->__pyx_n_u_dcap_version);
   Py_VISIT(traverse_module_state->__pyx_n_s_dict);
   Py_VISIT(traverse_module_state->__pyx_n_s_doc);
   Py_VISIT(traverse_module_state->__pyx_n_s_e);
@@ -2847,14 +2891,16 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_encode);
   Py_VISIT(traverse_module_state->__pyx_n_s_endswith);
   Py_VISIT(traverse_module_state->__pyx_n_u_error);
+  Py_VISIT(traverse_module_state->__pyx_n_s_get_dcap_version_info);
+  Py_VISIT(traverse_module_state->__pyx_n_s_has_new_api);
+  Py_VISIT(traverse_module_state->__pyx_n_u_has_policy_owner_function);
   Py_VISIT(traverse_module_state->__pyx_n_s_i);
   Py_VISIT(traverse_module_state->__pyx_n_s_init_subclass);
   Py_VISIT(traverse_module_state->__pyx_n_s_is_coroutine);
   Py_VISIT(traverse_module_state->__pyx_n_s_jwt_size);
   Py_VISIT(traverse_module_state->__pyx_n_s_jwt_token);
-  Py_VISIT(traverse_module_state->__pyx_n_s_key);
   Py_VISIT(traverse_module_state->__pyx_n_s_key_count);
-  Py_VISIT(traverse_module_state->__pyx_n_s_key_refs);
+  Py_VISIT(traverse_module_state->__pyx_kp_u_legacy_authentication);
   Py_VISIT(traverse_module_state->__pyx_n_s_main);
   Py_VISIT(traverse_module_state->__pyx_n_s_metaclass);
   Py_VISIT(traverse_module_state->__pyx_n_s_module);
@@ -2889,18 +2935,23 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_quote_type);
   Py_VISIT(traverse_module_state->__pyx_n_u_quote_type);
   Py_VISIT(traverse_module_state->__pyx_n_s_range);
+  Py_VISIT(traverse_module_state->__pyx_n_u_recommended_function);
   Py_VISIT(traverse_module_state->__pyx_n_s_result);
   Py_VISIT(traverse_module_state->__pyx_n_s_result_size);
   Py_VISIT(traverse_module_state->__pyx_n_s_result_token);
   Py_VISIT(traverse_module_state->__pyx_n_s_ret);
   Py_VISIT(traverse_module_state->__pyx_n_s_set_name);
   Py_VISIT(traverse_module_state->__pyx_n_s_super);
+  Py_VISIT(traverse_module_state->__pyx_n_u_tee_authenticate_appraisal_resul);
+  Py_VISIT(traverse_module_state->__pyx_n_u_tee_authenticate_policy_owner);
   Py_VISIT(traverse_module_state->__pyx_n_s_tenant_policy);
   Py_VISIT(traverse_module_state->__pyx_n_s_test);
+  Py_VISIT(traverse_module_state->__pyx_n_s_use_new_api);
   Py_VISIT(traverse_module_state->__pyx_kp_u_utf_8);
   Py_VISIT(traverse_module_state->__pyx_n_s_verbose);
   Py_VISIT(traverse_module_state->__pyx_n_s_verify_quote_qvt);
   Py_VISIT(traverse_module_state->__pyx_n_u_verify_success);
+  Py_VISIT(traverse_module_state->__pyx_n_s_version_info);
   Py_VISIT(traverse_module_state->__pyx_int_0);
   Py_VISIT(traverse_module_state->__pyx_int_1);
   Py_VISIT(traverse_module_state->__pyx_int_129);
@@ -2913,18 +2964,20 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_tuple__7);
   Py_VISIT(traverse_module_state->__pyx_tuple__8);
   Py_VISIT(traverse_module_state->__pyx_tuple__9);
-  Py_VISIT(traverse_module_state->__pyx_tuple__10);
-  Py_VISIT(traverse_module_state->__pyx_tuple__12);
-  Py_VISIT(traverse_module_state->__pyx_tuple__14);
+  Py_VISIT(traverse_module_state->__pyx_tuple__11);
+  Py_VISIT(traverse_module_state->__pyx_tuple__13);
+  Py_VISIT(traverse_module_state->__pyx_tuple__15);
   Py_VISIT(traverse_module_state->__pyx_tuple__16);
   Py_VISIT(traverse_module_state->__pyx_tuple__18);
   Py_VISIT(traverse_module_state->__pyx_tuple__20);
-  Py_VISIT(traverse_module_state->__pyx_codeobj__11);
-  Py_VISIT(traverse_module_state->__pyx_codeobj__13);
-  Py_VISIT(traverse_module_state->__pyx_codeobj__15);
+  Py_VISIT(traverse_module_state->__pyx_tuple__22);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__10);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__12);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__14);
   Py_VISIT(traverse_module_state->__pyx_codeobj__17);
   Py_VISIT(traverse_module_state->__pyx_codeobj__19);
   Py_VISIT(traverse_module_state->__pyx_codeobj__21);
+  Py_VISIT(traverse_module_state->__pyx_codeobj__23);
   return 0;
 }
 #endif
@@ -2966,6 +3019,8 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #if CYTHON_USE_MODULE_STATE
 #endif
 #define __pyx_kp_u_04x __pyx_mstate_global->__pyx_kp_u_04x
+#define __pyx_kp_u_1_22 __pyx_mstate_global->__pyx_kp_u_1_22
+#define __pyx_kp_u_1_22_2 __pyx_mstate_global->__pyx_kp_u_1_22_2
 #define __pyx_n_s_AUTH_FAILURE __pyx_mstate_global->__pyx_n_s_AUTH_FAILURE
 #define __pyx_n_s_AUTH_INCOMPLETE __pyx_mstate_global->__pyx_n_s_AUTH_INCOMPLETE
 #define __pyx_n_s_AUTH_SUCCESS __pyx_mstate_global->__pyx_n_s_AUTH_SUCCESS
@@ -2978,18 +3033,22 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_kp_u_Failed_to_allocate_key_array __pyx_mstate_global->__pyx_kp_u_Failed_to_allocate_key_array
 #define __pyx_kp_u_Failed_to_allocate_policy_array __pyx_mstate_global->__pyx_kp_u_Failed_to_allocate_policy_array
 #define __pyx_kp_u_Info_Authenticate_policy_owner_s __pyx_mstate_global->__pyx_kp_u_Info_Authenticate_policy_owner_s
+#define __pyx_kp_u_Info_DCAP_API_version __pyx_mstate_global->__pyx_kp_u_Info_DCAP_API_version
 #define __pyx_kp_u_Info_Policies_are_authenticated __pyx_mstate_global->__pyx_kp_u_Info_Policies_are_authenticated
 #define __pyx_kp_u_Info_Quote_type __pyx_mstate_global->__pyx_kp_u_Info_Quote_type
+#define __pyx_kp_u_Info_Using_function __pyx_mstate_global->__pyx_kp_u_Info_Using_function
 #define __pyx_kp_u_Info_tee_appraise_verification_t __pyx_mstate_global->__pyx_kp_u_Info_tee_appraise_verification_t
 #define __pyx_kp_u_Info_tee_verify_quote_qvt_succes __pyx_mstate_global->__pyx_kp_u_Info_tee_verify_quote_qvt_succes
 #define __pyx_kp_u_Key __pyx_mstate_global->__pyx_kp_u_Key
+#define __pyx_kp_u_Legacy_policy_authentication_fai __pyx_mstate_global->__pyx_kp_u_Legacy_policy_authentication_fai
 #define __pyx_n_s_MemoryError __pyx_mstate_global->__pyx_n_s_MemoryError
+#define __pyx_kp_u_None __pyx_mstate_global->__pyx_kp_u_None
 #define __pyx_n_s_POLICY_CUSTOMIZED __pyx_mstate_global->__pyx_n_s_POLICY_CUSTOMIZED
 #define __pyx_n_s_POLICY_DEFAULT_STRICT __pyx_mstate_global->__pyx_n_s_POLICY_DEFAULT_STRICT
 #define __pyx_kp_u_Policy __pyx_mstate_global->__pyx_kp_u_Policy
 #define __pyx_kp_u_Policy_owner_authentication_fail __pyx_mstate_global->__pyx_kp_u_Policy_owner_authentication_fail
 #define __pyx_n_s_QuoteVerifyError __pyx_mstate_global->__pyx_n_s_QuoteVerifyError
-#define __pyx_kp_s_Quote_verfication_error __pyx_mstate_global->__pyx_kp_s_Quote_verfication_error
+#define __pyx_kp_s_Quote_verification_error __pyx_mstate_global->__pyx_kp_s_Quote_verification_error
 #define __pyx_kp_u_Quote_verification_failed_0x __pyx_mstate_global->__pyx_kp_u_Quote_verification_failed_0x
 #define __pyx_n_u_SGX __pyx_mstate_global->__pyx_n_u_SGX
 #define __pyx_n_s_SGX_QUOTE_TYPE __pyx_mstate_global->__pyx_n_s_SGX_QUOTE_TYPE
@@ -3000,8 +3059,10 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_kp_u_Unexpected_error __pyx_mstate_global->__pyx_kp_u_Unexpected_error
 #define __pyx_kp_u_Unknown_quote_type __pyx_mstate_global->__pyx_kp_u_Unknown_quote_type
 #define __pyx_n_s_ValueError __pyx_mstate_global->__pyx_n_s_ValueError
-#define __pyx_n_s__22 __pyx_mstate_global->__pyx_n_s__22
+#define __pyx_n_s__24 __pyx_mstate_global->__pyx_n_s__24
 #define __pyx_kp_b__3 __pyx_mstate_global->__pyx_kp_b__3
+#define __pyx_n_s_api_name __pyx_mstate_global->__pyx_n_s_api_name
+#define __pyx_n_u_api_version __pyx_mstate_global->__pyx_n_u_api_version
 #define __pyx_n_s_appraisal_result __pyx_mstate_global->__pyx_n_s_appraisal_result
 #define __pyx_n_u_appraisal_success __pyx_mstate_global->__pyx_n_u_appraisal_success
 #define __pyx_n_s_appraise_verification_token __pyx_mstate_global->__pyx_n_s_appraise_verification_token
@@ -3016,6 +3077,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_check_quote_type __pyx_mstate_global->__pyx_n_s_check_quote_type
 #define __pyx_n_s_cline_in_traceback __pyx_mstate_global->__pyx_n_s_cline_in_traceback
 #define __pyx_n_s_current_time __pyx_mstate_global->__pyx_n_s_current_time
+#define __pyx_n_u_dcap_version __pyx_mstate_global->__pyx_n_u_dcap_version
 #define __pyx_n_s_dict __pyx_mstate_global->__pyx_n_s_dict
 #define __pyx_n_s_doc __pyx_mstate_global->__pyx_n_s_doc
 #define __pyx_n_s_e __pyx_mstate_global->__pyx_n_s_e
@@ -3023,14 +3085,16 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_encode __pyx_mstate_global->__pyx_n_s_encode
 #define __pyx_n_s_endswith __pyx_mstate_global->__pyx_n_s_endswith
 #define __pyx_n_u_error __pyx_mstate_global->__pyx_n_u_error
+#define __pyx_n_s_get_dcap_version_info __pyx_mstate_global->__pyx_n_s_get_dcap_version_info
+#define __pyx_n_s_has_new_api __pyx_mstate_global->__pyx_n_s_has_new_api
+#define __pyx_n_u_has_policy_owner_function __pyx_mstate_global->__pyx_n_u_has_policy_owner_function
 #define __pyx_n_s_i __pyx_mstate_global->__pyx_n_s_i
 #define __pyx_n_s_init_subclass __pyx_mstate_global->__pyx_n_s_init_subclass
 #define __pyx_n_s_is_coroutine __pyx_mstate_global->__pyx_n_s_is_coroutine
 #define __pyx_n_s_jwt_size __pyx_mstate_global->__pyx_n_s_jwt_size
 #define __pyx_n_s_jwt_token __pyx_mstate_global->__pyx_n_s_jwt_token
-#define __pyx_n_s_key __pyx_mstate_global->__pyx_n_s_key
 #define __pyx_n_s_key_count __pyx_mstate_global->__pyx_n_s_key_count
-#define __pyx_n_s_key_refs __pyx_mstate_global->__pyx_n_s_key_refs
+#define __pyx_kp_u_legacy_authentication __pyx_mstate_global->__pyx_kp_u_legacy_authentication
 #define __pyx_n_s_main __pyx_mstate_global->__pyx_n_s_main
 #define __pyx_n_s_metaclass __pyx_mstate_global->__pyx_n_s_metaclass
 #define __pyx_n_s_module __pyx_mstate_global->__pyx_n_s_module
@@ -3065,18 +3129,23 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_quote_type __pyx_mstate_global->__pyx_n_s_quote_type
 #define __pyx_n_u_quote_type __pyx_mstate_global->__pyx_n_u_quote_type
 #define __pyx_n_s_range __pyx_mstate_global->__pyx_n_s_range
+#define __pyx_n_u_recommended_function __pyx_mstate_global->__pyx_n_u_recommended_function
 #define __pyx_n_s_result __pyx_mstate_global->__pyx_n_s_result
 #define __pyx_n_s_result_size __pyx_mstate_global->__pyx_n_s_result_size
 #define __pyx_n_s_result_token __pyx_mstate_global->__pyx_n_s_result_token
 #define __pyx_n_s_ret __pyx_mstate_global->__pyx_n_s_ret
 #define __pyx_n_s_set_name __pyx_mstate_global->__pyx_n_s_set_name
 #define __pyx_n_s_super __pyx_mstate_global->__pyx_n_s_super
+#define __pyx_n_u_tee_authenticate_appraisal_resul __pyx_mstate_global->__pyx_n_u_tee_authenticate_appraisal_resul
+#define __pyx_n_u_tee_authenticate_policy_owner __pyx_mstate_global->__pyx_n_u_tee_authenticate_policy_owner
 #define __pyx_n_s_tenant_policy __pyx_mstate_global->__pyx_n_s_tenant_policy
 #define __pyx_n_s_test __pyx_mstate_global->__pyx_n_s_test
+#define __pyx_n_s_use_new_api __pyx_mstate_global->__pyx_n_s_use_new_api
 #define __pyx_kp_u_utf_8 __pyx_mstate_global->__pyx_kp_u_utf_8
 #define __pyx_n_s_verbose __pyx_mstate_global->__pyx_n_s_verbose
 #define __pyx_n_s_verify_quote_qvt __pyx_mstate_global->__pyx_n_s_verify_quote_qvt
 #define __pyx_n_u_verify_success __pyx_mstate_global->__pyx_n_u_verify_success
+#define __pyx_n_s_version_info __pyx_mstate_global->__pyx_n_s_version_info
 #define __pyx_int_0 __pyx_mstate_global->__pyx_int_0
 #define __pyx_int_1 __pyx_mstate_global->__pyx_int_1
 #define __pyx_int_129 __pyx_mstate_global->__pyx_int_129
@@ -3089,25 +3158,117 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_tuple__7 __pyx_mstate_global->__pyx_tuple__7
 #define __pyx_tuple__8 __pyx_mstate_global->__pyx_tuple__8
 #define __pyx_tuple__9 __pyx_mstate_global->__pyx_tuple__9
-#define __pyx_tuple__10 __pyx_mstate_global->__pyx_tuple__10
-#define __pyx_tuple__12 __pyx_mstate_global->__pyx_tuple__12
-#define __pyx_tuple__14 __pyx_mstate_global->__pyx_tuple__14
+#define __pyx_tuple__11 __pyx_mstate_global->__pyx_tuple__11
+#define __pyx_tuple__13 __pyx_mstate_global->__pyx_tuple__13
+#define __pyx_tuple__15 __pyx_mstate_global->__pyx_tuple__15
 #define __pyx_tuple__16 __pyx_mstate_global->__pyx_tuple__16
 #define __pyx_tuple__18 __pyx_mstate_global->__pyx_tuple__18
 #define __pyx_tuple__20 __pyx_mstate_global->__pyx_tuple__20
-#define __pyx_codeobj__11 __pyx_mstate_global->__pyx_codeobj__11
-#define __pyx_codeobj__13 __pyx_mstate_global->__pyx_codeobj__13
-#define __pyx_codeobj__15 __pyx_mstate_global->__pyx_codeobj__15
+#define __pyx_tuple__22 __pyx_mstate_global->__pyx_tuple__22
+#define __pyx_codeobj__10 __pyx_mstate_global->__pyx_codeobj__10
+#define __pyx_codeobj__12 __pyx_mstate_global->__pyx_codeobj__12
+#define __pyx_codeobj__14 __pyx_mstate_global->__pyx_codeobj__14
 #define __pyx_codeobj__17 __pyx_mstate_global->__pyx_codeobj__17
 #define __pyx_codeobj__19 __pyx_mstate_global->__pyx_codeobj__19
 #define __pyx_codeobj__21 __pyx_mstate_global->__pyx_codeobj__21
+#define __pyx_codeobj__23 __pyx_mstate_global->__pyx_codeobj__23
 /* #### Code section: module_code ### */
 
-/* "quote_appraisal.pyx":102
+/* "quote_appraisal.pyx":105
+ *     pass
  * 
+ * cdef bint check_dcap_version():             # <<<<<<<<<<<<<<
+ *     """ DCAP  tee_authenticate_policy_owner """
+ *     global _version_checked, _has_policy_owner_func
+ */
+
+static int __pyx_f_15quote_appraisal_check_dcap_version(void) {
+  void *__pyx_v_func_ptr;
+  int __pyx_r;
+
+  /* "quote_appraisal.pyx":109
+ *     global _version_checked, _has_policy_owner_func
+ * 
+ *     if _version_checked:             # <<<<<<<<<<<<<<
+ *         return _has_policy_owner_func
+ * 
+ */
+  if (__pyx_v_15quote_appraisal__version_checked) {
+
+    /* "quote_appraisal.pyx":110
+ * 
+ *     if _version_checked:
+ *         return _has_policy_owner_func             # <<<<<<<<<<<<<<
+ * 
+ *     cdef void* func_ptr = dlsym(RTLD_DEFAULT, b"tee_authenticate_policy_owner")
+ */
+    __pyx_r = __pyx_v_15quote_appraisal__has_policy_owner_func;
+    goto __pyx_L0;
+
+    /* "quote_appraisal.pyx":109
+ *     global _version_checked, _has_policy_owner_func
+ * 
+ *     if _version_checked:             # <<<<<<<<<<<<<<
+ *         return _has_policy_owner_func
+ * 
+ */
+  }
+
+  /* "quote_appraisal.pyx":112
+ *         return _has_policy_owner_func
+ * 
+ *     cdef void* func_ptr = dlsym(RTLD_DEFAULT, b"tee_authenticate_policy_owner")             # <<<<<<<<<<<<<<
+ *     _has_policy_owner_func = (func_ptr != NULL)
+ *     _version_checked = True
+ */
+  __pyx_v_func_ptr = dlsym(RTLD_DEFAULT, ((char const *)"tee_authenticate_policy_owner"));
+
+  /* "quote_appraisal.pyx":113
+ * 
+ *     cdef void* func_ptr = dlsym(RTLD_DEFAULT, b"tee_authenticate_policy_owner")
+ *     _has_policy_owner_func = (func_ptr != NULL)             # <<<<<<<<<<<<<<
+ *     _version_checked = True
+ * 
+ */
+  __pyx_v_15quote_appraisal__has_policy_owner_func = (__pyx_v_func_ptr != NULL);
+
+  /* "quote_appraisal.pyx":114
+ *     cdef void* func_ptr = dlsym(RTLD_DEFAULT, b"tee_authenticate_policy_owner")
+ *     _has_policy_owner_func = (func_ptr != NULL)
+ *     _version_checked = True             # <<<<<<<<<<<<<<
+ * 
+ *     return _has_policy_owner_func
+ */
+  __pyx_v_15quote_appraisal__version_checked = 1;
+
+  /* "quote_appraisal.pyx":116
+ *     _version_checked = True
+ * 
+ *     return _has_policy_owner_func             # <<<<<<<<<<<<<<
+ * 
+ * def verify_quote_qvt(bytes quote_data):
+ */
+  __pyx_r = __pyx_v_15quote_appraisal__has_policy_owner_func;
+  goto __pyx_L0;
+
+  /* "quote_appraisal.pyx":105
+ *     pass
+ * 
+ * cdef bint check_dcap_version():             # <<<<<<<<<<<<<<
+ *     """ DCAP  tee_authenticate_policy_owner """
+ *     global _version_checked, _has_policy_owner_func
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  return __pyx_r;
+}
+
+/* "quote_appraisal.pyx":118
+ *     return _has_policy_owner_func
  * 
  * def verify_quote_qvt(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote  JWT token"""
  *     cdef:
  */
 
@@ -3119,7 +3280,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15quote_appraisal_1verify_quote_qvt = {"verify_quote_qvt", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_1verify_quote_qvt, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_verify_quote_qvt, "\351\252\214\350\257\201 Quote \345\271\266\350\277\224\345\233\236 JWT token");
+static PyMethodDef __pyx_mdef_15quote_appraisal_1verify_quote_qvt = {"verify_quote_qvt", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_1verify_quote_qvt, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15quote_appraisal_verify_quote_qvt};
 static PyObject *__pyx_pw_15quote_appraisal_1verify_quote_qvt(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3164,12 +3326,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 102, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 118, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "verify_quote_qvt") < 0)) __PYX_ERR(0, 102, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "verify_quote_qvt") < 0)) __PYX_ERR(0, 118, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -3180,7 +3342,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("verify_quote_qvt", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 102, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("verify_quote_qvt", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 118, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3194,7 +3356,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 102, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_r = __pyx_pf_15quote_appraisal_verify_quote_qvt(__pyx_self, __pyx_v_quote_data);
 
   /* function exit code */
@@ -3243,8 +3405,8 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("verify_quote_qvt", 1);
 
-  /* "quote_appraisal.pyx":105
- * 
+  /* "quote_appraisal.pyx":121
+ *     """ Quote  JWT token"""
  *     cdef:
  *         const uint8_t* p_quote = <const uint8_t*>quote_data             # <<<<<<<<<<<<<<
  *         uint32_t quote_size = len(quote_data)
@@ -3252,12 +3414,12 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   if (unlikely(__pyx_v_quote_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 105, __pyx_L1_error)
+    __PYX_ERR(0, 121, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
   __pyx_v_p_quote = ((uint8_t const *)__pyx_t_1);
 
-  /* "quote_appraisal.pyx":106
+  /* "quote_appraisal.pyx":122
  *     cdef:
  *         const uint8_t* p_quote = <const uint8_t*>quote_data
  *         uint32_t quote_size = len(quote_data)             # <<<<<<<<<<<<<<
@@ -3266,12 +3428,12 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   if (unlikely(__pyx_v_quote_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 106, __pyx_L1_error)
+    __PYX_ERR(0, 122, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 122, __pyx_L1_error)
   __pyx_v_quote_size = __pyx_t_2;
 
-  /* "quote_appraisal.pyx":107
+  /* "quote_appraisal.pyx":123
  *         const uint8_t* p_quote = <const uint8_t*>quote_data
  *         uint32_t quote_size = len(quote_data)
  *         unsigned int jwt_size = 0             # <<<<<<<<<<<<<<
@@ -3280,7 +3442,7 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   __pyx_v_jwt_size = 0;
 
-  /* "quote_appraisal.pyx":108
+  /* "quote_appraisal.pyx":124
  *         uint32_t quote_size = len(quote_data)
  *         unsigned int jwt_size = 0
  *         uint8_t* p_jwt = NULL             # <<<<<<<<<<<<<<
@@ -3289,7 +3451,7 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   __pyx_v_p_jwt = NULL;
 
-  /* "quote_appraisal.pyx":111
+  /* "quote_appraisal.pyx":127
  *         quote3_error_t ret
  * 
  *     ret = tee_verify_quote_qvt(p_quote, quote_size, NULL, NULL, NULL, &jwt_size, &p_jwt)             # <<<<<<<<<<<<<<
@@ -3298,7 +3460,7 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   __pyx_v_ret = tee_verify_quote_qvt(__pyx_v_p_quote, __pyx_v_quote_size, NULL, NULL, NULL, (&__pyx_v_jwt_size), (&__pyx_v_p_jwt));
 
-  /* "quote_appraisal.pyx":113
+  /* "quote_appraisal.pyx":129
  *     ret = tee_verify_quote_qvt(p_quote, quote_size, NULL, NULL, NULL, &jwt_size, &p_jwt)
  * 
  *     if ret != 0 or p_jwt == NULL:             # <<<<<<<<<<<<<<
@@ -3316,21 +3478,21 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_3)) {
 
-    /* "quote_appraisal.pyx":114
+    /* "quote_appraisal.pyx":130
  * 
  *     if ret != 0 or p_jwt == NULL:
  *         raise QuoteVerifyError(f"Quote verification failed: 0x{ret:04x}")             # <<<<<<<<<<<<<<
  * 
  *     try:
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyObject_Format(__pyx_t_7, __pyx_kp_u_04x); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_Format(__pyx_t_7, __pyx_kp_u_04x); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Quote_verification_failed_0x, __pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Quote_verification_failed_0x, __pyx_t_8); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 130, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __pyx_t_8 = NULL;
@@ -3352,15 +3514,15 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
       __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_9, 1+__pyx_t_9);
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 114, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 130, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 114, __pyx_L1_error)
+    __PYX_ERR(0, 130, __pyx_L1_error)
 
-    /* "quote_appraisal.pyx":113
+    /* "quote_appraisal.pyx":129
  *     ret = tee_verify_quote_qvt(p_quote, quote_size, NULL, NULL, NULL, &jwt_size, &p_jwt)
  * 
  *     if ret != 0 or p_jwt == NULL:             # <<<<<<<<<<<<<<
@@ -3369,7 +3531,7 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   }
 
-  /* "quote_appraisal.pyx":116
+  /* "quote_appraisal.pyx":132
  *         raise QuoteVerifyError(f"Quote verification failed: 0x{ret:04x}")
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -3378,22 +3540,22 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
  */
   /*try:*/ {
 
-    /* "quote_appraisal.pyx":117
+    /* "quote_appraisal.pyx":133
  * 
  *     try:
  *         jwt_token = bytes(p_jwt[:jwt_size])             # <<<<<<<<<<<<<<
  *         return jwt_token
  *     finally:
  */
-    __pyx_t_5 = __Pyx_PyBytes_FromStringAndSize(((const char*)__pyx_v_p_jwt) + 0, __pyx_v_jwt_size - 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L7_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromStringAndSize(((const char*)__pyx_v_p_jwt) + 0, __pyx_v_jwt_size - 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 133, __pyx_L7_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyBytes_Type)), __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 117, __pyx_L7_error)
+    __pyx_t_6 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyBytes_Type)), __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 133, __pyx_L7_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_jwt_token = ((PyObject*)__pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "quote_appraisal.pyx":118
+    /* "quote_appraisal.pyx":134
  *     try:
  *         jwt_token = bytes(p_jwt[:jwt_size])
  *         return jwt_token             # <<<<<<<<<<<<<<
@@ -3406,12 +3568,12 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
     goto __pyx_L6_return;
   }
 
-  /* "quote_appraisal.pyx":120
+  /* "quote_appraisal.pyx":136
  *         return jwt_token
  *     finally:
  *         tee_free_verify_quote_qvt(p_jwt, &jwt_size)             # <<<<<<<<<<<<<<
  * 
- * 
+ * def appraise_verification_token(bytes jwt_token, list policy_files, time_t check_date=0):
  */
   /*finally:*/ {
     __pyx_L7_error:;
@@ -3459,11 +3621,11 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
     }
   }
 
-  /* "quote_appraisal.pyx":102
- * 
+  /* "quote_appraisal.pyx":118
+ *     return _has_policy_owner_func
  * 
  * def verify_quote_qvt(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote  JWT token"""
  *     cdef:
  */
 
@@ -3482,11 +3644,11 @@ static PyObject *__pyx_pf_15quote_appraisal_verify_quote_qvt(CYTHON_UNUSED PyObj
   return __pyx_r;
 }
 
-/* "quote_appraisal.pyx":123
- * 
+/* "quote_appraisal.pyx":138
+ *         tee_free_verify_quote_qvt(p_jwt, &jwt_size)
  * 
  * def appraise_verification_token(bytes jwt_token, list policy_files, time_t check_date=0):             # <<<<<<<<<<<<<<
- * 
+ *     """ token"""
  *     cdef:
  */
 
@@ -3498,7 +3660,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15quote_appraisal_3appraise_verification_token = {"appraise_verification_token", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_3appraise_verification_token, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_2appraise_verification_token, "\350\257\204\344\274\260\351\252\214\350\257\201 token");
+static PyMethodDef __pyx_mdef_15quote_appraisal_3appraise_verification_token = {"appraise_verification_token", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_3appraise_verification_token, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15quote_appraisal_2appraise_verification_token};
 static PyObject *__pyx_pw_15quote_appraisal_3appraise_verification_token(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -3549,7 +3712,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 138, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -3557,21 +3720,21 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 138, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("appraise_verification_token", 0, 2, 3, 1); __PYX_ERR(0, 123, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("appraise_verification_token", 0, 2, 3, 1); __PYX_ERR(0, 138, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_check_date);
           if (value) { values[2] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 138, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "appraise_verification_token") < 0)) __PYX_ERR(0, 123, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "appraise_verification_token") < 0)) __PYX_ERR(0, 138, __pyx_L3_error)
       }
     } else {
       switch (__pyx_nargs) {
@@ -3586,14 +3749,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     __pyx_v_jwt_token = ((PyObject*)values[0]);
     __pyx_v_policy_files = ((PyObject*)values[1]);
     if (values[2]) {
-      __pyx_v_check_date = __Pyx_PyInt_As_time_t(values[2]); if (unlikely((__pyx_v_check_date == ((time_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 123, __pyx_L3_error)
+      __pyx_v_check_date = __Pyx_PyInt_As_time_t(values[2]); if (unlikely((__pyx_v_check_date == ((time_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 138, __pyx_L3_error)
     } else {
       __pyx_v_check_date = ((time_t)((time_t)0));
     }
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("appraise_verification_token", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 123, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("appraise_verification_token", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 138, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -3607,8 +3770,8 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_jwt_token), (&PyBytes_Type), 1, "jwt_token", 1))) __PYX_ERR(0, 123, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_policy_files), (&PyList_Type), 1, "policy_files", 1))) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_jwt_token), (&PyBytes_Type), 1, "jwt_token", 1))) __PYX_ERR(0, 138, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_policy_files), (&PyList_Type), 1, "policy_files", 1))) __PYX_ERR(0, 138, __pyx_L1_error)
   __pyx_r = __pyx_pf_15quote_appraisal_2appraise_verification_token(__pyx_self, __pyx_v_jwt_token, __pyx_v_policy_files, __pyx_v_check_date);
 
   /* function exit code */
@@ -3669,8 +3832,8 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("appraise_verification_token", 1);
 
-  /* "quote_appraisal.pyx":126
- * 
+  /* "quote_appraisal.pyx":141
+ *     """ token"""
  *     cdef:
  *         const uint8_t* p_jwt = <const uint8_t*>jwt_token             # <<<<<<<<<<<<<<
  *         uint8_t** p_qaps = NULL
@@ -3678,12 +3841,12 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   if (unlikely(__pyx_v_jwt_token == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 126, __pyx_L1_error)
+    __PYX_ERR(0, 141, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_jwt_token); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_jwt_token); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 141, __pyx_L1_error)
   __pyx_v_p_jwt = ((uint8_t const *)__pyx_t_1);
 
-  /* "quote_appraisal.pyx":127
+  /* "quote_appraisal.pyx":142
  *     cdef:
  *         const uint8_t* p_jwt = <const uint8_t*>jwt_token
  *         uint8_t** p_qaps = NULL             # <<<<<<<<<<<<<<
@@ -3692,7 +3855,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   __pyx_v_p_qaps = NULL;
 
-  /* "quote_appraisal.pyx":128
+  /* "quote_appraisal.pyx":143
  *         const uint8_t* p_jwt = <const uint8_t*>jwt_token
  *         uint8_t** p_qaps = NULL
  *         uint8_t n_qaps = len(policy_files)             # <<<<<<<<<<<<<<
@@ -3701,12 +3864,12 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   if (unlikely(__pyx_v_policy_files == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 128, __pyx_L1_error)
+    __PYX_ERR(0, 143, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_policy_files); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_policy_files); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 143, __pyx_L1_error)
   __pyx_v_n_qaps = __pyx_t_2;
 
-  /* "quote_appraisal.pyx":129
+  /* "quote_appraisal.pyx":144
  *         uint8_t** p_qaps = NULL
  *         uint8_t n_qaps = len(policy_files)
  *         time_t current_time = check_date if check_date != 0 else time(NULL)             # <<<<<<<<<<<<<<
@@ -3721,7 +3884,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
   }
   __pyx_v_current_time = __pyx_t_3;
 
-  /* "quote_appraisal.pyx":130
+  /* "quote_appraisal.pyx":145
  *         uint8_t n_qaps = len(policy_files)
  *         time_t current_time = check_date if check_date != 0 else time(NULL)
  *         uint32_t result_size = 0             # <<<<<<<<<<<<<<
@@ -3730,7 +3893,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   __pyx_v_result_size = 0;
 
-  /* "quote_appraisal.pyx":131
+  /* "quote_appraisal.pyx":146
  *         time_t current_time = check_date if check_date != 0 else time(NULL)
  *         uint32_t result_size = 0
  *         uint8_t* p_result = NULL             # <<<<<<<<<<<<<<
@@ -3739,7 +3902,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   __pyx_v_p_result = NULL;
 
-  /* "quote_appraisal.pyx":135
+  /* "quote_appraisal.pyx":150
  *         int i
  * 
  *     if n_qaps == 0:             # <<<<<<<<<<<<<<
@@ -3749,20 +3912,20 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
   __pyx_t_4 = (__pyx_v_n_qaps == 0);
   if (unlikely(__pyx_t_4)) {
 
-    /* "quote_appraisal.pyx":136
+    /* "quote_appraisal.pyx":151
  * 
  *     if n_qaps == 0:
  *         raise ValueError("At least one policy file is required")             # <<<<<<<<<<<<<<
  * 
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 136, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 151, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 136, __pyx_L1_error)
+    __PYX_ERR(0, 151, __pyx_L1_error)
 
-    /* "quote_appraisal.pyx":135
+    /* "quote_appraisal.pyx":150
  *         int i
  * 
  *     if n_qaps == 0:             # <<<<<<<<<<<<<<
@@ -3771,7 +3934,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   }
 
-  /* "quote_appraisal.pyx":138
+  /* "quote_appraisal.pyx":153
  *         raise ValueError("At least one policy file is required")
  * 
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))             # <<<<<<<<<<<<<<
@@ -3780,7 +3943,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   __pyx_v_p_qaps = ((uint8_t **)malloc((__pyx_v_n_qaps * (sizeof(uint8_t *)))));
 
-  /* "quote_appraisal.pyx":139
+  /* "quote_appraisal.pyx":154
  * 
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))
  *     if p_qaps == NULL:             # <<<<<<<<<<<<<<
@@ -3790,20 +3953,20 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
   __pyx_t_4 = (__pyx_v_p_qaps == NULL);
   if (unlikely(__pyx_t_4)) {
 
-    /* "quote_appraisal.pyx":140
+    /* "quote_appraisal.pyx":155
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))
  *     if p_qaps == NULL:
  *         raise MemoryError("Failed to allocate policy array")             # <<<<<<<<<<<<<<
  * 
  *     policy_refs = []
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 140, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 155, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 140, __pyx_L1_error)
+    __PYX_ERR(0, 155, __pyx_L1_error)
 
-    /* "quote_appraisal.pyx":139
+    /* "quote_appraisal.pyx":154
  * 
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))
  *     if p_qaps == NULL:             # <<<<<<<<<<<<<<
@@ -3812,19 +3975,19 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   }
 
-  /* "quote_appraisal.pyx":142
+  /* "quote_appraisal.pyx":157
  *         raise MemoryError("Failed to allocate policy array")
  * 
  *     policy_refs = []             # <<<<<<<<<<<<<<
  * 
  *     try:
  */
-  __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 157, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_v_policy_refs = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "quote_appraisal.pyx":144
+  /* "quote_appraisal.pyx":159
  *     policy_refs = []
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -3833,7 +3996,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
   /*try:*/ {
 
-    /* "quote_appraisal.pyx":145
+    /* "quote_appraisal.pyx":160
  * 
  *     try:
  *         for i in range(n_qaps):             # <<<<<<<<<<<<<<
@@ -3845,7 +4008,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_i = __pyx_t_8;
 
-      /* "quote_appraisal.pyx":146
+      /* "quote_appraisal.pyx":161
  *     try:
  *         for i in range(n_qaps):
  *             policy = policy_files[i]             # <<<<<<<<<<<<<<
@@ -3854,14 +4017,14 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
       if (unlikely(__pyx_v_policy_files == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 146, __pyx_L6_error)
+        __PYX_ERR(0, 161, __pyx_L6_error)
       }
-      __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_policy_files, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 146, __pyx_L6_error)
+      __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_policy_files, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_XDECREF_SET(__pyx_v_policy, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "quote_appraisal.pyx":147
+      /* "quote_appraisal.pyx":162
  *         for i in range(n_qaps):
  *             policy = policy_files[i]
  *             if isinstance(policy, str):             # <<<<<<<<<<<<<<
@@ -3871,14 +4034,14 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
       __pyx_t_4 = PyUnicode_Check(__pyx_v_policy); 
       if (__pyx_t_4) {
 
-        /* "quote_appraisal.pyx":148
+        /* "quote_appraisal.pyx":163
  *             policy = policy_files[i]
  *             if isinstance(policy, str):
  *                 policy = policy.encode('utf-8')             # <<<<<<<<<<<<<<
  *             if not isinstance(policy, bytes):
  *                 raise TypeError(f"Policy {i} must be bytes or str")
  */
-        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_policy, __pyx_n_s_encode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 148, __pyx_L6_error)
+        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_policy, __pyx_n_s_encode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 163, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_10 = NULL;
         __pyx_t_11 = 0;
@@ -3898,14 +4061,14 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
           PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_kp_u_utf_8};
           __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_11, 1+__pyx_t_11);
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L6_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 163, __pyx_L6_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
         __Pyx_DECREF_SET(__pyx_v_policy, __pyx_t_5);
         __pyx_t_5 = 0;
 
-        /* "quote_appraisal.pyx":147
+        /* "quote_appraisal.pyx":162
  *         for i in range(n_qaps):
  *             policy = policy_files[i]
  *             if isinstance(policy, str):             # <<<<<<<<<<<<<<
@@ -3914,7 +4077,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
       }
 
-      /* "quote_appraisal.pyx":149
+      /* "quote_appraisal.pyx":164
  *             if isinstance(policy, str):
  *                 policy = policy.encode('utf-8')
  *             if not isinstance(policy, bytes):             # <<<<<<<<<<<<<<
@@ -3925,14 +4088,14 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
       __pyx_t_12 = (!__pyx_t_4);
       if (unlikely(__pyx_t_12)) {
 
-        /* "quote_appraisal.pyx":150
+        /* "quote_appraisal.pyx":165
  *                 policy = policy.encode('utf-8')
  *             if not isinstance(policy, bytes):
  *                 raise TypeError(f"Policy {i} must be bytes or str")             # <<<<<<<<<<<<<<
  *             if not policy.endswith(b'\x00'):
  *                 policy = policy + b'\x00'
  */
-        __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L6_error)
+        __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_2 = 0;
         __pyx_t_13 = 127;
@@ -3940,7 +4103,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
         __pyx_t_2 += 7;
         __Pyx_GIVEREF(__pyx_kp_u_Policy);
         PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_kp_u_Policy);
-        __pyx_t_9 = __Pyx_PyUnicode_From_int(__pyx_v_i, 0, ' ', 'd'); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 150, __pyx_L6_error)
+        __pyx_t_9 = __Pyx_PyUnicode_From_int(__pyx_v_i, 0, ' ', 'd'); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 165, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
         __Pyx_GIVEREF(__pyx_t_9);
@@ -3950,17 +4113,17 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
         __pyx_t_2 += 21;
         __Pyx_GIVEREF(__pyx_kp_u_must_be_bytes_or_str);
         PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_kp_u_must_be_bytes_or_str);
-        __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_5, 3, __pyx_t_2, __pyx_t_13); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 150, __pyx_L6_error)
+        __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_5, 3, __pyx_t_2, __pyx_t_13); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 165, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 150, __pyx_L6_error)
+        __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         __Pyx_Raise(__pyx_t_5, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __PYX_ERR(0, 150, __pyx_L6_error)
+        __PYX_ERR(0, 165, __pyx_L6_error)
 
-        /* "quote_appraisal.pyx":149
+        /* "quote_appraisal.pyx":164
  *             if isinstance(policy, str):
  *                 policy = policy.encode('utf-8')
  *             if not isinstance(policy, bytes):             # <<<<<<<<<<<<<<
@@ -3969,14 +4132,14 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
       }
 
-      /* "quote_appraisal.pyx":151
+      /* "quote_appraisal.pyx":166
  *             if not isinstance(policy, bytes):
  *                 raise TypeError(f"Policy {i} must be bytes or str")
  *             if not policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
  *                 policy = policy + b'\x00'
  *             policy_refs.append(policy)
  */
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_policy, __pyx_n_s_endswith); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 151, __pyx_L6_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_policy, __pyx_n_s_endswith); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 166, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_10 = NULL;
       __pyx_t_11 = 0;
@@ -3996,28 +4159,28 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
         PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_kp_b__3};
         __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_11, 1+__pyx_t_11);
         __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 151, __pyx_L6_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 166, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
-      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 151, __pyx_L6_error)
+      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 166, __pyx_L6_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_4 = (!__pyx_t_12);
       if (__pyx_t_4) {
 
-        /* "quote_appraisal.pyx":152
+        /* "quote_appraisal.pyx":167
  *                 raise TypeError(f"Policy {i} must be bytes or str")
  *             if not policy.endswith(b'\x00'):
  *                 policy = policy + b'\x00'             # <<<<<<<<<<<<<<
  *             policy_refs.append(policy)
  *             p_qaps[i] = <uint8_t*>policy
  */
-        __pyx_t_5 = PyNumber_Add(__pyx_v_policy, __pyx_kp_b__3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 152, __pyx_L6_error)
+        __pyx_t_5 = PyNumber_Add(__pyx_v_policy, __pyx_kp_b__3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 167, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF_SET(__pyx_v_policy, __pyx_t_5);
         __pyx_t_5 = 0;
 
-        /* "quote_appraisal.pyx":151
+        /* "quote_appraisal.pyx":166
  *             if not isinstance(policy, bytes):
  *                 raise TypeError(f"Policy {i} must be bytes or str")
  *             if not policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
@@ -4026,27 +4189,27 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
       }
 
-      /* "quote_appraisal.pyx":153
+      /* "quote_appraisal.pyx":168
  *             if not policy.endswith(b'\x00'):
  *                 policy = policy + b'\x00'
  *             policy_refs.append(policy)             # <<<<<<<<<<<<<<
  *             p_qaps[i] = <uint8_t*>policy
  * 
  */
-      __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_policy_refs, __pyx_v_policy); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 153, __pyx_L6_error)
+      __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_policy_refs, __pyx_v_policy); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 168, __pyx_L6_error)
 
-      /* "quote_appraisal.pyx":154
+      /* "quote_appraisal.pyx":169
  *                 policy = policy + b'\x00'
  *             policy_refs.append(policy)
  *             p_qaps[i] = <uint8_t*>policy             # <<<<<<<<<<<<<<
  * 
  *         ret = tee_appraise_verification_token(
  */
-      __pyx_t_15 = __Pyx_PyObject_AsWritableUString(__pyx_v_policy); if (unlikely((!__pyx_t_15) && PyErr_Occurred())) __PYX_ERR(0, 154, __pyx_L6_error)
+      __pyx_t_15 = __Pyx_PyObject_AsWritableUString(__pyx_v_policy); if (unlikely((!__pyx_t_15) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L6_error)
       (__pyx_v_p_qaps[__pyx_v_i]) = ((uint8_t *)__pyx_t_15);
     }
 
-    /* "quote_appraisal.pyx":156
+    /* "quote_appraisal.pyx":171
  *             p_qaps[i] = <uint8_t*>policy
  * 
  *         ret = tee_appraise_verification_token(             # <<<<<<<<<<<<<<
@@ -4055,7 +4218,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
     __pyx_v_ret = tee_appraise_verification_token(__pyx_v_p_jwt, __pyx_v_p_qaps, __pyx_v_n_qaps, __pyx_v_current_time, NULL, (&__pyx_v_result_size), (&__pyx_v_p_result));
 
-    /* "quote_appraisal.pyx":160
+    /* "quote_appraisal.pyx":175
  *         )
  * 
  *         if ret != 0 or p_result == NULL:             # <<<<<<<<<<<<<<
@@ -4073,21 +4236,21 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
     __pyx_L14_bool_binop_done:;
     if (unlikely(__pyx_t_4)) {
 
-      /* "quote_appraisal.pyx":161
+      /* "quote_appraisal.pyx":176
  * 
  *         if ret != 0 or p_result == NULL:
  *             raise QuoteVerifyError(f"Appraisal failed: 0x{ret:04x}")             # <<<<<<<<<<<<<<
  * 
  *         try:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 161, __pyx_L6_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 176, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 161, __pyx_L6_error)
+      __pyx_t_10 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 176, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_16 = __Pyx_PyObject_Format(__pyx_t_10, __pyx_kp_u_04x); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 161, __pyx_L6_error)
+      __pyx_t_16 = __Pyx_PyObject_Format(__pyx_t_10, __pyx_kp_u_04x); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 176, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_16);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Appraisal_failed_0x, __pyx_t_16); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 161, __pyx_L6_error)
+      __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Appraisal_failed_0x, __pyx_t_16); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 176, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
       __pyx_t_16 = NULL;
@@ -4109,15 +4272,15 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
         __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_8, 1+__pyx_t_8);
         __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 161, __pyx_L6_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __PYX_ERR(0, 161, __pyx_L6_error)
+      __PYX_ERR(0, 176, __pyx_L6_error)
 
-      /* "quote_appraisal.pyx":160
+      /* "quote_appraisal.pyx":175
  *         )
  * 
  *         if ret != 0 or p_result == NULL:             # <<<<<<<<<<<<<<
@@ -4126,7 +4289,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
     }
 
-    /* "quote_appraisal.pyx":163
+    /* "quote_appraisal.pyx":178
  *             raise QuoteVerifyError(f"Appraisal failed: 0x{ret:04x}")
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -4135,22 +4298,22 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
  */
     /*try:*/ {
 
-      /* "quote_appraisal.pyx":164
+      /* "quote_appraisal.pyx":179
  * 
  *         try:
  *             result_token = bytes(p_result[:result_size])             # <<<<<<<<<<<<<<
  *             return result_token
  *         finally:
  */
-      __pyx_t_5 = __Pyx_PyBytes_FromStringAndSize(((const char*)__pyx_v_p_result) + 0, __pyx_v_result_size - 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 164, __pyx_L17_error)
+      __pyx_t_5 = __Pyx_PyBytes_FromStringAndSize(((const char*)__pyx_v_p_result) + 0, __pyx_v_result_size - 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 179, __pyx_L17_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyBytes_Type)), __pyx_t_5); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 164, __pyx_L17_error)
+      __pyx_t_9 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyBytes_Type)), __pyx_t_5); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 179, __pyx_L17_error)
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_result_token = ((PyObject*)__pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "quote_appraisal.pyx":165
+      /* "quote_appraisal.pyx":180
  *         try:
  *             result_token = bytes(p_result[:result_size])
  *             return result_token             # <<<<<<<<<<<<<<
@@ -4163,7 +4326,7 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
       goto __pyx_L16_return;
     }
 
-    /* "quote_appraisal.pyx":167
+    /* "quote_appraisal.pyx":182
  *             return result_token
  *         finally:
  *             tee_free_appraisal_token(p_result)             # <<<<<<<<<<<<<<
@@ -4217,12 +4380,12 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
     }
   }
 
-  /* "quote_appraisal.pyx":170
+  /* "quote_appraisal.pyx":185
  * 
  *     finally:
  *         free(p_qaps)             # <<<<<<<<<<<<<<
  * 
- * 
+ * def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platform_policy=None):
  */
   /*finally:*/ {
     __pyx_L6_error:;
@@ -4270,11 +4433,11 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
     }
   }
 
-  /* "quote_appraisal.pyx":123
- * 
+  /* "quote_appraisal.pyx":138
+ *         tee_free_verify_quote_qvt(p_jwt, &jwt_size)
  * 
  * def appraise_verification_token(bytes jwt_token, list policy_files, time_t check_date=0):             # <<<<<<<<<<<<<<
- * 
+ *     """ token"""
  *     cdef:
  */
 
@@ -4295,11 +4458,11 @@ static PyObject *__pyx_pf_15quote_appraisal_2appraise_verification_token(CYTHON_
   return __pyx_r;
 }
 
-/* "quote_appraisal.pyx":173
+/* "quote_appraisal.pyx":187
+ *         free(p_qaps)
  * 
- * 
- * def authenticate_appraisal_result(bytes appraisal_result, bytes tenant_policy, bytes platform_policy):             # <<<<<<<<<<<<<<
- * 
+ * def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platform_policy=None):             # <<<<<<<<<<<<<<
+ *     """"""
  *     cdef:
  */
 
@@ -4311,7 +4474,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15quote_appraisal_5authenticate_appraisal_result = {"authenticate_appraisal_result", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_5authenticate_appraisal_result, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_4authenticate_appraisal_result, "\350\256\244\350\257\201\350\257\204\344\274\260\347\273\223\346\236\234");
+static PyMethodDef __pyx_mdef_15quote_appraisal_5authenticate_appraisal_result = {"authenticate_appraisal_result", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_5authenticate_appraisal_result, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15quote_appraisal_4authenticate_appraisal_result};
 static PyObject *__pyx_pw_15quote_appraisal_5authenticate_appraisal_result(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -4343,6 +4507,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __pyx_kwvalues = __Pyx_KwValues_FASTCALL(__pyx_args, __pyx_nargs);
   {
     PyObject **__pyx_pyargnames[] = {&__pyx_n_s_appraisal_result,&__pyx_n_s_tenant_policy,&__pyx_n_s_platform_policy,0};
+    values[2] = __Pyx_Arg_NewRef_FASTCALL(((PyObject *)Py_None));
     if (__pyx_kwds) {
       Py_ssize_t kw_args;
       switch (__pyx_nargs) {
@@ -4362,7 +4527,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -4370,39 +4535,39 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("authenticate_appraisal_result", 1, 3, 3, 1); __PYX_ERR(0, 173, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("authenticate_appraisal_result", 0, 2, 3, 1); __PYX_ERR(0, 187, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
-        if (likely((values[2] = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_platform_policy)) != 0)) {
-          (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
-          kw_args--;
-        }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L3_error)
-        else {
-          __Pyx_RaiseArgtupleInvalid("authenticate_appraisal_result", 1, 3, 3, 2); __PYX_ERR(0, 173, __pyx_L3_error)
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_platform_policy);
+          if (value) { values[2] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "authenticate_appraisal_result") < 0)) __PYX_ERR(0, 173, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "authenticate_appraisal_result") < 0)) __PYX_ERR(0, 187, __pyx_L3_error)
       }
-    } else if (unlikely(__pyx_nargs != 3)) {
-      goto __pyx_L5_argtuple_error;
     } else {
-      values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
-      values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
-      values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+      switch (__pyx_nargs) {
+        case  3: values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
+        CYTHON_FALLTHROUGH;
+        case  2: values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
+        values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
+        break;
+        default: goto __pyx_L5_argtuple_error;
+      }
     }
     __pyx_v_appraisal_result = ((PyObject*)values[0]);
-    __pyx_v_tenant_policy = ((PyObject*)values[1]);
-    __pyx_v_platform_policy = ((PyObject*)values[2]);
+    __pyx_v_tenant_policy = values[1];
+    __pyx_v_platform_policy = values[2];
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("authenticate_appraisal_result", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 173, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("authenticate_appraisal_result", 0, 2, 3, __pyx_nargs); __PYX_ERR(0, 187, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4416,9 +4581,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_appraisal_result), (&PyBytes_Type), 1, "appraisal_result", 1))) __PYX_ERR(0, 173, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tenant_policy), (&PyBytes_Type), 1, "tenant_policy", 1))) __PYX_ERR(0, 173, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_platform_policy), (&PyBytes_Type), 1, "platform_policy", 1))) __PYX_ERR(0, 173, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_appraisal_result), (&PyBytes_Type), 1, "appraisal_result", 1))) __PYX_ERR(0, 187, __pyx_L1_error)
   __pyx_r = __pyx_pf_15quote_appraisal_4authenticate_appraisal_result(__pyx_self, __pyx_v_appraisal_result, __pyx_v_tenant_policy, __pyx_v_platform_policy);
 
   /* function exit code */
@@ -4446,13 +4609,14 @@ static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHO
   uint8_t const *__pyx_t_1;
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  uint8_t const *__pyx_t_5;
-  uint8_t const *__pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
-  PyObject *__pyx_t_8 = NULL;
-  PyObject *__pyx_t_9 = NULL;
-  int __pyx_t_10;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  uint8_t const *__pyx_t_9;
+  uint8_t const *__pyx_t_10;
+  PyObject *__pyx_t_11 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -4460,8 +4624,8 @@ static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHO
   __Pyx_INCREF(__pyx_v_tenant_policy);
   __Pyx_INCREF(__pyx_v_platform_policy);
 
-  /* "quote_appraisal.pyx":176
- * 
+  /* "quote_appraisal.pyx":190
+ *     """"""
  *     cdef:
  *         const uint8_t* p_result = <const uint8_t*>appraisal_result             # <<<<<<<<<<<<<<
  *         tee_policy_bundle_t bundle
@@ -4469,195 +4633,328 @@ static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHO
  */
   if (unlikely(__pyx_v_appraisal_result == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 176, __pyx_L1_error)
+    __PYX_ERR(0, 190, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_appraisal_result); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_appraisal_result); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
   __pyx_v_p_result = ((uint8_t const *)__pyx_t_1);
 
-  /* "quote_appraisal.pyx":181
+  /* "quote_appraisal.pyx":195
  *         quote3_error_t ret
  * 
  *     if isinstance(tenant_policy, str):             # <<<<<<<<<<<<<<
  *         tenant_policy = tenant_policy.encode('utf-8')
- *     if isinstance(platform_policy, str):
+ * 
  */
   __pyx_t_2 = PyUnicode_Check(__pyx_v_tenant_policy); 
   if (__pyx_t_2) {
 
-    /* "quote_appraisal.pyx":182
+    /* "quote_appraisal.pyx":196
  * 
  *     if isinstance(tenant_policy, str):
  *         tenant_policy = tenant_policy.encode('utf-8')             # <<<<<<<<<<<<<<
- *     if isinstance(platform_policy, str):
- *         platform_policy = platform_policy.encode('utf-8')
+ * 
+ *     if platform_policy is not None and isinstance(platform_policy, str):
  */
-    __pyx_t_3 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyBytes_Type_encode, __pyx_v_tenant_policy, __pyx_kp_u_utf_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 182, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    if (!(likely(PyBytes_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None) || __Pyx_RaiseUnexpectedTypeError("bytes", __pyx_t_3))) __PYX_ERR(0, 182, __pyx_L1_error)
-    __Pyx_DECREF_SET(__pyx_v_tenant_policy, ((PyObject*)__pyx_t_3));
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_tenant_policy, __pyx_n_s_encode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 196, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = NULL;
+    __pyx_t_6 = 0;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_5)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_5);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+        __pyx_t_6 = 1;
+      }
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_kp_u_utf_8};
+      __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 196, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+    __Pyx_DECREF_SET(__pyx_v_tenant_policy, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "quote_appraisal.pyx":181
+    /* "quote_appraisal.pyx":195
  *         quote3_error_t ret
  * 
  *     if isinstance(tenant_policy, str):             # <<<<<<<<<<<<<<
  *         tenant_policy = tenant_policy.encode('utf-8')
- *     if isinstance(platform_policy, str):
+ * 
  */
   }
 
-  /* "quote_appraisal.pyx":183
- *     if isinstance(tenant_policy, str):
+  /* "quote_appraisal.pyx":198
  *         tenant_policy = tenant_policy.encode('utf-8')
- *     if isinstance(platform_policy, str):             # <<<<<<<<<<<<<<
+ * 
+ *     if platform_policy is not None and isinstance(platform_policy, str):             # <<<<<<<<<<<<<<
  *         platform_policy = platform_policy.encode('utf-8')
  * 
  */
-  __pyx_t_2 = PyUnicode_Check(__pyx_v_platform_policy); 
+  __pyx_t_7 = (__pyx_v_platform_policy != Py_None);
+  if (__pyx_t_7) {
+  } else {
+    __pyx_t_2 = __pyx_t_7;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_7 = PyUnicode_Check(__pyx_v_platform_policy); 
+  __pyx_t_2 = __pyx_t_7;
+  __pyx_L5_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "quote_appraisal.pyx":184
- *         tenant_policy = tenant_policy.encode('utf-8')
- *     if isinstance(platform_policy, str):
+    /* "quote_appraisal.pyx":199
+ * 
+ *     if platform_policy is not None and isinstance(platform_policy, str):
  *         platform_policy = platform_policy.encode('utf-8')             # <<<<<<<<<<<<<<
  * 
  *     if not tenant_policy.endswith(b'\x00'):
  */
-    __pyx_t_3 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PyBytes_Type_encode, __pyx_v_platform_policy, __pyx_kp_u_utf_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 184, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    if (!(likely(PyBytes_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None) || __Pyx_RaiseUnexpectedTypeError("bytes", __pyx_t_3))) __PYX_ERR(0, 184, __pyx_L1_error)
-    __Pyx_DECREF_SET(__pyx_v_platform_policy, ((PyObject*)__pyx_t_3));
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_platform_policy, __pyx_n_s_encode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = NULL;
+    __pyx_t_6 = 0;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_5)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_5);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+        __pyx_t_6 = 1;
+      }
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_kp_u_utf_8};
+      __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    }
+    __Pyx_DECREF_SET(__pyx_v_platform_policy, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "quote_appraisal.pyx":183
- *     if isinstance(tenant_policy, str):
+    /* "quote_appraisal.pyx":198
  *         tenant_policy = tenant_policy.encode('utf-8')
- *     if isinstance(platform_policy, str):             # <<<<<<<<<<<<<<
+ * 
+ *     if platform_policy is not None and isinstance(platform_policy, str):             # <<<<<<<<<<<<<<
  *         platform_policy = platform_policy.encode('utf-8')
  * 
  */
   }
 
-  /* "quote_appraisal.pyx":186
+  /* "quote_appraisal.pyx":201
  *         platform_policy = platform_policy.encode('utf-8')
  * 
  *     if not tenant_policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
  *         tenant_policy = tenant_policy + b'\x00'
- *     if not platform_policy.endswith(b'\x00'):
+ * 
  */
-  if (unlikely(__pyx_v_tenant_policy == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "endswith");
-    __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_tenant_policy, __pyx_n_s_endswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = NULL;
+  __pyx_t_6 = 0;
+  #if CYTHON_UNPACK_METHODS
+  if (likely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __pyx_t_6 = 1;
+    }
   }
-  __pyx_t_2 = __Pyx_PyBytes_Tailmatch(__pyx_v_tenant_policy, __pyx_kp_b__3, 0, PY_SSIZE_T_MAX, 1); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 186, __pyx_L1_error)
-  __pyx_t_4 = (!__pyx_t_2);
-  if (__pyx_t_4) {
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_kp_b__3};
+    __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  }
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 201, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_7 = (!__pyx_t_2);
+  if (__pyx_t_7) {
 
-    /* "quote_appraisal.pyx":187
+    /* "quote_appraisal.pyx":202
  * 
  *     if not tenant_policy.endswith(b'\x00'):
  *         tenant_policy = tenant_policy + b'\x00'             # <<<<<<<<<<<<<<
- *     if not platform_policy.endswith(b'\x00'):
- *         platform_policy = platform_policy + b'\x00'
+ * 
+ *     if platform_policy is not None and not platform_policy.endswith(b'\x00'):
  */
-    __pyx_t_3 = PyNumber_Add(__pyx_v_tenant_policy, __pyx_kp_b__3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_v_tenant_policy, __pyx_kp_b__3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 202, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF_SET(__pyx_v_tenant_policy, ((PyObject*)__pyx_t_3));
+    __Pyx_DECREF_SET(__pyx_v_tenant_policy, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "quote_appraisal.pyx":186
+    /* "quote_appraisal.pyx":201
  *         platform_policy = platform_policy.encode('utf-8')
  * 
  *     if not tenant_policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
  *         tenant_policy = tenant_policy + b'\x00'
- *     if not platform_policy.endswith(b'\x00'):
+ * 
  */
   }
 
-  /* "quote_appraisal.pyx":188
- *     if not tenant_policy.endswith(b'\x00'):
+  /* "quote_appraisal.pyx":204
  *         tenant_policy = tenant_policy + b'\x00'
- *     if not platform_policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
+ * 
+ *     if platform_policy is not None and not platform_policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
  *         platform_policy = platform_policy + b'\x00'
  * 
  */
-  if (unlikely(__pyx_v_platform_policy == Py_None)) {
-    PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "endswith");
-    __PYX_ERR(0, 188, __pyx_L1_error)
-  }
-  __pyx_t_4 = __Pyx_PyBytes_Tailmatch(__pyx_v_platform_policy, __pyx_kp_b__3, 0, PY_SSIZE_T_MAX, 1); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 188, __pyx_L1_error)
-  __pyx_t_2 = (!__pyx_t_4);
+  __pyx_t_2 = (__pyx_v_platform_policy != Py_None);
   if (__pyx_t_2) {
+  } else {
+    __pyx_t_7 = __pyx_t_2;
+    goto __pyx_L9_bool_binop_done;
+  }
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_platform_policy, __pyx_n_s_endswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_5 = NULL;
+  __pyx_t_6 = 0;
+  #if CYTHON_UNPACK_METHODS
+  if (likely(PyMethod_Check(__pyx_t_4))) {
+    __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
+    if (likely(__pyx_t_5)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_5);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_4, function);
+      __pyx_t_6 = 1;
+    }
+  }
+  #endif
+  {
+    PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_kp_b__3};
+    __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
+    __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 204, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  }
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 204, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_8 = (!__pyx_t_2);
+  __pyx_t_7 = __pyx_t_8;
+  __pyx_L9_bool_binop_done:;
+  if (__pyx_t_7) {
 
-    /* "quote_appraisal.pyx":189
- *         tenant_policy = tenant_policy + b'\x00'
- *     if not platform_policy.endswith(b'\x00'):
+    /* "quote_appraisal.pyx":205
+ * 
+ *     if platform_policy is not None and not platform_policy.endswith(b'\x00'):
  *         platform_policy = platform_policy + b'\x00'             # <<<<<<<<<<<<<<
  * 
  *     memset(&bundle, 0, sizeof(tee_policy_bundle_t))
  */
-    __pyx_t_3 = PyNumber_Add(__pyx_v_platform_policy, __pyx_kp_b__3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Add(__pyx_v_platform_policy, __pyx_kp_b__3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 205, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF_SET(__pyx_v_platform_policy, ((PyObject*)__pyx_t_3));
+    __Pyx_DECREF_SET(__pyx_v_platform_policy, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "quote_appraisal.pyx":188
- *     if not tenant_policy.endswith(b'\x00'):
+    /* "quote_appraisal.pyx":204
  *         tenant_policy = tenant_policy + b'\x00'
- *     if not platform_policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
+ * 
+ *     if platform_policy is not None and not platform_policy.endswith(b'\x00'):             # <<<<<<<<<<<<<<
  *         platform_policy = platform_policy + b'\x00'
  * 
  */
   }
 
-  /* "quote_appraisal.pyx":191
+  /* "quote_appraisal.pyx":207
  *         platform_policy = platform_policy + b'\x00'
  * 
  *     memset(&bundle, 0, sizeof(tee_policy_bundle_t))             # <<<<<<<<<<<<<<
  *     bundle.p_tenant_identity_policy = <const uint8_t*>tenant_policy
- *     bundle.platform_policy.p_policy = <const uint8_t*>platform_policy
+ *     if platform_policy is None:
  */
   (void)(memset((&__pyx_v_bundle), 0, (sizeof(tee_policy_bundle_t))));
 
-  /* "quote_appraisal.pyx":192
+  /* "quote_appraisal.pyx":208
  * 
  *     memset(&bundle, 0, sizeof(tee_policy_bundle_t))
  *     bundle.p_tenant_identity_policy = <const uint8_t*>tenant_policy             # <<<<<<<<<<<<<<
- *     bundle.platform_policy.p_policy = <const uint8_t*>platform_policy
- *     bundle.platform_policy.pt = CUSTOMIZED
+ *     if platform_policy is None:
+ *         bundle.platform_policy.p_policy = NULL
  */
-  if (unlikely(__pyx_v_tenant_policy == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 192, __pyx_L1_error)
-  }
-  __pyx_t_5 = __Pyx_PyBytes_AsUString(__pyx_v_tenant_policy); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
-  __pyx_v_bundle.p_tenant_identity_policy = ((uint8_t const *)__pyx_t_5);
+  __pyx_t_9 = __Pyx_PyObject_AsUString(__pyx_v_tenant_policy); if (unlikely((!__pyx_t_9) && PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_v_bundle.p_tenant_identity_policy = ((uint8_t const *)__pyx_t_9);
 
-  /* "quote_appraisal.pyx":193
+  /* "quote_appraisal.pyx":209
  *     memset(&bundle, 0, sizeof(tee_policy_bundle_t))
  *     bundle.p_tenant_identity_policy = <const uint8_t*>tenant_policy
- *     bundle.platform_policy.p_policy = <const uint8_t*>platform_policy             # <<<<<<<<<<<<<<
- *     bundle.platform_policy.pt = CUSTOMIZED
+ *     if platform_policy is None:             # <<<<<<<<<<<<<<
+ *         bundle.platform_policy.p_policy = NULL
+ *         bundle.platform_policy.pt = DEFAULT_STRICT
+ */
+  __pyx_t_7 = (__pyx_v_platform_policy == Py_None);
+  if (__pyx_t_7) {
+
+    /* "quote_appraisal.pyx":210
+ *     bundle.p_tenant_identity_policy = <const uint8_t*>tenant_policy
+ *     if platform_policy is None:
+ *         bundle.platform_policy.p_policy = NULL             # <<<<<<<<<<<<<<
+ *         bundle.platform_policy.pt = DEFAULT_STRICT
+ *     else:
+ */
+    __pyx_v_bundle.platform_policy.p_policy = NULL;
+
+    /* "quote_appraisal.pyx":211
+ *     if platform_policy is None:
+ *         bundle.platform_policy.p_policy = NULL
+ *         bundle.platform_policy.pt = DEFAULT_STRICT             # <<<<<<<<<<<<<<
+ *     else:
+ *         bundle.platform_policy.p_policy = <const uint8_t*>platform_policy
+ */
+    __pyx_v_bundle.platform_policy.pt = DEFAULT_STRICT;
+
+    /* "quote_appraisal.pyx":209
+ *     memset(&bundle, 0, sizeof(tee_policy_bundle_t))
+ *     bundle.p_tenant_identity_policy = <const uint8_t*>tenant_policy
+ *     if platform_policy is None:             # <<<<<<<<<<<<<<
+ *         bundle.platform_policy.p_policy = NULL
+ *         bundle.platform_policy.pt = DEFAULT_STRICT
+ */
+    goto __pyx_L11;
+  }
+
+  /* "quote_appraisal.pyx":213
+ *         bundle.platform_policy.pt = DEFAULT_STRICT
+ *     else:
+ *         bundle.platform_policy.p_policy = <const uint8_t*>platform_policy             # <<<<<<<<<<<<<<
+ *         bundle.platform_policy.pt = CUSTOMIZED
  * 
  */
-  if (unlikely(__pyx_v_platform_policy == Py_None)) {
-    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 193, __pyx_L1_error)
-  }
-  __pyx_t_6 = __Pyx_PyBytes_AsUString(__pyx_v_platform_policy); if (unlikely((!__pyx_t_6) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
-  __pyx_v_bundle.platform_policy.p_policy = ((uint8_t const *)__pyx_t_6);
+  /*else*/ {
+    __pyx_t_10 = __Pyx_PyObject_AsUString(__pyx_v_platform_policy); if (unlikely((!__pyx_t_10) && PyErr_Occurred())) __PYX_ERR(0, 213, __pyx_L1_error)
+    __pyx_v_bundle.platform_policy.p_policy = ((uint8_t const *)__pyx_t_10);
 
-  /* "quote_appraisal.pyx":194
- *     bundle.p_tenant_identity_policy = <const uint8_t*>tenant_policy
- *     bundle.platform_policy.p_policy = <const uint8_t*>platform_policy
- *     bundle.platform_policy.pt = CUSTOMIZED             # <<<<<<<<<<<<<<
+    /* "quote_appraisal.pyx":214
+ *     else:
+ *         bundle.platform_policy.p_policy = <const uint8_t*>platform_policy
+ *         bundle.platform_policy.pt = CUSTOMIZED             # <<<<<<<<<<<<<<
  * 
  *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)
  */
-  __pyx_v_bundle.platform_policy.pt = CUSTOMIZED;
+    __pyx_v_bundle.platform_policy.pt = CUSTOMIZED;
+  }
+  __pyx_L11:;
 
-  /* "quote_appraisal.pyx":196
- *     bundle.platform_policy.pt = CUSTOMIZED
+  /* "quote_appraisal.pyx":216
+ *         bundle.platform_policy.pt = CUSTOMIZED
  * 
  *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)             # <<<<<<<<<<<<<<
  * 
@@ -4665,61 +4962,61 @@ static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHO
  */
   __pyx_v_ret = tee_authenticate_appraisal_result(__pyx_v_p_result, (&__pyx_v_bundle), (&__pyx_v_auth_result));
 
-  /* "quote_appraisal.pyx":198
+  /* "quote_appraisal.pyx":218
  *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)
  * 
  *     if ret != 0:             # <<<<<<<<<<<<<<
  *         raise QuoteVerifyError(f"Authentication failed: 0x{ret:04x}")
  * 
  */
-  __pyx_t_2 = (__pyx_v_ret != 0);
-  if (unlikely(__pyx_t_2)) {
+  __pyx_t_7 = (__pyx_v_ret != 0);
+  if (unlikely(__pyx_t_7)) {
 
-    /* "quote_appraisal.pyx":199
+    /* "quote_appraisal.pyx":219
  * 
  *     if ret != 0:
  *         raise QuoteVerifyError(f"Authentication failed: 0x{ret:04x}")             # <<<<<<<<<<<<<<
  * 
  *     return <int>auth_result
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 199, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 199, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_9 = __Pyx_PyObject_Format(__pyx_t_8, __pyx_kp_u_04x); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 199, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Authentication_failed_0x, __pyx_t_9); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 199, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = NULL;
-    __pyx_t_10 = 0;
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_11 = __Pyx_PyObject_Format(__pyx_t_5, __pyx_kp_u_04x); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_11);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Authentication_failed_0x, __pyx_t_11); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 219, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+    __pyx_t_11 = NULL;
+    __pyx_t_6 = 0;
     #if CYTHON_UNPACK_METHODS
-    if (unlikely(PyMethod_Check(__pyx_t_7))) {
-      __pyx_t_9 = PyMethod_GET_SELF(__pyx_t_7);
-      if (likely(__pyx_t_9)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_7);
-        __Pyx_INCREF(__pyx_t_9);
+    if (unlikely(PyMethod_Check(__pyx_t_4))) {
+      __pyx_t_11 = PyMethod_GET_SELF(__pyx_t_4);
+      if (likely(__pyx_t_11)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
+        __Pyx_INCREF(__pyx_t_11);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_7, function);
-        __pyx_t_10 = 1;
+        __Pyx_DECREF_SET(__pyx_t_4, function);
+        __pyx_t_6 = 1;
       }
     }
     #endif
     {
-      PyObject *__pyx_callargs[2] = {__pyx_t_9, __pyx_t_8};
-      __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_7, __pyx_callargs+1-__pyx_t_10, 1+__pyx_t_10);
-      __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-      __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
+      PyObject *__pyx_callargs[2] = {__pyx_t_11, __pyx_t_5};
+      __pyx_t_3 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_6, 1+__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 219, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 199, __pyx_L1_error)
+    __PYX_ERR(0, 219, __pyx_L1_error)
 
-    /* "quote_appraisal.pyx":198
+    /* "quote_appraisal.pyx":218
  *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)
  * 
  *     if ret != 0:             # <<<<<<<<<<<<<<
@@ -4728,34 +5025,34 @@ static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHO
  */
   }
 
-  /* "quote_appraisal.pyx":201
+  /* "quote_appraisal.pyx":221
  *         raise QuoteVerifyError(f"Authentication failed: 0x{ret:04x}")
  * 
  *     return <int>auth_result             # <<<<<<<<<<<<<<
  * 
- * 
+ * def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(((int)__pyx_v_auth_result)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(((int)__pyx_v_auth_result)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 221, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "quote_appraisal.pyx":173
+  /* "quote_appraisal.pyx":187
+ *         free(p_qaps)
  * 
- * 
- * def authenticate_appraisal_result(bytes appraisal_result, bytes tenant_policy, bytes platform_policy):             # <<<<<<<<<<<<<<
- * 
+ * def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platform_policy=None):             # <<<<<<<<<<<<<<
+ *     """"""
  *     cdef:
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_11);
   __Pyx_AddTraceback("quote_appraisal.authenticate_appraisal_result", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -4766,11 +5063,11 @@ static PyObject *__pyx_pf_15quote_appraisal_4authenticate_appraisal_result(CYTHO
   return __pyx_r;
 }
 
-/* "quote_appraisal.pyx":204
- * 
+/* "quote_appraisal.pyx":223
+ *     return <int>auth_result
  * 
  * def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
- * 
+ *     """ - """
  *     cdef:
  */
 
@@ -4782,7 +5079,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15quote_appraisal_7authenticate_policy_owner = {"authenticate_policy_owner", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_7authenticate_policy_owner, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_6authenticate_policy_owner, "\350\256\244\350\257\201\347\255\226\347\225\245\346\211\200\346\234\211\350\200\205 - \345\205\274\345\256\271\346\226\260\346\227\247\347\211\210\346\234\254");
+static PyMethodDef __pyx_mdef_15quote_appraisal_7authenticate_policy_owner = {"authenticate_policy_owner", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_7authenticate_policy_owner, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15quote_appraisal_6authenticate_policy_owner};
 static PyObject *__pyx_pw_15quote_appraisal_7authenticate_policy_owner(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -4833,7 +5131,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -4841,9 +5139,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("authenticate_policy_owner", 1, 3, 3, 1); __PYX_ERR(0, 204, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("authenticate_policy_owner", 1, 3, 3, 1); __PYX_ERR(0, 223, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -4851,14 +5149,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 204, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 223, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("authenticate_policy_owner", 1, 3, 3, 2); __PYX_ERR(0, 204, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("authenticate_policy_owner", 1, 3, 3, 2); __PYX_ERR(0, 223, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "authenticate_policy_owner") < 0)) __PYX_ERR(0, 204, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "authenticate_policy_owner") < 0)) __PYX_ERR(0, 223, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -4873,7 +5171,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("authenticate_policy_owner", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 204, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("authenticate_policy_owner", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 223, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4887,9 +5185,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 204, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_appraisal_result), (&PyBytes_Type), 1, "appraisal_result", 1))) __PYX_ERR(0, 204, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_policy_keys), (&PyList_Type), 1, "policy_keys", 1))) __PYX_ERR(0, 204, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_appraisal_result), (&PyBytes_Type), 1, "appraisal_result", 1))) __PYX_ERR(0, 223, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_policy_keys), (&PyList_Type), 1, "policy_keys", 1))) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_r = __pyx_pf_15quote_appraisal_6authenticate_policy_owner(__pyx_self, __pyx_v_quote_data, __pyx_v_appraisal_result, __pyx_v_policy_keys);
 
   /* function exit code */
@@ -4908,6 +5206,210 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
 }
 
 static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data, PyObject *__pyx_v_appraisal_result, PyObject *__pyx_v_policy_keys) {
+  CYTHON_UNUSED uint8_t const *__pyx_v_p_quote;
+  CYTHON_UNUSED uint32_t __pyx_v_quote_size;
+  CYTHON_UNUSED uint8_t const *__pyx_v_p_result;
+  CYTHON_UNUSED uint8_t const **__pyx_v_p_keys;
+  uint32_t __pyx_v_key_count;
+  int __pyx_v_use_new_api;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  uint8_t const *__pyx_t_1;
+  Py_ssize_t __pyx_t_2;
+  uint8_t const *__pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
+  int __pyx_t_6;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("authenticate_policy_owner", 1);
+
+  /* "quote_appraisal.pyx":226
+ *     """ - """
+ *     cdef:
+ *         const uint8_t* p_quote = <const uint8_t*>quote_data             # <<<<<<<<<<<<<<
+ *         uint32_t quote_size = len(quote_data)
+ *         const uint8_t* p_result = <const uint8_t*>appraisal_result
+ */
+  if (unlikely(__pyx_v_quote_data == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
+    __PYX_ERR(0, 226, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_v_p_quote = ((uint8_t const *)__pyx_t_1);
+
+  /* "quote_appraisal.pyx":227
+ *     cdef:
+ *         const uint8_t* p_quote = <const uint8_t*>quote_data
+ *         uint32_t quote_size = len(quote_data)             # <<<<<<<<<<<<<<
+ *         const uint8_t* p_result = <const uint8_t*>appraisal_result
+ *         const uint8_t** p_keys = NULL
+ */
+  if (unlikely(__pyx_v_quote_data == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 227, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_v_quote_size = __pyx_t_2;
+
+  /* "quote_appraisal.pyx":228
+ *         const uint8_t* p_quote = <const uint8_t*>quote_data
+ *         uint32_t quote_size = len(quote_data)
+ *         const uint8_t* p_result = <const uint8_t*>appraisal_result             # <<<<<<<<<<<<<<
+ *         const uint8_t** p_keys = NULL
+ *         uint32_t key_count = len(policy_keys)
+ */
+  if (unlikely(__pyx_v_appraisal_result == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
+    __PYX_ERR(0, 228, __pyx_L1_error)
+  }
+  __pyx_t_3 = __Pyx_PyBytes_AsUString(__pyx_v_appraisal_result); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_v_p_result = ((uint8_t const *)__pyx_t_3);
+
+  /* "quote_appraisal.pyx":229
+ *         uint32_t quote_size = len(quote_data)
+ *         const uint8_t* p_result = <const uint8_t*>appraisal_result
+ *         const uint8_t** p_keys = NULL             # <<<<<<<<<<<<<<
+ *         uint32_t key_count = len(policy_keys)
+ *         tee_policy_auth_result_t auth_result
+ */
+  __pyx_v_p_keys = NULL;
+
+  /* "quote_appraisal.pyx":230
+ *         const uint8_t* p_result = <const uint8_t*>appraisal_result
+ *         const uint8_t** p_keys = NULL
+ *         uint32_t key_count = len(policy_keys)             # <<<<<<<<<<<<<<
+ *         tee_policy_auth_result_t auth_result
+ *         quote3_error_t ret
+ */
+  if (unlikely(__pyx_v_policy_keys == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 230, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_policy_keys); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_v_key_count = __pyx_t_2;
+
+  /* "quote_appraisal.pyx":234
+ *         quote3_error_t ret
+ *         int i
+ *         bint use_new_api = check_dcap_version()             # <<<<<<<<<<<<<<
+ * 
+ *     if key_count == 0:
+ */
+  __pyx_t_4 = __pyx_f_15quote_appraisal_check_dcap_version(); if (unlikely(__pyx_t_4 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 234, __pyx_L1_error)
+  __pyx_v_use_new_api = __pyx_t_4;
+
+  /* "quote_appraisal.pyx":236
+ *         bint use_new_api = check_dcap_version()
+ * 
+ *     if key_count == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError("At least one policy key is required")
+ * 
+ */
+  __pyx_t_4 = (__pyx_v_key_count == 0);
+  if (unlikely(__pyx_t_4)) {
+
+    /* "quote_appraisal.pyx":237
+ * 
+ *     if key_count == 0:
+ *         raise ValueError("At least one policy key is required")             # <<<<<<<<<<<<<<
+ * 
+ *     #
+ */
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_Raise(__pyx_t_5, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __PYX_ERR(0, 237, __pyx_L1_error)
+
+    /* "quote_appraisal.pyx":236
+ *         bint use_new_api = check_dcap_version()
+ * 
+ *     if key_count == 0:             # <<<<<<<<<<<<<<
+ *         raise ValueError("At least one policy key is required")
+ * 
+ */
+  }
+
+  /* "quote_appraisal.pyx":240
+ * 
+ *     #
+ *     if use_new_api:             # <<<<<<<<<<<<<<
+ *         #  API (DCAP 1.22+)
+ *         return _authenticate_policy_owner_new(quote_data, appraisal_result, policy_keys)
+ */
+  if (__pyx_v_use_new_api) {
+
+    /* "quote_appraisal.pyx":242
+ *     if use_new_api:
+ *         #  API (DCAP 1.22+)
+ *         return _authenticate_policy_owner_new(quote_data, appraisal_result, policy_keys)             # <<<<<<<<<<<<<<
+ *     else:
+ *         #  API (DCAP < 1.22)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_6 = __pyx_f_15quote_appraisal__authenticate_policy_owner_new(__pyx_v_quote_data, __pyx_v_appraisal_result, __pyx_v_policy_keys); if (unlikely(__pyx_t_6 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_r = __pyx_t_5;
+    __pyx_t_5 = 0;
+    goto __pyx_L0;
+
+    /* "quote_appraisal.pyx":240
+ * 
+ *     #
+ *     if use_new_api:             # <<<<<<<<<<<<<<
+ *         #  API (DCAP 1.22+)
+ *         return _authenticate_policy_owner_new(quote_data, appraisal_result, policy_keys)
+ */
+  }
+
+  /* "quote_appraisal.pyx":245
+ *     else:
+ *         #  API (DCAP < 1.22)
+ *         return _authenticate_policy_owner_legacy(appraisal_result, policy_keys)             # <<<<<<<<<<<<<<
+ * 
+ * cdef int _authenticate_policy_owner_new(bytes quote_data, bytes appraisal_result, list policy_keys):
+ */
+  /*else*/ {
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_6 = __pyx_f_15quote_appraisal__authenticate_policy_owner_legacy(__pyx_v_appraisal_result, __pyx_v_policy_keys); if (unlikely(__pyx_t_6 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 245, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 245, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_r = __pyx_t_5;
+    __pyx_t_5 = 0;
+    goto __pyx_L0;
+  }
+
+  /* "quote_appraisal.pyx":223
+ *     return <int>auth_result
+ * 
+ * def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
+ *     """ - """
+ *     cdef:
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("quote_appraisal.authenticate_policy_owner", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "quote_appraisal.pyx":247
+ *         return _authenticate_policy_owner_legacy(appraisal_result, policy_keys)
+ * 
+ * cdef int _authenticate_policy_owner_new(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
+ *     """ API """
+ *     cdef:
+ */
+
+static int __pyx_f_15quote_appraisal__authenticate_policy_owner_new(PyObject *__pyx_v_quote_data, PyObject *__pyx_v_appraisal_result, PyObject *__pyx_v_policy_keys) {
   uint8_t const *__pyx_v_p_quote;
   uint32_t __pyx_v_quote_size;
   uint8_t const *__pyx_v_p_result;
@@ -4918,7 +5420,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
   int __pyx_v_i;
   PyObject *__pyx_v_key_refs = NULL;
   PyObject *__pyx_v_key = NULL;
-  PyObject *__pyx_r = NULL;
+  int __pyx_r;
   __Pyx_RefNannyDeclarations
   uint8_t const *__pyx_t_1;
   Py_ssize_t __pyx_t_2;
@@ -4946,10 +5448,10 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("authenticate_policy_owner", 1);
+  __Pyx_RefNannySetupContext("_authenticate_policy_owner_new", 1);
 
-  /* "quote_appraisal.pyx":207
- * 
+  /* "quote_appraisal.pyx":250
+ *     """ API """
  *     cdef:
  *         const uint8_t* p_quote = <const uint8_t*>quote_data             # <<<<<<<<<<<<<<
  *         uint32_t quote_size = len(quote_data)
@@ -4957,12 +5459,12 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   if (unlikely(__pyx_v_quote_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 207, __pyx_L1_error)
+    __PYX_ERR(0, 250, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_p_quote = ((uint8_t const *)__pyx_t_1);
 
-  /* "quote_appraisal.pyx":208
+  /* "quote_appraisal.pyx":251
  *     cdef:
  *         const uint8_t* p_quote = <const uint8_t*>quote_data
  *         uint32_t quote_size = len(quote_data)             # <<<<<<<<<<<<<<
@@ -4971,12 +5473,12 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   if (unlikely(__pyx_v_quote_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 208, __pyx_L1_error)
+    __PYX_ERR(0, 251, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_quote_size = __pyx_t_2;
 
-  /* "quote_appraisal.pyx":209
+  /* "quote_appraisal.pyx":252
  *         const uint8_t* p_quote = <const uint8_t*>quote_data
  *         uint32_t quote_size = len(quote_data)
  *         const uint8_t* p_result = <const uint8_t*>appraisal_result             # <<<<<<<<<<<<<<
@@ -4985,12 +5487,12 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   if (unlikely(__pyx_v_appraisal_result == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 209, __pyx_L1_error)
+    __PYX_ERR(0, 252, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyBytes_AsUString(__pyx_v_appraisal_result); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_AsUString(__pyx_v_appraisal_result); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 252, __pyx_L1_error)
   __pyx_v_p_result = ((uint8_t const *)__pyx_t_3);
 
-  /* "quote_appraisal.pyx":210
+  /* "quote_appraisal.pyx":253
  *         uint32_t quote_size = len(quote_data)
  *         const uint8_t* p_result = <const uint8_t*>appraisal_result
  *         const uint8_t** p_keys = NULL             # <<<<<<<<<<<<<<
@@ -4999,7 +5501,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   __pyx_v_p_keys = NULL;
 
-  /* "quote_appraisal.pyx":211
+  /* "quote_appraisal.pyx":254
  *         const uint8_t* p_result = <const uint8_t*>appraisal_result
  *         const uint8_t** p_keys = NULL
  *         uint32_t key_count = len(policy_keys)             # <<<<<<<<<<<<<<
@@ -5008,45 +5510,13 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   if (unlikely(__pyx_v_policy_keys == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 211, __pyx_L1_error)
+    __PYX_ERR(0, 254, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_policy_keys); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 211, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_policy_keys); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 254, __pyx_L1_error)
   __pyx_v_key_count = __pyx_t_2;
 
-  /* "quote_appraisal.pyx":216
+  /* "quote_appraisal.pyx":259
  *         int i
- * 
- *     if key_count == 0:             # <<<<<<<<<<<<<<
- *         raise ValueError("At least one policy key is required")
- * 
- */
-  __pyx_t_4 = (__pyx_v_key_count == 0);
-  if (unlikely(__pyx_t_4)) {
-
-    /* "quote_appraisal.pyx":217
- * 
- *     if key_count == 0:
- *         raise ValueError("At least one policy key is required")             # <<<<<<<<<<<<<<
- * 
- *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))
- */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 217, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __Pyx_Raise(__pyx_t_5, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 217, __pyx_L1_error)
-
-    /* "quote_appraisal.pyx":216
- *         int i
- * 
- *     if key_count == 0:             # <<<<<<<<<<<<<<
- *         raise ValueError("At least one policy key is required")
- * 
- */
-  }
-
-  /* "quote_appraisal.pyx":219
- *         raise ValueError("At least one policy key is required")
  * 
  *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))             # <<<<<<<<<<<<<<
  *     if p_keys == NULL:
@@ -5054,7 +5524,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   __pyx_v_p_keys = ((uint8_t const **)malloc((__pyx_v_key_count * (sizeof(uint8_t *)))));
 
-  /* "quote_appraisal.pyx":220
+  /* "quote_appraisal.pyx":260
  * 
  *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))
  *     if p_keys == NULL:             # <<<<<<<<<<<<<<
@@ -5064,20 +5534,20 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
   __pyx_t_4 = (__pyx_v_p_keys == NULL);
   if (unlikely(__pyx_t_4)) {
 
-    /* "quote_appraisal.pyx":221
+    /* "quote_appraisal.pyx":261
  *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))
  *     if p_keys == NULL:
  *         raise MemoryError("Failed to allocate key array")             # <<<<<<<<<<<<<<
  * 
  *     key_refs = []
  */
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 221, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 261, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_Raise(__pyx_t_5, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __PYX_ERR(0, 221, __pyx_L1_error)
+    __PYX_ERR(0, 261, __pyx_L1_error)
 
-    /* "quote_appraisal.pyx":220
+    /* "quote_appraisal.pyx":260
  * 
  *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))
  *     if p_keys == NULL:             # <<<<<<<<<<<<<<
@@ -5086,19 +5556,19 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   }
 
-  /* "quote_appraisal.pyx":223
+  /* "quote_appraisal.pyx":263
  *         raise MemoryError("Failed to allocate key array")
  * 
  *     key_refs = []             # <<<<<<<<<<<<<<
  * 
  *     try:
  */
-  __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_5 = PyList_New(0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 263, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_v_key_refs = ((PyObject*)__pyx_t_5);
   __pyx_t_5 = 0;
 
-  /* "quote_appraisal.pyx":225
+  /* "quote_appraisal.pyx":265
  *     key_refs = []
  * 
  *     try:             # <<<<<<<<<<<<<<
@@ -5107,7 +5577,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
   /*try:*/ {
 
-    /* "quote_appraisal.pyx":226
+    /* "quote_appraisal.pyx":266
  * 
  *     try:
  *         for i in range(key_count):             # <<<<<<<<<<<<<<
@@ -5119,7 +5589,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_i = __pyx_t_8;
 
-      /* "quote_appraisal.pyx":227
+      /* "quote_appraisal.pyx":267
  *     try:
  *         for i in range(key_count):
  *             key = policy_keys[i]             # <<<<<<<<<<<<<<
@@ -5128,14 +5598,14 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
       if (unlikely(__pyx_v_policy_keys == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 227, __pyx_L6_error)
+        __PYX_ERR(0, 267, __pyx_L5_error)
       }
-      __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_policy_keys, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 227, __pyx_L6_error)
+      __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_policy_keys, __pyx_v_i, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 267, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_XDECREF_SET(__pyx_v_key, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "quote_appraisal.pyx":228
+      /* "quote_appraisal.pyx":268
  *         for i in range(key_count):
  *             key = policy_keys[i]
  *             if isinstance(key, str):             # <<<<<<<<<<<<<<
@@ -5145,14 +5615,14 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
       __pyx_t_4 = PyUnicode_Check(__pyx_v_key); 
       if (__pyx_t_4) {
 
-        /* "quote_appraisal.pyx":229
+        /* "quote_appraisal.pyx":269
  *             key = policy_keys[i]
  *             if isinstance(key, str):
  *                 key = key.encode('utf-8')             # <<<<<<<<<<<<<<
  *             if not isinstance(key, bytes):
  *                 raise TypeError(f"Key {i} must be bytes or str")
  */
-        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_key, __pyx_n_s_encode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 229, __pyx_L6_error)
+        __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_key, __pyx_n_s_encode); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 269, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_10 = NULL;
         __pyx_t_11 = 0;
@@ -5172,14 +5642,14 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
           PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_kp_u_utf_8};
           __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_11, 1+__pyx_t_11);
           __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 229, __pyx_L6_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 269, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         }
         __Pyx_DECREF_SET(__pyx_v_key, __pyx_t_5);
         __pyx_t_5 = 0;
 
-        /* "quote_appraisal.pyx":228
+        /* "quote_appraisal.pyx":268
  *         for i in range(key_count):
  *             key = policy_keys[i]
  *             if isinstance(key, str):             # <<<<<<<<<<<<<<
@@ -5188,7 +5658,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
       }
 
-      /* "quote_appraisal.pyx":230
+      /* "quote_appraisal.pyx":270
  *             if isinstance(key, str):
  *                 key = key.encode('utf-8')
  *             if not isinstance(key, bytes):             # <<<<<<<<<<<<<<
@@ -5199,14 +5669,14 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
       __pyx_t_12 = (!__pyx_t_4);
       if (unlikely(__pyx_t_12)) {
 
-        /* "quote_appraisal.pyx":231
+        /* "quote_appraisal.pyx":271
  *                 key = key.encode('utf-8')
  *             if not isinstance(key, bytes):
  *                 raise TypeError(f"Key {i} must be bytes or str")             # <<<<<<<<<<<<<<
  *             if not key.endswith(b'\x00'):
  *                 key = key + b'\x00'
  */
-        __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 231, __pyx_L6_error)
+        __pyx_t_5 = PyTuple_New(3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 271, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_2 = 0;
         __pyx_t_13 = 127;
@@ -5214,7 +5684,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
         __pyx_t_2 += 4;
         __Pyx_GIVEREF(__pyx_kp_u_Key);
         PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_kp_u_Key);
-        __pyx_t_9 = __Pyx_PyUnicode_From_int(__pyx_v_i, 0, ' ', 'd'); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 231, __pyx_L6_error)
+        __pyx_t_9 = __Pyx_PyUnicode_From_int(__pyx_v_i, 0, ' ', 'd'); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 271, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_9);
         __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_9);
         __Pyx_GIVEREF(__pyx_t_9);
@@ -5224,17 +5694,17 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
         __pyx_t_2 += 21;
         __Pyx_GIVEREF(__pyx_kp_u_must_be_bytes_or_str);
         PyTuple_SET_ITEM(__pyx_t_5, 2, __pyx_kp_u_must_be_bytes_or_str);
-        __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_5, 3, __pyx_t_2, __pyx_t_13); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 231, __pyx_L6_error)
+        __pyx_t_9 = __Pyx_PyUnicode_Join(__pyx_t_5, 3, __pyx_t_2, __pyx_t_13); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 271, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_9);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 231, __pyx_L6_error)
+        __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 271, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
         __Pyx_Raise(__pyx_t_5, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __PYX_ERR(0, 231, __pyx_L6_error)
+        __PYX_ERR(0, 271, __pyx_L5_error)
 
-        /* "quote_appraisal.pyx":230
+        /* "quote_appraisal.pyx":270
  *             if isinstance(key, str):
  *                 key = key.encode('utf-8')
  *             if not isinstance(key, bytes):             # <<<<<<<<<<<<<<
@@ -5243,14 +5713,14 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
       }
 
-      /* "quote_appraisal.pyx":232
+      /* "quote_appraisal.pyx":272
  *             if not isinstance(key, bytes):
  *                 raise TypeError(f"Key {i} must be bytes or str")
  *             if not key.endswith(b'\x00'):             # <<<<<<<<<<<<<<
  *                 key = key + b'\x00'
  *             key_refs.append(key)
  */
-      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_key, __pyx_n_s_endswith); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 232, __pyx_L6_error)
+      __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_key, __pyx_n_s_endswith); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 272, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_10 = NULL;
       __pyx_t_11 = 0;
@@ -5270,28 +5740,28 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
         PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_kp_b__3};
         __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_11, 1+__pyx_t_11);
         __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 232, __pyx_L6_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 272, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
-      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 232, __pyx_L6_error)
+      __pyx_t_12 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_12 < 0))) __PYX_ERR(0, 272, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_4 = (!__pyx_t_12);
       if (__pyx_t_4) {
 
-        /* "quote_appraisal.pyx":233
+        /* "quote_appraisal.pyx":273
  *                 raise TypeError(f"Key {i} must be bytes or str")
  *             if not key.endswith(b'\x00'):
  *                 key = key + b'\x00'             # <<<<<<<<<<<<<<
  *             key_refs.append(key)
  *             p_keys[i] = <const uint8_t*>key
  */
-        __pyx_t_5 = PyNumber_Add(__pyx_v_key, __pyx_kp_b__3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 233, __pyx_L6_error)
+        __pyx_t_5 = PyNumber_Add(__pyx_v_key, __pyx_kp_b__3); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 273, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF_SET(__pyx_v_key, __pyx_t_5);
         __pyx_t_5 = 0;
 
-        /* "quote_appraisal.pyx":232
+        /* "quote_appraisal.pyx":272
  *             if not isinstance(key, bytes):
  *                 raise TypeError(f"Key {i} must be bytes or str")
  *             if not key.endswith(b'\x00'):             # <<<<<<<<<<<<<<
@@ -5300,27 +5770,27 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
       }
 
-      /* "quote_appraisal.pyx":234
+      /* "quote_appraisal.pyx":274
  *             if not key.endswith(b'\x00'):
  *                 key = key + b'\x00'
  *             key_refs.append(key)             # <<<<<<<<<<<<<<
  *             p_keys[i] = <const uint8_t*>key
  * 
  */
-      __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_key_refs, __pyx_v_key); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 234, __pyx_L6_error)
+      __pyx_t_14 = __Pyx_PyList_Append(__pyx_v_key_refs, __pyx_v_key); if (unlikely(__pyx_t_14 == ((int)-1))) __PYX_ERR(0, 274, __pyx_L5_error)
 
-      /* "quote_appraisal.pyx":235
+      /* "quote_appraisal.pyx":275
  *                 key = key + b'\x00'
  *             key_refs.append(key)
  *             p_keys[i] = <const uint8_t*>key             # <<<<<<<<<<<<<<
  * 
  *         ret = tee_authenticate_policy_owner(
  */
-      __pyx_t_15 = __Pyx_PyObject_AsUString(__pyx_v_key); if (unlikely((!__pyx_t_15) && PyErr_Occurred())) __PYX_ERR(0, 235, __pyx_L6_error)
+      __pyx_t_15 = __Pyx_PyObject_AsUString(__pyx_v_key); if (unlikely((!__pyx_t_15) && PyErr_Occurred())) __PYX_ERR(0, 275, __pyx_L5_error)
       (__pyx_v_p_keys[__pyx_v_i]) = ((uint8_t const *)__pyx_t_15);
     }
 
-    /* "quote_appraisal.pyx":237
+    /* "quote_appraisal.pyx":277
  *             p_keys[i] = <const uint8_t*>key
  * 
  *         ret = tee_authenticate_policy_owner(             # <<<<<<<<<<<<<<
@@ -5329,7 +5799,7 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
     __pyx_v_ret = tee_authenticate_policy_owner(__pyx_v_p_quote, __pyx_v_quote_size, __pyx_v_p_result, __pyx_v_p_keys, __pyx_v_key_count, NULL, NULL, (&__pyx_v_auth_result), NULL);
 
-    /* "quote_appraisal.pyx":242
+    /* "quote_appraisal.pyx":282
  *         )
  * 
  *         if ret != 0:             # <<<<<<<<<<<<<<
@@ -5339,21 +5809,21 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
     __pyx_t_4 = (__pyx_v_ret != 0);
     if (unlikely(__pyx_t_4)) {
 
-      /* "quote_appraisal.pyx":243
+      /* "quote_appraisal.pyx":283
  * 
  *         if ret != 0:
  *             raise QuoteVerifyError(f"Policy owner authentication failed: 0x{ret:04x}")             # <<<<<<<<<<<<<<
  * 
  *         return <int>auth_result
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 243, __pyx_L6_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 283, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_9);
-      __pyx_t_10 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 243, __pyx_L6_error)
+      __pyx_t_10 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 283, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_16 = __Pyx_PyObject_Format(__pyx_t_10, __pyx_kp_u_04x); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 243, __pyx_L6_error)
+      __pyx_t_16 = __Pyx_PyObject_Format(__pyx_t_10, __pyx_kp_u_04x); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 283, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_16);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-      __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Policy_owner_authentication_fail, __pyx_t_16); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 243, __pyx_L6_error)
+      __pyx_t_10 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Policy_owner_authentication_fail, __pyx_t_16); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 283, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
       __pyx_t_16 = NULL;
@@ -5375,15 +5845,15 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
         __pyx_t_5 = __Pyx_PyObject_FastCall(__pyx_t_9, __pyx_callargs+1-__pyx_t_8, 1+__pyx_t_8);
         __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
         __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 243, __pyx_L6_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 283, __pyx_L5_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       }
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __PYX_ERR(0, 243, __pyx_L6_error)
+      __PYX_ERR(0, 283, __pyx_L5_error)
 
-      /* "quote_appraisal.pyx":242
+      /* "quote_appraisal.pyx":282
  *         )
  * 
  *         if ret != 0:             # <<<<<<<<<<<<<<
@@ -5392,30 +5862,26 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
  */
     }
 
-    /* "quote_appraisal.pyx":245
+    /* "quote_appraisal.pyx":285
  *             raise QuoteVerifyError(f"Policy owner authentication failed: 0x{ret:04x}")
  * 
  *         return <int>auth_result             # <<<<<<<<<<<<<<
  * 
  *     finally:
  */
-    __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = __Pyx_PyInt_From_int(((int)__pyx_v_auth_result)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 245, __pyx_L6_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_r = __pyx_t_5;
-    __pyx_t_5 = 0;
-    goto __pyx_L5_return;
+    __pyx_r = ((int)__pyx_v_auth_result);
+    goto __pyx_L4_return;
   }
 
-  /* "quote_appraisal.pyx":248
+  /* "quote_appraisal.pyx":288
  * 
  *     finally:
  *         free(p_keys)             # <<<<<<<<<<<<<<
  * 
- * 
+ * cdef int _authenticate_policy_owner_legacy(bytes appraisal_result, list policy_keys):
  */
   /*finally:*/ {
-    __pyx_L6_error:;
+    __pyx_L5_error:;
     /*exception exit:*/{
       __Pyx_PyThreadState_declare
       __Pyx_PyThreadState_assign
@@ -5450,21 +5916,19 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
       __pyx_lineno = __pyx_t_8; __pyx_clineno = __pyx_t_11; __pyx_filename = __pyx_t_17;
       goto __pyx_L1_error;
     }
-    __pyx_L5_return: {
-      __pyx_t_23 = __pyx_r;
-      __pyx_r = 0;
+    __pyx_L4_return: {
+      __pyx_t_11 = __pyx_r;
       free(__pyx_v_p_keys);
-      __pyx_r = __pyx_t_23;
-      __pyx_t_23 = 0;
+      __pyx_r = __pyx_t_11;
       goto __pyx_L0;
     }
   }
 
-  /* "quote_appraisal.pyx":204
+  /* "quote_appraisal.pyx":247
+ *         return _authenticate_policy_owner_legacy(appraisal_result, policy_keys)
  * 
- * 
- * def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
- * 
+ * cdef int _authenticate_policy_owner_new(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
+ *     """ API """
  *     cdef:
  */
 
@@ -5474,21 +5938,347 @@ static PyObject *__pyx_pf_15quote_appraisal_6authenticate_policy_owner(CYTHON_UN
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_AddTraceback("quote_appraisal.authenticate_policy_owner", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __Pyx_AddTraceback("quote_appraisal._authenticate_policy_owner_new", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_key_refs);
   __Pyx_XDECREF(__pyx_v_key);
-  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "quote_appraisal.pyx":251
+/* "quote_appraisal.pyx":290
+ *         free(p_keys)
  * 
+ * cdef int _authenticate_policy_owner_legacy(bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
+ *     """ API  -  tee_authenticate_appraisal_result """
+ *     #
+ */
+
+static int __pyx_f_15quote_appraisal__authenticate_policy_owner_legacy(PyObject *__pyx_v_appraisal_result, PyObject *__pyx_v_policy_keys) {
+  uint8_t const *__pyx_v_p_result;
+  tee_policy_bundle_t __pyx_v_bundle;
+  tee_policy_auth_result_t __pyx_v_auth_result;
+  quote3_error_t __pyx_v_ret;
+  PyObject *__pyx_v_key = NULL;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  uint8_t const *__pyx_t_1;
+  Py_ssize_t __pyx_t_2;
+  int __pyx_t_3;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
+  int __pyx_t_8;
+  uint8_t const *__pyx_t_9;
+  PyObject *__pyx_t_10 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_authenticate_policy_owner_legacy", 1);
+
+  /* "quote_appraisal.pyx":301
+ *     #
+ *     cdef:
+ *         const uint8_t* p_result = <const uint8_t*>appraisal_result             # <<<<<<<<<<<<<<
+ *         tee_policy_bundle_t bundle
+ *         tee_policy_auth_result_t auth_result
+ */
+  if (unlikely(__pyx_v_appraisal_result == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
+    __PYX_ERR(0, 301, __pyx_L1_error)
+  }
+  __pyx_t_1 = __Pyx_PyBytes_AsUString(__pyx_v_appraisal_result); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_v_p_result = ((uint8_t const *)__pyx_t_1);
+
+  /* "quote_appraisal.pyx":307
+ * 
+ *     #
+ *     memset(&bundle, 0, sizeof(tee_policy_bundle_t))             # <<<<<<<<<<<<<<
+ * 
+ *     #
+ */
+  (void)(memset((&__pyx_v_bundle), 0, (sizeof(tee_policy_bundle_t))));
+
+  /* "quote_appraisal.pyx":310
+ * 
+ *     #
+ *     if len(policy_keys) > 0:             # <<<<<<<<<<<<<<
+ *         key = policy_keys[0]
+ *         if isinstance(key, str):
+ */
+  if (unlikely(__pyx_v_policy_keys == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 310, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyList_GET_SIZE(__pyx_v_policy_keys); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 310, __pyx_L1_error)
+  __pyx_t_3 = (__pyx_t_2 > 0);
+  if (__pyx_t_3) {
+
+    /* "quote_appraisal.pyx":311
+ *     #
+ *     if len(policy_keys) > 0:
+ *         key = policy_keys[0]             # <<<<<<<<<<<<<<
+ *         if isinstance(key, str):
+ *             key = key.encode('utf-8')
+ */
+    if (unlikely(__pyx_v_policy_keys == Py_None)) {
+      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+      __PYX_ERR(0, 311, __pyx_L1_error)
+    }
+    __pyx_t_4 = __Pyx_GetItemInt_List(__pyx_v_policy_keys, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 311, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_v_key = __pyx_t_4;
+    __pyx_t_4 = 0;
+
+    /* "quote_appraisal.pyx":312
+ *     if len(policy_keys) > 0:
+ *         key = policy_keys[0]
+ *         if isinstance(key, str):             # <<<<<<<<<<<<<<
+ *             key = key.encode('utf-8')
+ *         if not key.endswith(b'\x00'):
+ */
+    __pyx_t_3 = PyUnicode_Check(__pyx_v_key); 
+    if (__pyx_t_3) {
+
+      /* "quote_appraisal.pyx":313
+ *         key = policy_keys[0]
+ *         if isinstance(key, str):
+ *             key = key.encode('utf-8')             # <<<<<<<<<<<<<<
+ *         if not key.endswith(b'\x00'):
+ *             key = key + b'\x00'
+ */
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_key, __pyx_n_s_encode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 313, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_6 = NULL;
+      __pyx_t_7 = 0;
+      #if CYTHON_UNPACK_METHODS
+      if (likely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+          __pyx_t_7 = 1;
+        }
+      }
+      #endif
+      {
+        PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_kp_u_utf_8};
+        __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
+        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 313, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_4);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      }
+      __Pyx_DECREF_SET(__pyx_v_key, __pyx_t_4);
+      __pyx_t_4 = 0;
+
+      /* "quote_appraisal.pyx":312
+ *     if len(policy_keys) > 0:
+ *         key = policy_keys[0]
+ *         if isinstance(key, str):             # <<<<<<<<<<<<<<
+ *             key = key.encode('utf-8')
+ *         if not key.endswith(b'\x00'):
+ */
+    }
+
+    /* "quote_appraisal.pyx":314
+ *         if isinstance(key, str):
+ *             key = key.encode('utf-8')
+ *         if not key.endswith(b'\x00'):             # <<<<<<<<<<<<<<
+ *             key = key + b'\x00'
+ *         bundle.p_tenant_identity_policy = <const uint8_t*>key
+ */
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_key, __pyx_n_s_endswith); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 314, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = NULL;
+    __pyx_t_7 = 0;
+    #if CYTHON_UNPACK_METHODS
+    if (likely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_6)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_6);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
+        __pyx_t_7 = 1;
+      }
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_kp_b__3};
+      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 314, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    }
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_3 < 0))) __PYX_ERR(0, 314, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_8 = (!__pyx_t_3);
+    if (__pyx_t_8) {
+
+      /* "quote_appraisal.pyx":315
+ *             key = key.encode('utf-8')
+ *         if not key.endswith(b'\x00'):
+ *             key = key + b'\x00'             # <<<<<<<<<<<<<<
+ *         bundle.p_tenant_identity_policy = <const uint8_t*>key
+ * 
+ */
+      __pyx_t_4 = PyNumber_Add(__pyx_v_key, __pyx_kp_b__3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF_SET(__pyx_v_key, __pyx_t_4);
+      __pyx_t_4 = 0;
+
+      /* "quote_appraisal.pyx":314
+ *         if isinstance(key, str):
+ *             key = key.encode('utf-8')
+ *         if not key.endswith(b'\x00'):             # <<<<<<<<<<<<<<
+ *             key = key + b'\x00'
+ *         bundle.p_tenant_identity_policy = <const uint8_t*>key
+ */
+    }
+
+    /* "quote_appraisal.pyx":316
+ *         if not key.endswith(b'\x00'):
+ *             key = key + b'\x00'
+ *         bundle.p_tenant_identity_policy = <const uint8_t*>key             # <<<<<<<<<<<<<<
+ * 
+ *     bundle.platform_policy.pt = DEFAULT_STRICT
+ */
+    __pyx_t_9 = __Pyx_PyObject_AsUString(__pyx_v_key); if (unlikely((!__pyx_t_9) && PyErr_Occurred())) __PYX_ERR(0, 316, __pyx_L1_error)
+    __pyx_v_bundle.p_tenant_identity_policy = ((uint8_t const *)__pyx_t_9);
+
+    /* "quote_appraisal.pyx":310
+ * 
+ *     #
+ *     if len(policy_keys) > 0:             # <<<<<<<<<<<<<<
+ *         key = policy_keys[0]
+ *         if isinstance(key, str):
+ */
+  }
+
+  /* "quote_appraisal.pyx":318
+ *         bundle.p_tenant_identity_policy = <const uint8_t*>key
+ * 
+ *     bundle.platform_policy.pt = DEFAULT_STRICT             # <<<<<<<<<<<<<<
+ * 
+ *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)
+ */
+  __pyx_v_bundle.platform_policy.pt = DEFAULT_STRICT;
+
+  /* "quote_appraisal.pyx":320
+ *     bundle.platform_policy.pt = DEFAULT_STRICT
+ * 
+ *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)             # <<<<<<<<<<<<<<
+ * 
+ *     if ret != 0:
+ */
+  __pyx_v_ret = tee_authenticate_appraisal_result(__pyx_v_p_result, (&__pyx_v_bundle), (&__pyx_v_auth_result));
+
+  /* "quote_appraisal.pyx":322
+ *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)
+ * 
+ *     if ret != 0:             # <<<<<<<<<<<<<<
+ *         raise QuoteVerifyError(f"Legacy policy authentication failed: 0x{ret:04x}")
+ * 
+ */
+  __pyx_t_8 = (__pyx_v_ret != 0);
+  if (unlikely(__pyx_t_8)) {
+
+    /* "quote_appraisal.pyx":323
+ * 
+ *     if ret != 0:
+ *         raise QuoteVerifyError(f"Legacy policy authentication failed: 0x{ret:04x}")             # <<<<<<<<<<<<<<
+ * 
+ *     return <int>auth_result
+ */
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 323, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyInt_From_quote3_error_t(__pyx_v_ret); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 323, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_10 = __Pyx_PyObject_Format(__pyx_t_6, __pyx_kp_u_04x); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 323, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Legacy_policy_authentication_fai, __pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 323, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+    __pyx_t_10 = NULL;
+    __pyx_t_7 = 0;
+    #if CYTHON_UNPACK_METHODS
+    if (unlikely(PyMethod_Check(__pyx_t_5))) {
+      __pyx_t_10 = PyMethod_GET_SELF(__pyx_t_5);
+      if (likely(__pyx_t_10)) {
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_10);
+        __Pyx_INCREF(function);
+        __Pyx_DECREF_SET(__pyx_t_5, function);
+        __pyx_t_7 = 1;
+      }
+    }
+    #endif
+    {
+      PyObject *__pyx_callargs[2] = {__pyx_t_10, __pyx_t_6};
+      __pyx_t_4 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
+      __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 323, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    }
+    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __PYX_ERR(0, 323, __pyx_L1_error)
+
+    /* "quote_appraisal.pyx":322
+ *     ret = tee_authenticate_appraisal_result(p_result, &bundle, &auth_result)
+ * 
+ *     if ret != 0:             # <<<<<<<<<<<<<<
+ *         raise QuoteVerifyError(f"Legacy policy authentication failed: 0x{ret:04x}")
+ * 
+ */
+  }
+
+  /* "quote_appraisal.pyx":325
+ *         raise QuoteVerifyError(f"Legacy policy authentication failed: 0x{ret:04x}")
+ * 
+ *     return <int>auth_result             # <<<<<<<<<<<<<<
+ * 
+ * def check_quote_type(bytes quote_data):
+ */
+  __pyx_r = ((int)__pyx_v_auth_result);
+  goto __pyx_L0;
+
+  /* "quote_appraisal.pyx":290
+ *         free(p_keys)
+ * 
+ * cdef int _authenticate_policy_owner_legacy(bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
+ *     """ API  -  tee_authenticate_appraisal_result """
+ *     #
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_AddTraceback("quote_appraisal._authenticate_policy_owner_legacy", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = -1;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_key);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "quote_appraisal.pyx":327
+ *     return <int>auth_result
  * 
  * def check_quote_type(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote """
  *     if len(quote_data) < 8:
  */
 
@@ -5500,7 +6290,8 @@ PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15quote_appraisal_9check_quote_type = {"check_quote_type", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_9check_quote_type, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_8check_quote_type, "\346\243\200\346\237\245 Quote \347\261\273\345\236\213");
+static PyMethodDef __pyx_mdef_15quote_appraisal_9check_quote_type = {"check_quote_type", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_9check_quote_type, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15quote_appraisal_8check_quote_type};
 static PyObject *__pyx_pw_15quote_appraisal_9check_quote_type(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
@@ -5545,12 +6336,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 251, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 327, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "check_quote_type") < 0)) __PYX_ERR(0, 251, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "check_quote_type") < 0)) __PYX_ERR(0, 327, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -5561,7 +6352,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("check_quote_type", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 251, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("check_quote_type", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 327, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5575,7 +6366,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 251, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 327, __pyx_L1_error)
   __pyx_r = __pyx_pf_15quote_appraisal_8check_quote_type(__pyx_self, __pyx_v_quote_data);
 
   /* function exit code */
@@ -5609,23 +6400,23 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("check_quote_type", 1);
 
-  /* "quote_appraisal.pyx":253
+  /* "quote_appraisal.pyx":329
  * def check_quote_type(bytes quote_data):
- * 
+ *     """ Quote """
  *     if len(quote_data) < 8:             # <<<<<<<<<<<<<<
  *         return -1
  * 
  */
   if (unlikely(__pyx_v_quote_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 253, __pyx_L1_error)
+    __PYX_ERR(0, 329, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 253, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_GET_SIZE(__pyx_v_quote_data); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(0, 329, __pyx_L1_error)
   __pyx_t_2 = (__pyx_t_1 < 8);
   if (__pyx_t_2) {
 
-    /* "quote_appraisal.pyx":254
- * 
+    /* "quote_appraisal.pyx":330
+ *     """ Quote """
  *     if len(quote_data) < 8:
  *         return -1             # <<<<<<<<<<<<<<
  * 
@@ -5636,16 +6427,16 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
     __pyx_r = __pyx_int_neg_1;
     goto __pyx_L0;
 
-    /* "quote_appraisal.pyx":253
+    /* "quote_appraisal.pyx":329
  * def check_quote_type(bytes quote_data):
- * 
+ *     """ Quote """
  *     if len(quote_data) < 8:             # <<<<<<<<<<<<<<
  *         return -1
  * 
  */
   }
 
-  /* "quote_appraisal.pyx":256
+  /* "quote_appraisal.pyx":332
  *         return -1
  * 
  *     cdef const uint8_t* p_data = <const uint8_t*>quote_data             # <<<<<<<<<<<<<<
@@ -5654,12 +6445,12 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
  */
   if (unlikely(__pyx_v_quote_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 256, __pyx_L1_error)
+    __PYX_ERR(0, 332, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_AsUString(__pyx_v_quote_data); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 332, __pyx_L1_error)
   __pyx_v_p_data = ((uint8_t const *)__pyx_t_3);
 
-  /* "quote_appraisal.pyx":259
+  /* "quote_appraisal.pyx":335
  *     cdef uint32_t quote_type
  * 
  *     quote_type = (<const uint32_t*>(p_data + 4))[0]             # <<<<<<<<<<<<<<
@@ -5668,25 +6459,25 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
  */
   __pyx_v_quote_type = (((uint32_t const *)(__pyx_v_p_data + 4))[0]);
 
-  /* "quote_appraisal.pyx":261
+  /* "quote_appraisal.pyx":337
  *     quote_type = (<const uint32_t*>(p_data + 4))[0]
  * 
  *     if quote_type == SGX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
  *         return SGX_QUOTE_TYPE
  *     elif quote_type == TDX_QUOTE_TYPE:
  */
-  __pyx_t_4 = __Pyx_PyInt_From_uint32_t(__pyx_v_quote_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_uint32_t(__pyx_v_quote_type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_SGX_QUOTE_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_SGX_QUOTE_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyObject_RichCompare(__pyx_t_4, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_6 = PyObject_RichCompare(__pyx_t_4, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 261, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 337, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   if (__pyx_t_2) {
 
-    /* "quote_appraisal.pyx":262
+    /* "quote_appraisal.pyx":338
  * 
  *     if quote_type == SGX_QUOTE_TYPE:
  *         return SGX_QUOTE_TYPE             # <<<<<<<<<<<<<<
@@ -5694,13 +6485,13 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
  *         return TDX_QUOTE_TYPE
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_SGX_QUOTE_TYPE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_SGX_QUOTE_TYPE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 338, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_r = __pyx_t_6;
     __pyx_t_6 = 0;
     goto __pyx_L0;
 
-    /* "quote_appraisal.pyx":261
+    /* "quote_appraisal.pyx":337
  *     quote_type = (<const uint32_t*>(p_data + 4))[0]
  * 
  *     if quote_type == SGX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
@@ -5709,25 +6500,25 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
  */
   }
 
-  /* "quote_appraisal.pyx":263
+  /* "quote_appraisal.pyx":339
  *     if quote_type == SGX_QUOTE_TYPE:
  *         return SGX_QUOTE_TYPE
  *     elif quote_type == TDX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
  *         return TDX_QUOTE_TYPE
  *     else:
  */
-  __pyx_t_6 = __Pyx_PyInt_From_uint32_t(__pyx_v_quote_type); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_From_uint32_t(__pyx_v_quote_type); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 339, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TDX_QUOTE_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TDX_QUOTE_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 339, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_t_6, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_t_6, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 339, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 339, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "quote_appraisal.pyx":264
+    /* "quote_appraisal.pyx":340
  *         return SGX_QUOTE_TYPE
  *     elif quote_type == TDX_QUOTE_TYPE:
  *         return TDX_QUOTE_TYPE             # <<<<<<<<<<<<<<
@@ -5735,13 +6526,13 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
  *         return -1
  */
     __Pyx_XDECREF(__pyx_r);
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TDX_QUOTE_TYPE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 264, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_TDX_QUOTE_TYPE); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 340, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "quote_appraisal.pyx":263
+    /* "quote_appraisal.pyx":339
  *     if quote_type == SGX_QUOTE_TYPE:
  *         return SGX_QUOTE_TYPE
  *     elif quote_type == TDX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
@@ -5750,12 +6541,12 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
  */
   }
 
-  /* "quote_appraisal.pyx":266
+  /* "quote_appraisal.pyx":342
  *         return TDX_QUOTE_TYPE
  *     else:
  *         return -1             # <<<<<<<<<<<<<<
  * 
- * 
+ * def get_dcap_version_info():
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
@@ -5764,11 +6555,11 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
     goto __pyx_L0;
   }
 
-  /* "quote_appraisal.pyx":251
- * 
+  /* "quote_appraisal.pyx":327
+ *     return <int>auth_result
  * 
  * def check_quote_type(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote """
  *     if len(quote_data) < 8:
  */
 
@@ -5785,24 +6576,152 @@ static PyObject *__pyx_pf_15quote_appraisal_8check_quote_type(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "quote_appraisal.pyx":270
+/* "quote_appraisal.pyx":344
+ *         return -1
  * 
- * 
- * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,             # <<<<<<<<<<<<<<
- *                      list policy_keys, bint verbose=False):
- * 
+ * def get_dcap_version_info():             # <<<<<<<<<<<<<<
+ *     """ DCAP """
+ *     has_new_api = check_dcap_version()
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_15quote_appraisal_11ecdsa_quote_verify(PyObject *__pyx_self, 
+static PyObject *__pyx_pw_15quote_appraisal_11get_dcap_version_info(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_10get_dcap_version_info, "\350\216\267\345\217\226 DCAP \347\211\210\346\234\254\344\277\241\346\201\257");
+static PyMethodDef __pyx_mdef_15quote_appraisal_11get_dcap_version_info = {"get_dcap_version_info", (PyCFunction)__pyx_pw_15quote_appraisal_11get_dcap_version_info, METH_NOARGS, __pyx_doc_15quote_appraisal_10get_dcap_version_info};
+static PyObject *__pyx_pw_15quote_appraisal_11get_dcap_version_info(PyObject *__pyx_self, CYTHON_UNUSED PyObject *unused) {
+  CYTHON_UNUSED PyObject *const *__pyx_kwvalues;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_dcap_version_info (wrapper)", 0);
+  __pyx_kwvalues = __Pyx_KwValues_VARARGS(__pyx_args, __pyx_nargs);
+  __pyx_r = __pyx_pf_15quote_appraisal_10get_dcap_version_info(__pyx_self);
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_15quote_appraisal_10get_dcap_version_info(CYTHON_UNUSED PyObject *__pyx_self) {
+  int __pyx_v_has_new_api;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("get_dcap_version_info", 1);
+
+  /* "quote_appraisal.pyx":346
+ * def get_dcap_version_info():
+ *     """ DCAP """
+ *     has_new_api = check_dcap_version()             # <<<<<<<<<<<<<<
+ *     return {
+ *         'has_policy_owner_function': has_new_api,
+ */
+  __pyx_t_1 = __pyx_f_15quote_appraisal_check_dcap_version(); if (unlikely(__pyx_t_1 == ((int)-1) && PyErr_Occurred())) __PYX_ERR(0, 346, __pyx_L1_error)
+  __pyx_v_has_new_api = __pyx_t_1;
+
+  /* "quote_appraisal.pyx":347
+ *     """ DCAP """
+ *     has_new_api = check_dcap_version()
+ *     return {             # <<<<<<<<<<<<<<
+ *         'has_policy_owner_function': has_new_api,
+ *         'api_version': '1.22+' if has_new_api else '<1.22',
+ */
+  __Pyx_XDECREF(__pyx_r);
+
+  /* "quote_appraisal.pyx":348
+ *     has_new_api = check_dcap_version()
+ *     return {
+ *         'has_policy_owner_function': has_new_api,             # <<<<<<<<<<<<<<
+ *         'api_version': '1.22+' if has_new_api else '<1.22',
+ *         'recommended_function': 'tee_authenticate_policy_owner' if has_new_api else 'tee_authenticate_appraisal_result'
+ */
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyBool_FromLong(__pyx_v_has_new_api); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 348, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_has_policy_owner_function, __pyx_t_3) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "quote_appraisal.pyx":349
+ *     return {
+ *         'has_policy_owner_function': has_new_api,
+ *         'api_version': '1.22+' if has_new_api else '<1.22',             # <<<<<<<<<<<<<<
+ *         'recommended_function': 'tee_authenticate_policy_owner' if has_new_api else 'tee_authenticate_appraisal_result'
+ *     }
+ */
+  if (__pyx_v_has_new_api) {
+    __Pyx_INCREF(__pyx_kp_u_1_22);
+    __pyx_t_3 = __pyx_kp_u_1_22;
+  } else {
+    __Pyx_INCREF(__pyx_kp_u_1_22_2);
+    __pyx_t_3 = __pyx_kp_u_1_22_2;
+  }
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_api_version, __pyx_t_3) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "quote_appraisal.pyx":350
+ *         'has_policy_owner_function': has_new_api,
+ *         'api_version': '1.22+' if has_new_api else '<1.22',
+ *         'recommended_function': 'tee_authenticate_policy_owner' if has_new_api else 'tee_authenticate_appraisal_result'             # <<<<<<<<<<<<<<
+ *     }
+ * 
+ */
+  if (__pyx_v_has_new_api) {
+    __Pyx_INCREF(__pyx_n_u_tee_authenticate_policy_owner);
+    __pyx_t_3 = __pyx_n_u_tee_authenticate_policy_owner;
+  } else {
+    __Pyx_INCREF(__pyx_n_u_tee_authenticate_appraisal_resul);
+    __pyx_t_3 = __pyx_n_u_tee_authenticate_appraisal_resul;
+  }
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_recommended_function, __pyx_t_3) < 0) __PYX_ERR(0, 348, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "quote_appraisal.pyx":344
+ *         return -1
+ * 
+ * def get_dcap_version_info():             # <<<<<<<<<<<<<<
+ *     """ DCAP """
+ *     has_new_api = check_dcap_version()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("quote_appraisal.get_dcap_version_info", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "quote_appraisal.pyx":353
+ *     }
+ * 
+ * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,             # <<<<<<<<<<<<<<
+ *                      list policy_keys, bint verbose=False):
+ *     """ ECDSA Quote """
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_15quote_appraisal_13ecdsa_quote_verify(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
 PyObject *__pyx_args, PyObject *__pyx_kwds
 #endif
 ); /*proto*/
-static PyMethodDef __pyx_mdef_15quote_appraisal_11ecdsa_quote_verify = {"ecdsa_quote_verify", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_11ecdsa_quote_verify, __Pyx_METH_FASTCALL|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_15quote_appraisal_11ecdsa_quote_verify(PyObject *__pyx_self, 
+PyDoc_STRVAR(__pyx_doc_15quote_appraisal_12ecdsa_quote_verify, "\345\256\214\346\225\264\347\232\204 ECDSA Quote \351\252\214\350\257\201\346\265\201\347\250\213");
+static PyMethodDef __pyx_mdef_15quote_appraisal_13ecdsa_quote_verify = {"ecdsa_quote_verify", (PyCFunction)(void*)(__Pyx_PyCFunction_FastCallWithKeywords)__pyx_pw_15quote_appraisal_13ecdsa_quote_verify, __Pyx_METH_FASTCALL|METH_KEYWORDS, __pyx_doc_15quote_appraisal_12ecdsa_quote_verify};
+static PyObject *__pyx_pw_15quote_appraisal_13ecdsa_quote_verify(PyObject *__pyx_self, 
 #if CYTHON_METH_FASTCALL
 PyObject *const *__pyx_args, Py_ssize_t __pyx_nargs, PyObject *__pyx_kwds
 #else
@@ -5858,7 +6777,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 270, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -5866,9 +6785,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 270, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, 1); __PYX_ERR(0, 270, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, 1); __PYX_ERR(0, 353, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -5876,9 +6795,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 270, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, 2); __PYX_ERR(0, 270, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, 2); __PYX_ERR(0, 353, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
@@ -5886,21 +6805,21 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[3]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 270, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, 3); __PYX_ERR(0, 270, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, 3); __PYX_ERR(0, 353, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (kw_args > 0) {
           PyObject* value = __Pyx_GetKwValue_FASTCALL(__pyx_kwds, __pyx_kwvalues, __pyx_n_s_verbose);
           if (value) { values[4] = __Pyx_Arg_NewRef_FASTCALL(value); kw_args--; }
-          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 270, __pyx_L3_error)
+          else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 353, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "ecdsa_quote_verify") < 0)) __PYX_ERR(0, 270, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "ecdsa_quote_verify") < 0)) __PYX_ERR(0, 353, __pyx_L3_error)
       }
     } else {
       switch (__pyx_nargs) {
@@ -5919,14 +6838,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
     __pyx_v_platform_policy = ((PyObject*)values[2]);
     __pyx_v_policy_keys = ((PyObject*)values[3]);
     if (values[4]) {
-      __pyx_v_verbose = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_verbose == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 271, __pyx_L3_error)
+      __pyx_v_verbose = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_verbose == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 354, __pyx_L3_error)
     } else {
 
-      /* "quote_appraisal.pyx":271
+      /* "quote_appraisal.pyx":354
  * 
  * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,
  *                      list policy_keys, bint verbose=False):             # <<<<<<<<<<<<<<
- * 
+ *     """ ECDSA Quote """
  *     result = {
  */
       __pyx_v_verbose = ((int)((int)0));
@@ -5934,7 +6853,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, __pyx_nargs); __PYX_ERR(0, 270, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("ecdsa_quote_verify", 0, 4, 5, __pyx_nargs); __PYX_ERR(0, 353, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5948,18 +6867,18 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 270, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tenant_policy), (&PyBytes_Type), 1, "tenant_policy", 1))) __PYX_ERR(0, 270, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_platform_policy), (&PyBytes_Type), 1, "platform_policy", 1))) __PYX_ERR(0, 270, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_policy_keys), (&PyList_Type), 1, "policy_keys", 1))) __PYX_ERR(0, 271, __pyx_L1_error)
-  __pyx_r = __pyx_pf_15quote_appraisal_10ecdsa_quote_verify(__pyx_self, __pyx_v_quote_data, __pyx_v_tenant_policy, __pyx_v_platform_policy, __pyx_v_policy_keys, __pyx_v_verbose);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_quote_data), (&PyBytes_Type), 1, "quote_data", 1))) __PYX_ERR(0, 353, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_tenant_policy), (&PyBytes_Type), 1, "tenant_policy", 1))) __PYX_ERR(0, 353, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_platform_policy), (&PyBytes_Type), 1, "platform_policy", 1))) __PYX_ERR(0, 353, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_policy_keys), (&PyList_Type), 1, "policy_keys", 1))) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_r = __pyx_pf_15quote_appraisal_12ecdsa_quote_verify(__pyx_self, __pyx_v_quote_data, __pyx_v_tenant_policy, __pyx_v_platform_policy, __pyx_v_policy_keys, __pyx_v_verbose);
 
-  /* "quote_appraisal.pyx":270
- * 
+  /* "quote_appraisal.pyx":353
+ *     }
  * 
  * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,             # <<<<<<<<<<<<<<
  *                      list policy_keys, bint verbose=False):
- * 
+ *     """ ECDSA Quote """
  */
 
   /* function exit code */
@@ -5977,14 +6896,16 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data, PyObject *__pyx_v_tenant_policy, PyObject *__pyx_v_platform_policy, PyObject *__pyx_v_policy_keys, int __pyx_v_verbose) {
+static PyObject *__pyx_pf_15quote_appraisal_12ecdsa_quote_verify(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_quote_data, PyObject *__pyx_v_tenant_policy, PyObject *__pyx_v_platform_policy, PyObject *__pyx_v_policy_keys, int __pyx_v_verbose) {
   PyObject *__pyx_v_result = NULL;
+  PyObject *__pyx_v_version_info = NULL;
   PyObject *__pyx_v_quote_type = NULL;
   PyObject *__pyx_v_jwt_token = NULL;
   PyObject *__pyx_v_policies = NULL;
   PyObject *__pyx_v_appraisal_result = NULL;
   PyObject *__pyx_v_auth_result = NULL;
   PyObject *__pyx_v_owner_result = NULL;
+  PyObject *__pyx_v_api_name = NULL;
   PyObject *__pyx_v_e = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -6014,70 +6935,79 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("ecdsa_quote_verify", 1);
 
-  /* "quote_appraisal.pyx":274
- * 
+  /* "quote_appraisal.pyx":357
+ *     """ ECDSA Quote """
  *     result = {
  *         'quote_type': None,             # <<<<<<<<<<<<<<
  *         'verify_success': False,
  *         'appraisal_success': False,
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_quote_type, Py_None) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_quote_type, Py_None) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":275
+  /* "quote_appraisal.pyx":358
  *     result = {
  *         'quote_type': None,
  *         'verify_success': False,             # <<<<<<<<<<<<<<
  *         'appraisal_success': False,
  *         'auth_success': False,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_verify_success, Py_False) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_verify_success, Py_False) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":276
+  /* "quote_appraisal.pyx":359
  *         'quote_type': None,
  *         'verify_success': False,
  *         'appraisal_success': False,             # <<<<<<<<<<<<<<
  *         'auth_success': False,
  *         'owner_auth_success': False,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_appraisal_success, Py_False) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_appraisal_success, Py_False) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":277
+  /* "quote_appraisal.pyx":360
  *         'verify_success': False,
  *         'appraisal_success': False,
  *         'auth_success': False,             # <<<<<<<<<<<<<<
  *         'owner_auth_success': False,
- *         'error': None
+ *         'dcap_version': None,
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_auth_success, Py_False) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_auth_success, Py_False) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":278
+  /* "quote_appraisal.pyx":361
  *         'appraisal_success': False,
  *         'auth_success': False,
  *         'owner_auth_success': False,             # <<<<<<<<<<<<<<
+ *         'dcap_version': None,
+ *         'error': None
+ */
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_owner_auth_success, Py_False) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
+
+  /* "quote_appraisal.pyx":362
+ *         'auth_success': False,
+ *         'owner_auth_success': False,
+ *         'dcap_version': None,             # <<<<<<<<<<<<<<
  *         'error': None
  *     }
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_owner_auth_success, Py_False) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_dcap_version, Py_None) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":279
- *         'auth_success': False,
+  /* "quote_appraisal.pyx":363
  *         'owner_auth_success': False,
+ *         'dcap_version': None,
  *         'error': None             # <<<<<<<<<<<<<<
  *     }
  * 
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_error, Py_None) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_error, Py_None) < 0) __PYX_ERR(0, 357, __pyx_L1_error)
   __pyx_v_result = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "quote_appraisal.pyx":282
+  /* "quote_appraisal.pyx":366
  *     }
  * 
  *     try:             # <<<<<<<<<<<<<<
- * 
- *         quote_type = check_quote_type(quote_data)
+ *         #
+ *         version_info = get_dcap_version_info()
  */
   {
     __Pyx_PyThreadState_declare
@@ -6088,14 +7018,115 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
     __Pyx_XGOTREF(__pyx_t_4);
     /*try:*/ {
 
-      /* "quote_appraisal.pyx":284
+      /* "quote_appraisal.pyx":368
  *     try:
+ *         #
+ *         version_info = get_dcap_version_info()             # <<<<<<<<<<<<<<
+ *         result['dcap_version'] = version_info
  * 
+ */
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_get_dcap_version_info); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 368, __pyx_L3_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_6 = NULL;
+      __pyx_t_7 = 0;
+      #if CYTHON_UNPACK_METHODS
+      if (unlikely(PyMethod_Check(__pyx_t_5))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_6)) {
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
+          __Pyx_INCREF(__pyx_t_6);
+          __Pyx_INCREF(function);
+          __Pyx_DECREF_SET(__pyx_t_5, function);
+          __pyx_t_7 = 1;
+        }
+      }
+      #endif
+      {
+        PyObject *__pyx_callargs[2] = {__pyx_t_6, NULL};
+        __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 0+__pyx_t_7);
+        __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      }
+      __pyx_v_version_info = __pyx_t_1;
+      __pyx_t_1 = 0;
+
+      /* "quote_appraisal.pyx":369
+ *         #
+ *         version_info = get_dcap_version_info()
+ *         result['dcap_version'] = version_info             # <<<<<<<<<<<<<<
+ * 
+ *         if verbose:
+ */
+      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_dcap_version, __pyx_v_version_info) < 0))) __PYX_ERR(0, 369, __pyx_L3_error)
+
+      /* "quote_appraisal.pyx":371
+ *         result['dcap_version'] = version_info
+ * 
+ *         if verbose:             # <<<<<<<<<<<<<<
+ *             print(f"Info: DCAP API version - {version_info['api_version']}")
+ *             print(f"Info: Using function - {version_info['recommended_function']}")
+ */
+      if (__pyx_v_verbose) {
+
+        /* "quote_appraisal.pyx":372
+ * 
+ *         if verbose:
+ *             print(f"Info: DCAP API version - {version_info['api_version']}")             # <<<<<<<<<<<<<<
+ *             print(f"Info: Using function - {version_info['recommended_function']}")
+ * 
+ */
+        __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_version_info, __pyx_n_u_api_version); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 372, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 372, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Info_DCAP_API_version, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 372, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 372, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+
+        /* "quote_appraisal.pyx":373
+ *         if verbose:
+ *             print(f"Info: DCAP API version - {version_info['api_version']}")
+ *             print(f"Info: Using function - {version_info['recommended_function']}")             # <<<<<<<<<<<<<<
+ * 
+ *         #  Quote
+ */
+        __pyx_t_5 = __Pyx_PyObject_Dict_GetItem(__pyx_v_version_info, __pyx_n_u_recommended_function); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 373, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 373, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __pyx_t_5 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Info_Using_function, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 373, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 373, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_1);
+        __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+        __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+        /* "quote_appraisal.pyx":371
+ *         result['dcap_version'] = version_info
+ * 
+ *         if verbose:             # <<<<<<<<<<<<<<
+ *             print(f"Info: DCAP API version - {version_info['api_version']}")
+ *             print(f"Info: Using function - {version_info['recommended_function']}")
+ */
+      }
+
+      /* "quote_appraisal.pyx":376
+ * 
+ *         #  Quote
  *         quote_type = check_quote_type(quote_data)             # <<<<<<<<<<<<<<
  *         if quote_type == SGX_QUOTE_TYPE:
  *             result['quote_type'] = 'SGX'
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_check_quote_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 284, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_check_quote_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 376, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = NULL;
       __pyx_t_7 = 0;
@@ -6115,82 +7146,82 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_v_quote_data};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L3_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 376, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       }
       __pyx_v_quote_type = __pyx_t_1;
       __pyx_t_1 = 0;
 
-      /* "quote_appraisal.pyx":285
- * 
+      /* "quote_appraisal.pyx":377
+ *         #  Quote
  *         quote_type = check_quote_type(quote_data)
  *         if quote_type == SGX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
  *             result['quote_type'] = 'SGX'
  *         elif quote_type == TDX_QUOTE_TYPE:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_SGX_QUOTE_TYPE); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 285, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_SGX_QUOTE_TYPE); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 377, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_5 = PyObject_RichCompare(__pyx_v_quote_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 285, __pyx_L3_error)
+      __pyx_t_5 = PyObject_RichCompare(__pyx_v_quote_type, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 377, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 285, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 377, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (__pyx_t_8) {
 
-        /* "quote_appraisal.pyx":286
+        /* "quote_appraisal.pyx":378
  *         quote_type = check_quote_type(quote_data)
  *         if quote_type == SGX_QUOTE_TYPE:
  *             result['quote_type'] = 'SGX'             # <<<<<<<<<<<<<<
  *         elif quote_type == TDX_QUOTE_TYPE:
  *             result['quote_type'] = 'TDX'
  */
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_quote_type, __pyx_n_u_SGX) < 0))) __PYX_ERR(0, 286, __pyx_L3_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_quote_type, __pyx_n_u_SGX) < 0))) __PYX_ERR(0, 378, __pyx_L3_error)
 
-        /* "quote_appraisal.pyx":285
- * 
+        /* "quote_appraisal.pyx":377
+ *         #  Quote
  *         quote_type = check_quote_type(quote_data)
  *         if quote_type == SGX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
  *             result['quote_type'] = 'SGX'
  *         elif quote_type == TDX_QUOTE_TYPE:
  */
-        goto __pyx_L9;
+        goto __pyx_L10;
       }
 
-      /* "quote_appraisal.pyx":287
+      /* "quote_appraisal.pyx":379
  *         if quote_type == SGX_QUOTE_TYPE:
  *             result['quote_type'] = 'SGX'
  *         elif quote_type == TDX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
  *             result['quote_type'] = 'TDX'
  *         else:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TDX_QUOTE_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 287, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_TDX_QUOTE_TYPE); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 379, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_1 = PyObject_RichCompare(__pyx_v_quote_type, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L3_error)
+      __pyx_t_1 = PyObject_RichCompare(__pyx_v_quote_type, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 379, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 287, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 379, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (likely(__pyx_t_8)) {
 
-        /* "quote_appraisal.pyx":288
+        /* "quote_appraisal.pyx":380
  *             result['quote_type'] = 'SGX'
  *         elif quote_type == TDX_QUOTE_TYPE:
  *             result['quote_type'] = 'TDX'             # <<<<<<<<<<<<<<
  *         else:
  *             raise QuoteVerifyError("Unknown quote type")
  */
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_quote_type, __pyx_n_u_TDX) < 0))) __PYX_ERR(0, 288, __pyx_L3_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_quote_type, __pyx_n_u_TDX) < 0))) __PYX_ERR(0, 380, __pyx_L3_error)
 
-        /* "quote_appraisal.pyx":287
+        /* "quote_appraisal.pyx":379
  *         if quote_type == SGX_QUOTE_TYPE:
  *             result['quote_type'] = 'SGX'
  *         elif quote_type == TDX_QUOTE_TYPE:             # <<<<<<<<<<<<<<
  *             result['quote_type'] = 'TDX'
  *         else:
  */
-        goto __pyx_L9;
+        goto __pyx_L10;
       }
 
-      /* "quote_appraisal.pyx":290
+      /* "quote_appraisal.pyx":382
  *             result['quote_type'] = 'TDX'
  *         else:
  *             raise QuoteVerifyError("Unknown quote type")             # <<<<<<<<<<<<<<
@@ -6198,7 +7229,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  *         if verbose:
  */
       /*else*/ {
-        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 290, __pyx_L3_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 382, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_5);
         __pyx_t_6 = NULL;
         __pyx_t_7 = 0;
@@ -6218,17 +7249,17 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
           PyObject *__pyx_callargs[2] = {__pyx_t_6, __pyx_kp_u_Unknown_quote_type};
           __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L3_error)
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 382, __pyx_L3_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         }
         __Pyx_Raise(__pyx_t_1, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __PYX_ERR(0, 290, __pyx_L3_error)
+        __PYX_ERR(0, 382, __pyx_L3_error)
       }
-      __pyx_L9:;
+      __pyx_L10:;
 
-      /* "quote_appraisal.pyx":292
+      /* "quote_appraisal.pyx":384
  *             raise QuoteVerifyError("Unknown quote type")
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
@@ -6237,14 +7268,14 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       if (__pyx_v_verbose) {
 
-        /* "quote_appraisal.pyx":293
+        /* "quote_appraisal.pyx":385
  * 
  *         if verbose:
  *             print(f"Info: Quote type - {result['quote_type']} quote")             # <<<<<<<<<<<<<<
  * 
- * 
+ *         #  Quote
  */
-        __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 293, __pyx_L3_error)
+        __pyx_t_1 = PyTuple_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 385, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_t_9 = 0;
         __pyx_t_10 = 127;
@@ -6252,9 +7283,9 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         __pyx_t_9 += 19;
         __Pyx_GIVEREF(__pyx_kp_u_Info_Quote_type);
         PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_kp_u_Info_Quote_type);
-        __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_result, __pyx_n_u_quote_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 293, __pyx_L3_error)
+        __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_result, __pyx_n_u_quote_type); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 385, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 293, __pyx_L3_error)
+        __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_t_5, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 385, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_10 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_10) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_10;
@@ -6266,15 +7297,15 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         __pyx_t_9 += 6;
         __Pyx_GIVEREF(__pyx_kp_u_quote);
         PyTuple_SET_ITEM(__pyx_t_1, 2, __pyx_kp_u_quote);
-        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 293, __pyx_L3_error)
+        __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_1, 3, __pyx_t_9, __pyx_t_10); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 385, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 293, __pyx_L3_error)
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 385, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "quote_appraisal.pyx":292
+        /* "quote_appraisal.pyx":384
  *             raise QuoteVerifyError("Unknown quote type")
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
@@ -6283,14 +7314,14 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       }
 
-      /* "quote_appraisal.pyx":296
+      /* "quote_appraisal.pyx":388
  * 
- * 
+ *         #  Quote
  *         jwt_token = verify_quote_qvt(quote_data)             # <<<<<<<<<<<<<<
  *         result['verify_success'] = True
  * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_verify_quote_qvt); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 296, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_verify_quote_qvt); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 388, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_5 = NULL;
       __pyx_t_7 = 0;
@@ -6310,23 +7341,23 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_v_quote_data};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 296, __pyx_L3_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 388, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __pyx_v_jwt_token = __pyx_t_1;
       __pyx_t_1 = 0;
 
-      /* "quote_appraisal.pyx":297
- * 
+      /* "quote_appraisal.pyx":389
+ *         #  Quote
  *         jwt_token = verify_quote_qvt(quote_data)
  *         result['verify_success'] = True             # <<<<<<<<<<<<<<
  * 
  *         if verbose:
  */
-      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_verify_success, Py_True) < 0))) __PYX_ERR(0, 297, __pyx_L3_error)
+      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_verify_success, Py_True) < 0))) __PYX_ERR(0, 389, __pyx_L3_error)
 
-      /* "quote_appraisal.pyx":299
+      /* "quote_appraisal.pyx":391
  *         result['verify_success'] = True
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
@@ -6335,18 +7366,18 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       if (__pyx_v_verbose) {
 
-        /* "quote_appraisal.pyx":300
+        /* "quote_appraisal.pyx":392
  * 
  *         if verbose:
  *             print("Info: tee_verify_quote_qvt successfully returned")             # <<<<<<<<<<<<<<
  * 
- *         policies = [tenant_policy, platform_policy]
+ *         #  token
  */
-        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 300, __pyx_L3_error)
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 392, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "quote_appraisal.pyx":299
+        /* "quote_appraisal.pyx":391
  *         result['verify_success'] = True
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
@@ -6355,32 +7386,32 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       }
 
-      /* "quote_appraisal.pyx":302
- *             print("Info: tee_verify_quote_qvt successfully returned")
+      /* "quote_appraisal.pyx":395
  * 
+ *         #  token
  *         policies = [tenant_policy, platform_policy]             # <<<<<<<<<<<<<<
  *         appraisal_result = appraise_verification_token(jwt_token, policies)
- *         result['appraisal_success'] = appraisal_result
+ *         result['appraisal_success'] = True
  */
-      __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L3_error)
+      __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 395, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_INCREF(__pyx_v_tenant_policy);
       __Pyx_GIVEREF(__pyx_v_tenant_policy);
-      if (__Pyx_PyList_SET_ITEM(__pyx_t_1, 0, __pyx_v_tenant_policy)) __PYX_ERR(0, 302, __pyx_L3_error);
+      if (__Pyx_PyList_SET_ITEM(__pyx_t_1, 0, __pyx_v_tenant_policy)) __PYX_ERR(0, 395, __pyx_L3_error);
       __Pyx_INCREF(__pyx_v_platform_policy);
       __Pyx_GIVEREF(__pyx_v_platform_policy);
-      if (__Pyx_PyList_SET_ITEM(__pyx_t_1, 1, __pyx_v_platform_policy)) __PYX_ERR(0, 302, __pyx_L3_error);
+      if (__Pyx_PyList_SET_ITEM(__pyx_t_1, 1, __pyx_v_platform_policy)) __PYX_ERR(0, 395, __pyx_L3_error);
       __pyx_v_policies = ((PyObject*)__pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "quote_appraisal.pyx":303
- * 
+      /* "quote_appraisal.pyx":396
+ *         #  token
  *         policies = [tenant_policy, platform_policy]
  *         appraisal_result = appraise_verification_token(jwt_token, policies)             # <<<<<<<<<<<<<<
- *         result['appraisal_success'] = appraisal_result
- *         #result['appraisal_success'] = True
+ *         result['appraisal_success'] = True
+ * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_appraise_verification_token); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 303, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_appraise_verification_token); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 396, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_5 = NULL;
       __pyx_t_7 = 0;
@@ -6400,24 +7431,24 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         PyObject *__pyx_callargs[3] = {__pyx_t_5, __pyx_v_jwt_token, __pyx_v_policies};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_7, 2+__pyx_t_7);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 303, __pyx_L3_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 396, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __pyx_v_appraisal_result = __pyx_t_1;
       __pyx_t_1 = 0;
 
-      /* "quote_appraisal.pyx":304
+      /* "quote_appraisal.pyx":397
  *         policies = [tenant_policy, platform_policy]
  *         appraisal_result = appraise_verification_token(jwt_token, policies)
- *         result['appraisal_success'] = appraisal_result             # <<<<<<<<<<<<<<
- *         #result['appraisal_success'] = True
+ *         result['appraisal_success'] = True             # <<<<<<<<<<<<<<
  * 
+ *         if verbose:
  */
-      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_appraisal_success, __pyx_v_appraisal_result) < 0))) __PYX_ERR(0, 304, __pyx_L3_error)
+      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_appraisal_success, Py_True) < 0))) __PYX_ERR(0, 397, __pyx_L3_error)
 
-      /* "quote_appraisal.pyx":307
- *         #result['appraisal_success'] = True
+      /* "quote_appraisal.pyx":399
+ *         result['appraisal_success'] = True
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
  *             print("Info: tee_appraise_verification_token successfully returned")
@@ -6425,19 +7456,19 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       if (__pyx_v_verbose) {
 
-        /* "quote_appraisal.pyx":308
+        /* "quote_appraisal.pyx":400
  * 
  *         if verbose:
  *             print("Info: tee_appraise_verification_token successfully returned")             # <<<<<<<<<<<<<<
  * 
- *         auth_result = authenticate_appraisal_result(appraisal_result, tenant_policy, platform_policy)
+ *         #
  */
-        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 308, __pyx_L3_error)
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "quote_appraisal.pyx":307
- *         #result['appraisal_success'] = True
+        /* "quote_appraisal.pyx":399
+ *         result['appraisal_success'] = True
  * 
  *         if verbose:             # <<<<<<<<<<<<<<
  *             print("Info: tee_appraise_verification_token successfully returned")
@@ -6445,14 +7476,14 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       }
 
-      /* "quote_appraisal.pyx":310
- *             print("Info: tee_appraise_verification_token successfully returned")
+      /* "quote_appraisal.pyx":403
  * 
+ *         #
  *         auth_result = authenticate_appraisal_result(appraisal_result, tenant_policy, platform_policy)             # <<<<<<<<<<<<<<
  *         result['auth_result'] = auth_result
  * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_authenticate_appraisal_result); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 310, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_authenticate_appraisal_result); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 403, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_5 = NULL;
       __pyx_t_7 = 0;
@@ -6472,47 +7503,47 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         PyObject *__pyx_callargs[4] = {__pyx_t_5, __pyx_v_appraisal_result, __pyx_v_tenant_policy, __pyx_v_platform_policy};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_7, 3+__pyx_t_7);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 310, __pyx_L3_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 403, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __pyx_v_auth_result = __pyx_t_1;
       __pyx_t_1 = 0;
 
-      /* "quote_appraisal.pyx":311
- * 
+      /* "quote_appraisal.pyx":404
+ *         #
  *         auth_result = authenticate_appraisal_result(appraisal_result, tenant_policy, platform_policy)
  *         result['auth_result'] = auth_result             # <<<<<<<<<<<<<<
  * 
  *         if auth_result == AUTH_SUCCESS:
  */
-      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_auth_result, __pyx_v_auth_result) < 0))) __PYX_ERR(0, 311, __pyx_L3_error)
+      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_auth_result, __pyx_v_auth_result) < 0))) __PYX_ERR(0, 404, __pyx_L3_error)
 
-      /* "quote_appraisal.pyx":313
+      /* "quote_appraisal.pyx":406
  *         result['auth_result'] = auth_result
  * 
  *         if auth_result == AUTH_SUCCESS:             # <<<<<<<<<<<<<<
  *             result['auth_success'] = True
  *             if verbose:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AUTH_SUCCESS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 313, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AUTH_SUCCESS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 406, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = PyObject_RichCompare(__pyx_v_auth_result, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 313, __pyx_L3_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_v_auth_result, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 406, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 313, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 406, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (likely(__pyx_t_8)) {
 
-        /* "quote_appraisal.pyx":314
+        /* "quote_appraisal.pyx":407
  * 
  *         if auth_result == AUTH_SUCCESS:
  *             result['auth_success'] = True             # <<<<<<<<<<<<<<
  *             if verbose:
  *                 print("Info: Policies are authenticated Successfully")
  */
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_auth_success, Py_True) < 0))) __PYX_ERR(0, 314, __pyx_L3_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_auth_success, Py_True) < 0))) __PYX_ERR(0, 407, __pyx_L3_error)
 
-        /* "quote_appraisal.pyx":315
+        /* "quote_appraisal.pyx":408
  *         if auth_result == AUTH_SUCCESS:
  *             result['auth_success'] = True
  *             if verbose:             # <<<<<<<<<<<<<<
@@ -6521,18 +7552,18 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
         if (__pyx_v_verbose) {
 
-          /* "quote_appraisal.pyx":316
+          /* "quote_appraisal.pyx":409
  *             result['auth_success'] = True
  *             if verbose:
  *                 print("Info: Policies are authenticated Successfully")             # <<<<<<<<<<<<<<
  *         elif auth_result == AUTH_FAILURE:
  *             raise QuoteVerifyError("Authentication failures occur in some policies")
  */
-          __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 316, __pyx_L3_error)
+          __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 409, __pyx_L3_error)
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-          /* "quote_appraisal.pyx":315
+          /* "quote_appraisal.pyx":408
  *         if auth_result == AUTH_SUCCESS:
  *             result['auth_success'] = True
  *             if verbose:             # <<<<<<<<<<<<<<
@@ -6541,39 +7572,39 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
         }
 
-        /* "quote_appraisal.pyx":313
+        /* "quote_appraisal.pyx":406
  *         result['auth_result'] = auth_result
  * 
  *         if auth_result == AUTH_SUCCESS:             # <<<<<<<<<<<<<<
  *             result['auth_success'] = True
  *             if verbose:
  */
-        goto __pyx_L13;
+        goto __pyx_L14;
       }
 
-      /* "quote_appraisal.pyx":317
+      /* "quote_appraisal.pyx":410
  *             if verbose:
  *                 print("Info: Policies are authenticated Successfully")
  *         elif auth_result == AUTH_FAILURE:             # <<<<<<<<<<<<<<
  *             raise QuoteVerifyError("Authentication failures occur in some policies")
  *         else:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_AUTH_FAILURE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 317, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_AUTH_FAILURE); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 410, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_1 = PyObject_RichCompare(__pyx_v_auth_result, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 317, __pyx_L3_error)
+      __pyx_t_1 = PyObject_RichCompare(__pyx_v_auth_result, __pyx_t_6, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 410, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 317, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 410, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (unlikely(__pyx_t_8)) {
 
-        /* "quote_appraisal.pyx":318
+        /* "quote_appraisal.pyx":411
  *                 print("Info: Policies are authenticated Successfully")
  *         elif auth_result == AUTH_FAILURE:
  *             raise QuoteVerifyError("Authentication failures occur in some policies")             # <<<<<<<<<<<<<<
  *         else:
  *             raise QuoteVerifyError("There are some policies un-authenticated")
  */
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 318, __pyx_L3_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 411, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_5 = NULL;
         __pyx_t_7 = 0;
@@ -6593,15 +7624,15 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
           PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_kp_u_Authentication_failures_occur_in};
           __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L3_error)
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 411, __pyx_L3_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
         __Pyx_Raise(__pyx_t_1, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __PYX_ERR(0, 318, __pyx_L3_error)
+        __PYX_ERR(0, 411, __pyx_L3_error)
 
-        /* "quote_appraisal.pyx":317
+        /* "quote_appraisal.pyx":410
  *             if verbose:
  *                 print("Info: Policies are authenticated Successfully")
  *         elif auth_result == AUTH_FAILURE:             # <<<<<<<<<<<<<<
@@ -6610,15 +7641,15 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  */
       }
 
-      /* "quote_appraisal.pyx":320
+      /* "quote_appraisal.pyx":413
  *             raise QuoteVerifyError("Authentication failures occur in some policies")
  *         else:
  *             raise QuoteVerifyError("There are some policies un-authenticated")             # <<<<<<<<<<<<<<
  * 
- *         owner_result = authenticate_policy_owner(quote_data, appraisal_result, policy_keys)
+ *         #
  */
       /*else*/ {
-        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 320, __pyx_L3_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 413, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_5 = NULL;
         __pyx_t_7 = 0;
@@ -6638,24 +7669,24 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
           PyObject *__pyx_callargs[2] = {__pyx_t_5, __pyx_kp_u_There_are_some_policies_un_authe};
           __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 320, __pyx_L3_error)
+          if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 413, __pyx_L3_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         }
         __Pyx_Raise(__pyx_t_1, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-        __PYX_ERR(0, 320, __pyx_L3_error)
+        __PYX_ERR(0, 413, __pyx_L3_error)
       }
-      __pyx_L13:;
+      __pyx_L14:;
 
-      /* "quote_appraisal.pyx":322
- *             raise QuoteVerifyError("There are some policies un-authenticated")
+      /* "quote_appraisal.pyx":416
  * 
+ *         #
  *         owner_result = authenticate_policy_owner(quote_data, appraisal_result, policy_keys)             # <<<<<<<<<<<<<<
  *         result['owner_auth_result'] = owner_result
  * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_authenticate_policy_owner); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 322, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_authenticate_policy_owner); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 416, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_t_5 = NULL;
       __pyx_t_7 = 0;
@@ -6675,98 +7706,125 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         PyObject *__pyx_callargs[4] = {__pyx_t_5, __pyx_v_quote_data, __pyx_v_appraisal_result, __pyx_v_policy_keys};
         __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_6, __pyx_callargs+1-__pyx_t_7, 3+__pyx_t_7);
         __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 322, __pyx_L3_error)
+        if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 416, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       }
       __pyx_v_owner_result = __pyx_t_1;
       __pyx_t_1 = 0;
 
-      /* "quote_appraisal.pyx":323
- * 
+      /* "quote_appraisal.pyx":417
+ *         #
  *         owner_result = authenticate_policy_owner(quote_data, appraisal_result, policy_keys)
  *         result['owner_auth_result'] = owner_result             # <<<<<<<<<<<<<<
  * 
  *         if owner_result == AUTH_SUCCESS:
  */
-      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_owner_auth_result, __pyx_v_owner_result) < 0))) __PYX_ERR(0, 323, __pyx_L3_error)
+      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_owner_auth_result, __pyx_v_owner_result) < 0))) __PYX_ERR(0, 417, __pyx_L3_error)
 
-      /* "quote_appraisal.pyx":325
+      /* "quote_appraisal.pyx":419
  *         result['owner_auth_result'] = owner_result
  * 
  *         if owner_result == AUTH_SUCCESS:             # <<<<<<<<<<<<<<
  *             result['owner_auth_success'] = True
  *             if verbose:
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AUTH_SUCCESS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 325, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AUTH_SUCCESS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 419, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_6 = PyObject_RichCompare(__pyx_v_owner_result, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 325, __pyx_L3_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_v_owner_result, __pyx_t_1, Py_EQ); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 419, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 325, __pyx_L3_error)
+      __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 419, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (likely(__pyx_t_8)) {
 
-        /* "quote_appraisal.pyx":326
+        /* "quote_appraisal.pyx":420
  * 
  *         if owner_result == AUTH_SUCCESS:
  *             result['owner_auth_success'] = True             # <<<<<<<<<<<<<<
  *             if verbose:
- *                 print("Info: Authenticate policy owner successfully")
+ *                 api_name = "tee_authenticate_policy_owner" if version_info['has_policy_owner_function'] else "legacy authentication"
  */
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_owner_auth_success, Py_True) < 0))) __PYX_ERR(0, 326, __pyx_L3_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_owner_auth_success, Py_True) < 0))) __PYX_ERR(0, 420, __pyx_L3_error)
 
-        /* "quote_appraisal.pyx":327
+        /* "quote_appraisal.pyx":421
  *         if owner_result == AUTH_SUCCESS:
  *             result['owner_auth_success'] = True
  *             if verbose:             # <<<<<<<<<<<<<<
- *                 print("Info: Authenticate policy owner successfully")
- *         else:
+ *                 api_name = "tee_authenticate_policy_owner" if version_info['has_policy_owner_function'] else "legacy authentication"
+ *                 print(f"Info: Authenticate policy owner successfully using {api_name}")
  */
         if (__pyx_v_verbose) {
 
-          /* "quote_appraisal.pyx":328
+          /* "quote_appraisal.pyx":422
  *             result['owner_auth_success'] = True
  *             if verbose:
- *                 print("Info: Authenticate policy owner successfully")             # <<<<<<<<<<<<<<
+ *                 api_name = "tee_authenticate_policy_owner" if version_info['has_policy_owner_function'] else "legacy authentication"             # <<<<<<<<<<<<<<
+ *                 print(f"Info: Authenticate policy owner successfully using {api_name}")
+ *         else:
+ */
+          __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_version_info, __pyx_n_u_has_policy_owner_function); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_8 < 0))) __PYX_ERR(0, 422, __pyx_L3_error)
+          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+          if (__pyx_t_8) {
+            __Pyx_INCREF(__pyx_n_u_tee_authenticate_policy_owner);
+            __pyx_t_6 = __pyx_n_u_tee_authenticate_policy_owner;
+          } else {
+            __Pyx_INCREF(__pyx_kp_u_legacy_authentication);
+            __pyx_t_6 = __pyx_kp_u_legacy_authentication;
+          }
+          __pyx_v_api_name = ((PyObject*)__pyx_t_6);
+          __pyx_t_6 = 0;
+
+          /* "quote_appraisal.pyx":423
+ *             if verbose:
+ *                 api_name = "tee_authenticate_policy_owner" if version_info['has_policy_owner_function'] else "legacy authentication"
+ *                 print(f"Info: Authenticate policy owner successfully using {api_name}")             # <<<<<<<<<<<<<<
  *         else:
  *             raise QuoteVerifyError(f"Authenticate policy owner failed: {owner_result}")
  */
-          __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 328, __pyx_L3_error)
+          __pyx_t_6 = __Pyx_PyUnicode_Unicode(__pyx_v_api_name); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 423, __pyx_L3_error)
           __Pyx_GOTREF(__pyx_t_6);
+          __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Info_Authenticate_policy_owner_s, __pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 423, __pyx_L3_error)
+          __Pyx_GOTREF(__pyx_t_1);
+          __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+          __pyx_t_6 = __Pyx_PyObject_CallOneArg(__pyx_builtin_print, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 423, __pyx_L3_error)
+          __Pyx_GOTREF(__pyx_t_6);
+          __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-          /* "quote_appraisal.pyx":327
+          /* "quote_appraisal.pyx":421
  *         if owner_result == AUTH_SUCCESS:
  *             result['owner_auth_success'] = True
  *             if verbose:             # <<<<<<<<<<<<<<
- *                 print("Info: Authenticate policy owner successfully")
- *         else:
+ *                 api_name = "tee_authenticate_policy_owner" if version_info['has_policy_owner_function'] else "legacy authentication"
+ *                 print(f"Info: Authenticate policy owner successfully using {api_name}")
  */
         }
 
-        /* "quote_appraisal.pyx":325
+        /* "quote_appraisal.pyx":419
  *         result['owner_auth_result'] = owner_result
  * 
  *         if owner_result == AUTH_SUCCESS:             # <<<<<<<<<<<<<<
  *             result['owner_auth_success'] = True
  *             if verbose:
  */
-        goto __pyx_L15;
+        goto __pyx_L16;
       }
 
-      /* "quote_appraisal.pyx":330
- *                 print("Info: Authenticate policy owner successfully")
+      /* "quote_appraisal.pyx":425
+ *                 print(f"Info: Authenticate policy owner successfully using {api_name}")
  *         else:
  *             raise QuoteVerifyError(f"Authenticate policy owner failed: {owner_result}")             # <<<<<<<<<<<<<<
  * 
  *         result['overall_success'] = True
  */
       /*else*/ {
-        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L3_error)
+        __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_v_owner_result, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 330, __pyx_L3_error)
+        __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_v_owner_result, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 425, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_11 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Authenticate_policy_owner_failed, __pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 330, __pyx_L3_error)
+        __pyx_t_11 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Authenticate_policy_owner_failed, __pyx_t_5); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 425, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_11);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_5 = NULL;
@@ -6788,26 +7846,26 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
           __pyx_t_6 = __Pyx_PyObject_FastCall(__pyx_t_1, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 330, __pyx_L3_error)
+          if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 425, __pyx_L3_error)
           __Pyx_GOTREF(__pyx_t_6);
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         }
         __Pyx_Raise(__pyx_t_6, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __PYX_ERR(0, 330, __pyx_L3_error)
+        __PYX_ERR(0, 425, __pyx_L3_error)
       }
-      __pyx_L15:;
+      __pyx_L16:;
 
-      /* "quote_appraisal.pyx":332
+      /* "quote_appraisal.pyx":427
  *             raise QuoteVerifyError(f"Authenticate policy owner failed: {owner_result}")
  * 
  *         result['overall_success'] = True             # <<<<<<<<<<<<<<
  *         return result
  * 
  */
-      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_overall_success, Py_True) < 0))) __PYX_ERR(0, 332, __pyx_L3_error)
+      if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_overall_success, Py_True) < 0))) __PYX_ERR(0, 427, __pyx_L3_error)
 
-      /* "quote_appraisal.pyx":333
+      /* "quote_appraisal.pyx":428
  * 
  *         result['overall_success'] = True
  *         return result             # <<<<<<<<<<<<<<
@@ -6819,12 +7877,12 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
       __pyx_r = __pyx_v_result;
       goto __pyx_L7_try_return;
 
-      /* "quote_appraisal.pyx":282
+      /* "quote_appraisal.pyx":366
  *     }
  * 
  *     try:             # <<<<<<<<<<<<<<
- * 
- *         quote_type = check_quote_type(quote_data)
+ *         #
+ *         version_info = get_dcap_version_info()
  */
     }
     __pyx_L3_error:;
@@ -6833,7 +7891,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "quote_appraisal.pyx":335
+    /* "quote_appraisal.pyx":430
  *         return result
  * 
  *     except QuoteVerifyError as e:             # <<<<<<<<<<<<<<
@@ -6841,7 +7899,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  *         result['overall_success'] = False
  */
     __Pyx_ErrFetch(&__pyx_t_6, &__pyx_t_1, &__pyx_t_11);
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 335, __pyx_L5_except_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_QuoteVerifyError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 430, __pyx_L5_except_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_7 = __Pyx_PyErr_GivenExceptionMatches(__pyx_t_6, __pyx_t_5);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -6849,7 +7907,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
     __pyx_t_6 = 0; __pyx_t_1 = 0; __pyx_t_11 = 0;
     if (__pyx_t_7) {
       __Pyx_AddTraceback("quote_appraisal.ecdsa_quote_verify", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_1, &__pyx_t_6) < 0) __PYX_ERR(0, 335, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_11, &__pyx_t_1, &__pyx_t_6) < 0) __PYX_ERR(0, 430, __pyx_L5_except_error)
       __Pyx_XGOTREF(__pyx_t_11);
       __Pyx_XGOTREF(__pyx_t_1);
       __Pyx_XGOTREF(__pyx_t_6);
@@ -6857,28 +7915,28 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
       __pyx_v_e = __pyx_t_1;
       /*try:*/ {
 
-        /* "quote_appraisal.pyx":336
+        /* "quote_appraisal.pyx":431
  * 
  *     except QuoteVerifyError as e:
  *         result['error'] = str(e)             # <<<<<<<<<<<<<<
  *         result['overall_success'] = False
  *         return result
  */
-        __pyx_t_5 = __Pyx_PyObject_Str(__pyx_v_e); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 336, __pyx_L22_error)
+        __pyx_t_5 = __Pyx_PyObject_Str(__pyx_v_e); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 431, __pyx_L23_error)
         __Pyx_GOTREF(__pyx_t_5);
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_error, __pyx_t_5) < 0))) __PYX_ERR(0, 336, __pyx_L22_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_error, __pyx_t_5) < 0))) __PYX_ERR(0, 431, __pyx_L23_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-        /* "quote_appraisal.pyx":337
+        /* "quote_appraisal.pyx":432
  *     except QuoteVerifyError as e:
  *         result['error'] = str(e)
  *         result['overall_success'] = False             # <<<<<<<<<<<<<<
  *         return result
  *     except Exception as e:
  */
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_overall_success, Py_False) < 0))) __PYX_ERR(0, 337, __pyx_L22_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_overall_success, Py_False) < 0))) __PYX_ERR(0, 432, __pyx_L23_error)
 
-        /* "quote_appraisal.pyx":338
+        /* "quote_appraisal.pyx":433
  *         result['error'] = str(e)
  *         result['overall_success'] = False
  *         return result             # <<<<<<<<<<<<<<
@@ -6891,10 +7949,10 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        goto __pyx_L21_return;
+        goto __pyx_L22_return;
       }
 
-      /* "quote_appraisal.pyx":335
+      /* "quote_appraisal.pyx":430
  *         return result
  * 
  *     except QuoteVerifyError as e:             # <<<<<<<<<<<<<<
@@ -6902,7 +7960,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  *         result['overall_success'] = False
  */
       /*finally:*/ {
-        __pyx_L22_error:;
+        __pyx_L23_error:;
         /*exception exit:*/{
           __Pyx_PyThreadState_declare
           __Pyx_PyThreadState_assign
@@ -6934,7 +7992,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
           __pyx_lineno = __pyx_t_7; __pyx_clineno = __pyx_t_12; __pyx_filename = __pyx_t_13;
           goto __pyx_L5_except_error;
         }
-        __pyx_L21_return: {
+        __pyx_L22_return: {
           __pyx_t_19 = __pyx_r;
           __pyx_r = 0;
           __Pyx_DECREF(__pyx_v_e); __pyx_v_e = 0;
@@ -6945,7 +8003,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
       }
     }
 
-    /* "quote_appraisal.pyx":339
+    /* "quote_appraisal.pyx":434
  *         result['overall_success'] = False
  *         return result
  *     except Exception as e:             # <<<<<<<<<<<<<<
@@ -6955,7 +8013,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
     __pyx_t_12 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_12) {
       __Pyx_AddTraceback("quote_appraisal.ecdsa_quote_verify", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_1, &__pyx_t_11) < 0) __PYX_ERR(0, 339, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_1, &__pyx_t_11) < 0) __PYX_ERR(0, 434, __pyx_L5_except_error)
       __Pyx_XGOTREF(__pyx_t_6);
       __Pyx_XGOTREF(__pyx_t_1);
       __Pyx_XGOTREF(__pyx_t_11);
@@ -6963,30 +8021,30 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
       __pyx_v_e = __pyx_t_1;
       /*try:*/ {
 
-        /* "quote_appraisal.pyx":340
+        /* "quote_appraisal.pyx":435
  *         return result
  *     except Exception as e:
  *         result['error'] = f"Unexpected error: {str(e)}"             # <<<<<<<<<<<<<<
  *         result['overall_success'] = False
  *         return result
  */
-        __pyx_t_5 = __Pyx_PyObject_Str(__pyx_v_e); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 340, __pyx_L33_error)
+        __pyx_t_5 = __Pyx_PyObject_Str(__pyx_v_e); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 435, __pyx_L34_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_20 = PyNumber_Add(__pyx_kp_u_Unexpected_error, __pyx_t_5); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 340, __pyx_L33_error)
+        __pyx_t_20 = PyNumber_Add(__pyx_kp_u_Unexpected_error, __pyx_t_5); if (unlikely(!__pyx_t_20)) __PYX_ERR(0, 435, __pyx_L34_error)
         __Pyx_GOTREF(__pyx_t_20);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_error, __pyx_t_20) < 0))) __PYX_ERR(0, 340, __pyx_L33_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_error, __pyx_t_20) < 0))) __PYX_ERR(0, 435, __pyx_L34_error)
         __Pyx_DECREF(__pyx_t_20); __pyx_t_20 = 0;
 
-        /* "quote_appraisal.pyx":341
+        /* "quote_appraisal.pyx":436
  *     except Exception as e:
  *         result['error'] = f"Unexpected error: {str(e)}"
  *         result['overall_success'] = False             # <<<<<<<<<<<<<<
  *         return result
  */
-        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_overall_success, Py_False) < 0))) __PYX_ERR(0, 341, __pyx_L33_error)
+        if (unlikely((PyDict_SetItem(__pyx_v_result, __pyx_n_u_overall_success, Py_False) < 0))) __PYX_ERR(0, 436, __pyx_L34_error)
 
-        /* "quote_appraisal.pyx":342
+        /* "quote_appraisal.pyx":437
  *         result['error'] = f"Unexpected error: {str(e)}"
  *         result['overall_success'] = False
  *         return result             # <<<<<<<<<<<<<<
@@ -6997,10 +8055,10 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-        goto __pyx_L32_return;
+        goto __pyx_L33_return;
       }
 
-      /* "quote_appraisal.pyx":339
+      /* "quote_appraisal.pyx":434
  *         result['overall_success'] = False
  *         return result
  *     except Exception as e:             # <<<<<<<<<<<<<<
@@ -7008,7 +8066,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
  *         result['overall_success'] = False
  */
       /*finally:*/ {
-        __pyx_L33_error:;
+        __pyx_L34_error:;
         /*exception exit:*/{
           __Pyx_PyThreadState_declare
           __Pyx_PyThreadState_assign
@@ -7041,7 +8099,7 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
           __pyx_lineno = __pyx_t_12; __pyx_clineno = __pyx_t_7; __pyx_filename = __pyx_t_21;
           goto __pyx_L5_except_error;
         }
-        __pyx_L32_return: {
+        __pyx_L33_return: {
           __pyx_t_14 = __pyx_r;
           __pyx_r = 0;
           __Pyx_DECREF(__pyx_v_e); __pyx_v_e = 0;
@@ -7053,12 +8111,12 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
     }
     goto __pyx_L5_except_error;
 
-    /* "quote_appraisal.pyx":282
+    /* "quote_appraisal.pyx":366
  *     }
  * 
  *     try:             # <<<<<<<<<<<<<<
- * 
- *         quote_type = check_quote_type(quote_data)
+ *         #
+ *         version_info = get_dcap_version_info()
  */
     __pyx_L5_except_error:;
     __Pyx_XGIVEREF(__pyx_t_2);
@@ -7080,12 +8138,12 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
     goto __pyx_L0;
   }
 
-  /* "quote_appraisal.pyx":270
- * 
+  /* "quote_appraisal.pyx":353
+ *     }
  * 
  * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,             # <<<<<<<<<<<<<<
  *                      list policy_keys, bint verbose=False):
- * 
+ *     """ ECDSA Quote """
  */
 
   /* function exit code */
@@ -7099,12 +8157,14 @@ static PyObject *__pyx_pf_15quote_appraisal_10ecdsa_quote_verify(CYTHON_UNUSED P
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_result);
+  __Pyx_XDECREF(__pyx_v_version_info);
   __Pyx_XDECREF(__pyx_v_quote_type);
   __Pyx_XDECREF(__pyx_v_jwt_token);
   __Pyx_XDECREF(__pyx_v_policies);
   __Pyx_XDECREF(__pyx_v_appraisal_result);
   __Pyx_XDECREF(__pyx_v_auth_result);
   __Pyx_XDECREF(__pyx_v_owner_result);
+  __Pyx_XDECREF(__pyx_v_api_name);
   __Pyx_XDECREF(__pyx_v_e);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -7128,6 +8188,8 @@ static PyMethodDef __pyx_methods[] = {
 static int __Pyx_CreateStringTabAndInitStrings(void) {
   __Pyx_StringTabEntry __pyx_string_tab[] = {
     {&__pyx_kp_u_04x, __pyx_k_04x, sizeof(__pyx_k_04x), 0, 1, 0, 0},
+    {&__pyx_kp_u_1_22, __pyx_k_1_22, sizeof(__pyx_k_1_22), 0, 1, 0, 0},
+    {&__pyx_kp_u_1_22_2, __pyx_k_1_22_2, sizeof(__pyx_k_1_22_2), 0, 1, 0, 0},
     {&__pyx_n_s_AUTH_FAILURE, __pyx_k_AUTH_FAILURE, sizeof(__pyx_k_AUTH_FAILURE), 0, 0, 1, 1},
     {&__pyx_n_s_AUTH_INCOMPLETE, __pyx_k_AUTH_INCOMPLETE, sizeof(__pyx_k_AUTH_INCOMPLETE), 0, 0, 1, 1},
     {&__pyx_n_s_AUTH_SUCCESS, __pyx_k_AUTH_SUCCESS, sizeof(__pyx_k_AUTH_SUCCESS), 0, 0, 1, 1},
@@ -7140,18 +8202,22 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_kp_u_Failed_to_allocate_key_array, __pyx_k_Failed_to_allocate_key_array, sizeof(__pyx_k_Failed_to_allocate_key_array), 0, 1, 0, 0},
     {&__pyx_kp_u_Failed_to_allocate_policy_array, __pyx_k_Failed_to_allocate_policy_array, sizeof(__pyx_k_Failed_to_allocate_policy_array), 0, 1, 0, 0},
     {&__pyx_kp_u_Info_Authenticate_policy_owner_s, __pyx_k_Info_Authenticate_policy_owner_s, sizeof(__pyx_k_Info_Authenticate_policy_owner_s), 0, 1, 0, 0},
+    {&__pyx_kp_u_Info_DCAP_API_version, __pyx_k_Info_DCAP_API_version, sizeof(__pyx_k_Info_DCAP_API_version), 0, 1, 0, 0},
     {&__pyx_kp_u_Info_Policies_are_authenticated, __pyx_k_Info_Policies_are_authenticated, sizeof(__pyx_k_Info_Policies_are_authenticated), 0, 1, 0, 0},
     {&__pyx_kp_u_Info_Quote_type, __pyx_k_Info_Quote_type, sizeof(__pyx_k_Info_Quote_type), 0, 1, 0, 0},
+    {&__pyx_kp_u_Info_Using_function, __pyx_k_Info_Using_function, sizeof(__pyx_k_Info_Using_function), 0, 1, 0, 0},
     {&__pyx_kp_u_Info_tee_appraise_verification_t, __pyx_k_Info_tee_appraise_verification_t, sizeof(__pyx_k_Info_tee_appraise_verification_t), 0, 1, 0, 0},
     {&__pyx_kp_u_Info_tee_verify_quote_qvt_succes, __pyx_k_Info_tee_verify_quote_qvt_succes, sizeof(__pyx_k_Info_tee_verify_quote_qvt_succes), 0, 1, 0, 0},
     {&__pyx_kp_u_Key, __pyx_k_Key, sizeof(__pyx_k_Key), 0, 1, 0, 0},
+    {&__pyx_kp_u_Legacy_policy_authentication_fai, __pyx_k_Legacy_policy_authentication_fai, sizeof(__pyx_k_Legacy_policy_authentication_fai), 0, 1, 0, 0},
     {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
+    {&__pyx_kp_u_None, __pyx_k_None, sizeof(__pyx_k_None), 0, 1, 0, 0},
     {&__pyx_n_s_POLICY_CUSTOMIZED, __pyx_k_POLICY_CUSTOMIZED, sizeof(__pyx_k_POLICY_CUSTOMIZED), 0, 0, 1, 1},
     {&__pyx_n_s_POLICY_DEFAULT_STRICT, __pyx_k_POLICY_DEFAULT_STRICT, sizeof(__pyx_k_POLICY_DEFAULT_STRICT), 0, 0, 1, 1},
     {&__pyx_kp_u_Policy, __pyx_k_Policy, sizeof(__pyx_k_Policy), 0, 1, 0, 0},
     {&__pyx_kp_u_Policy_owner_authentication_fail, __pyx_k_Policy_owner_authentication_fail, sizeof(__pyx_k_Policy_owner_authentication_fail), 0, 1, 0, 0},
     {&__pyx_n_s_QuoteVerifyError, __pyx_k_QuoteVerifyError, sizeof(__pyx_k_QuoteVerifyError), 0, 0, 1, 1},
-    {&__pyx_kp_s_Quote_verfication_error, __pyx_k_Quote_verfication_error, sizeof(__pyx_k_Quote_verfication_error), 0, 0, 1, 0},
+    {&__pyx_kp_s_Quote_verification_error, __pyx_k_Quote_verification_error, sizeof(__pyx_k_Quote_verification_error), 0, 0, 1, 0},
     {&__pyx_kp_u_Quote_verification_failed_0x, __pyx_k_Quote_verification_failed_0x, sizeof(__pyx_k_Quote_verification_failed_0x), 0, 1, 0, 0},
     {&__pyx_n_u_SGX, __pyx_k_SGX, sizeof(__pyx_k_SGX), 0, 1, 0, 1},
     {&__pyx_n_s_SGX_QUOTE_TYPE, __pyx_k_SGX_QUOTE_TYPE, sizeof(__pyx_k_SGX_QUOTE_TYPE), 0, 0, 1, 1},
@@ -7162,8 +8228,10 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_kp_u_Unexpected_error, __pyx_k_Unexpected_error, sizeof(__pyx_k_Unexpected_error), 0, 1, 0, 0},
     {&__pyx_kp_u_Unknown_quote_type, __pyx_k_Unknown_quote_type, sizeof(__pyx_k_Unknown_quote_type), 0, 1, 0, 0},
     {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
-    {&__pyx_n_s__22, __pyx_k__22, sizeof(__pyx_k__22), 0, 0, 1, 1},
+    {&__pyx_n_s__24, __pyx_k__24, sizeof(__pyx_k__24), 0, 0, 1, 1},
     {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
+    {&__pyx_n_s_api_name, __pyx_k_api_name, sizeof(__pyx_k_api_name), 0, 0, 1, 1},
+    {&__pyx_n_u_api_version, __pyx_k_api_version, sizeof(__pyx_k_api_version), 0, 1, 0, 1},
     {&__pyx_n_s_appraisal_result, __pyx_k_appraisal_result, sizeof(__pyx_k_appraisal_result), 0, 0, 1, 1},
     {&__pyx_n_u_appraisal_success, __pyx_k_appraisal_success, sizeof(__pyx_k_appraisal_success), 0, 1, 0, 1},
     {&__pyx_n_s_appraise_verification_token, __pyx_k_appraise_verification_token, sizeof(__pyx_k_appraise_verification_token), 0, 0, 1, 1},
@@ -7178,6 +8246,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_check_quote_type, __pyx_k_check_quote_type, sizeof(__pyx_k_check_quote_type), 0, 0, 1, 1},
     {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
     {&__pyx_n_s_current_time, __pyx_k_current_time, sizeof(__pyx_k_current_time), 0, 0, 1, 1},
+    {&__pyx_n_u_dcap_version, __pyx_k_dcap_version, sizeof(__pyx_k_dcap_version), 0, 1, 0, 1},
     {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
     {&__pyx_n_s_doc, __pyx_k_doc, sizeof(__pyx_k_doc), 0, 0, 1, 1},
     {&__pyx_n_s_e, __pyx_k_e, sizeof(__pyx_k_e), 0, 0, 1, 1},
@@ -7185,14 +8254,16 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
     {&__pyx_n_s_endswith, __pyx_k_endswith, sizeof(__pyx_k_endswith), 0, 0, 1, 1},
     {&__pyx_n_u_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 1, 0, 1},
+    {&__pyx_n_s_get_dcap_version_info, __pyx_k_get_dcap_version_info, sizeof(__pyx_k_get_dcap_version_info), 0, 0, 1, 1},
+    {&__pyx_n_s_has_new_api, __pyx_k_has_new_api, sizeof(__pyx_k_has_new_api), 0, 0, 1, 1},
+    {&__pyx_n_u_has_policy_owner_function, __pyx_k_has_policy_owner_function, sizeof(__pyx_k_has_policy_owner_function), 0, 1, 0, 1},
     {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
     {&__pyx_n_s_init_subclass, __pyx_k_init_subclass, sizeof(__pyx_k_init_subclass), 0, 0, 1, 1},
     {&__pyx_n_s_is_coroutine, __pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 0, 1, 1},
     {&__pyx_n_s_jwt_size, __pyx_k_jwt_size, sizeof(__pyx_k_jwt_size), 0, 0, 1, 1},
     {&__pyx_n_s_jwt_token, __pyx_k_jwt_token, sizeof(__pyx_k_jwt_token), 0, 0, 1, 1},
-    {&__pyx_n_s_key, __pyx_k_key, sizeof(__pyx_k_key), 0, 0, 1, 1},
     {&__pyx_n_s_key_count, __pyx_k_key_count, sizeof(__pyx_k_key_count), 0, 0, 1, 1},
-    {&__pyx_n_s_key_refs, __pyx_k_key_refs, sizeof(__pyx_k_key_refs), 0, 0, 1, 1},
+    {&__pyx_kp_u_legacy_authentication, __pyx_k_legacy_authentication, sizeof(__pyx_k_legacy_authentication), 0, 1, 0, 0},
     {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
     {&__pyx_n_s_metaclass, __pyx_k_metaclass, sizeof(__pyx_k_metaclass), 0, 0, 1, 1},
     {&__pyx_n_s_module, __pyx_k_module, sizeof(__pyx_k_module), 0, 0, 1, 1},
@@ -7227,29 +8298,34 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
     {&__pyx_n_s_quote_type, __pyx_k_quote_type, sizeof(__pyx_k_quote_type), 0, 0, 1, 1},
     {&__pyx_n_u_quote_type, __pyx_k_quote_type, sizeof(__pyx_k_quote_type), 0, 1, 0, 1},
     {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
+    {&__pyx_n_u_recommended_function, __pyx_k_recommended_function, sizeof(__pyx_k_recommended_function), 0, 1, 0, 1},
     {&__pyx_n_s_result, __pyx_k_result, sizeof(__pyx_k_result), 0, 0, 1, 1},
     {&__pyx_n_s_result_size, __pyx_k_result_size, sizeof(__pyx_k_result_size), 0, 0, 1, 1},
     {&__pyx_n_s_result_token, __pyx_k_result_token, sizeof(__pyx_k_result_token), 0, 0, 1, 1},
     {&__pyx_n_s_ret, __pyx_k_ret, sizeof(__pyx_k_ret), 0, 0, 1, 1},
     {&__pyx_n_s_set_name, __pyx_k_set_name, sizeof(__pyx_k_set_name), 0, 0, 1, 1},
     {&__pyx_n_s_super, __pyx_k_super, sizeof(__pyx_k_super), 0, 0, 1, 1},
+    {&__pyx_n_u_tee_authenticate_appraisal_resul, __pyx_k_tee_authenticate_appraisal_resul, sizeof(__pyx_k_tee_authenticate_appraisal_resul), 0, 1, 0, 1},
+    {&__pyx_n_u_tee_authenticate_policy_owner, __pyx_k_tee_authenticate_policy_owner, sizeof(__pyx_k_tee_authenticate_policy_owner), 0, 1, 0, 1},
     {&__pyx_n_s_tenant_policy, __pyx_k_tenant_policy, sizeof(__pyx_k_tenant_policy), 0, 0, 1, 1},
     {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
+    {&__pyx_n_s_use_new_api, __pyx_k_use_new_api, sizeof(__pyx_k_use_new_api), 0, 0, 1, 1},
     {&__pyx_kp_u_utf_8, __pyx_k_utf_8, sizeof(__pyx_k_utf_8), 0, 1, 0, 0},
     {&__pyx_n_s_verbose, __pyx_k_verbose, sizeof(__pyx_k_verbose), 0, 0, 1, 1},
     {&__pyx_n_s_verify_quote_qvt, __pyx_k_verify_quote_qvt, sizeof(__pyx_k_verify_quote_qvt), 0, 0, 1, 1},
     {&__pyx_n_u_verify_success, __pyx_k_verify_success, sizeof(__pyx_k_verify_success), 0, 1, 0, 1},
+    {&__pyx_n_s_version_info, __pyx_k_version_info, sizeof(__pyx_k_version_info), 0, 0, 1, 1},
     {0, 0, 0, 0, 0, 0, 0}
   };
   return __Pyx_InitStrings(__pyx_string_tab);
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 136, __pyx_L1_error)
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 140, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 145, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 150, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 293, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 155, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 372, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -7260,165 +8336,169 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "quote_appraisal.pyx":136
+  /* "quote_appraisal.pyx":151
  * 
  *     if n_qaps == 0:
  *         raise ValueError("At least one policy file is required")             # <<<<<<<<<<<<<<
  * 
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_At_least_one_policy_file_is_requ); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_At_least_one_policy_file_is_requ); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "quote_appraisal.pyx":140
+  /* "quote_appraisal.pyx":155
  *     p_qaps = <uint8_t**>malloc(n_qaps * sizeof(uint8_t*))
  *     if p_qaps == NULL:
  *         raise MemoryError("Failed to allocate policy array")             # <<<<<<<<<<<<<<
  * 
  *     policy_refs = []
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_Failed_to_allocate_policy_array); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_Failed_to_allocate_policy_array); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "quote_appraisal.pyx":217
+  /* "quote_appraisal.pyx":237
  * 
  *     if key_count == 0:
  *         raise ValueError("At least one policy key is required")             # <<<<<<<<<<<<<<
  * 
- *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))
+ *     #
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_At_least_one_policy_key_is_requi); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 217, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_At_least_one_policy_key_is_requi); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "quote_appraisal.pyx":221
+  /* "quote_appraisal.pyx":261
  *     p_keys = <const uint8_t**>malloc(key_count * sizeof(uint8_t*))
  *     if p_keys == NULL:
  *         raise MemoryError("Failed to allocate key array")             # <<<<<<<<<<<<<<
  * 
  *     key_refs = []
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_Failed_to_allocate_key_array); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 221, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_Failed_to_allocate_key_array); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "quote_appraisal.pyx":300
+  /* "quote_appraisal.pyx":392
  * 
  *         if verbose:
  *             print("Info: tee_verify_quote_qvt successfully returned")             # <<<<<<<<<<<<<<
  * 
- *         policies = [tenant_policy, platform_policy]
+ *         #  token
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Info_tee_verify_quote_qvt_succes); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 300, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Info_tee_verify_quote_qvt_succes); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 392, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "quote_appraisal.pyx":308
+  /* "quote_appraisal.pyx":400
  * 
  *         if verbose:
  *             print("Info: tee_appraise_verification_token successfully returned")             # <<<<<<<<<<<<<<
  * 
- *         auth_result = authenticate_appraisal_result(appraisal_result, tenant_policy, platform_policy)
+ *         #
  */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Info_tee_appraise_verification_t); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 308, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Info_tee_appraise_verification_t); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "quote_appraisal.pyx":316
+  /* "quote_appraisal.pyx":409
  *             result['auth_success'] = True
  *             if verbose:
  *                 print("Info: Policies are authenticated Successfully")             # <<<<<<<<<<<<<<
  *         elif auth_result == AUTH_FAILURE:
  *             raise QuoteVerifyError("Authentication failures occur in some policies")
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_Info_Policies_are_authenticated); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 316, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_Info_Policies_are_authenticated); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 409, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "quote_appraisal.pyx":328
- *             result['owner_auth_success'] = True
- *             if verbose:
- *                 print("Info: Authenticate policy owner successfully")             # <<<<<<<<<<<<<<
- *         else:
- *             raise QuoteVerifyError(f"Authenticate policy owner failed: {owner_result}")
- */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Info_Authenticate_policy_owner_s); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 328, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-
-  /* "quote_appraisal.pyx":102
- * 
+  /* "quote_appraisal.pyx":118
+ *     return _has_policy_owner_func
  * 
  * def verify_quote_qvt(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote  JWT token"""
  *     cdef:
  */
-  __pyx_tuple__10 = PyTuple_Pack(7, __pyx_n_s_quote_data, __pyx_n_s_p_quote, __pyx_n_s_quote_size, __pyx_n_s_jwt_size, __pyx_n_s_p_jwt, __pyx_n_s_ret, __pyx_n_s_jwt_token); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 102, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_verify_quote_qvt, 102, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(7, __pyx_n_s_quote_data, __pyx_n_s_p_quote, __pyx_n_s_quote_size, __pyx_n_s_jwt_size, __pyx_n_s_p_jwt, __pyx_n_s_ret, __pyx_n_s_jwt_token); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_verify_quote_qvt, 118, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 118, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":123
- * 
+  /* "quote_appraisal.pyx":138
+ *         tee_free_verify_quote_qvt(p_jwt, &jwt_size)
  * 
  * def appraise_verification_token(bytes jwt_token, list policy_files, time_t check_date=0):             # <<<<<<<<<<<<<<
- * 
+ *     """ token"""
  *     cdef:
  */
-  __pyx_tuple__12 = PyTuple_Pack(14, __pyx_n_s_jwt_token, __pyx_n_s_policy_files, __pyx_n_s_check_date, __pyx_n_s_p_jwt, __pyx_n_s_p_qaps, __pyx_n_s_n_qaps, __pyx_n_s_current_time, __pyx_n_s_result_size, __pyx_n_s_p_result, __pyx_n_s_ret, __pyx_n_s_i, __pyx_n_s_policy_refs, __pyx_n_s_policy, __pyx_n_s_result_token); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 123, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
-  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_appraise_verification_token, 123, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(14, __pyx_n_s_jwt_token, __pyx_n_s_policy_files, __pyx_n_s_check_date, __pyx_n_s_p_jwt, __pyx_n_s_p_qaps, __pyx_n_s_n_qaps, __pyx_n_s_current_time, __pyx_n_s_result_size, __pyx_n_s_p_result, __pyx_n_s_ret, __pyx_n_s_i, __pyx_n_s_policy_refs, __pyx_n_s_policy, __pyx_n_s_result_token); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 14, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_appraise_verification_token, 138, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 138, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":173
+  /* "quote_appraisal.pyx":187
+ *         free(p_qaps)
  * 
- * 
- * def authenticate_appraisal_result(bytes appraisal_result, bytes tenant_policy, bytes platform_policy):             # <<<<<<<<<<<<<<
- * 
+ * def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platform_policy=None):             # <<<<<<<<<<<<<<
+ *     """"""
  *     cdef:
  */
-  __pyx_tuple__14 = PyTuple_Pack(7, __pyx_n_s_appraisal_result, __pyx_n_s_tenant_policy, __pyx_n_s_platform_policy, __pyx_n_s_p_result, __pyx_n_s_bundle, __pyx_n_s_auth_result, __pyx_n_s_ret); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 173, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__14, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_authenticate_appraisal_result, 173, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(7, __pyx_n_s_appraisal_result, __pyx_n_s_tenant_policy, __pyx_n_s_platform_policy, __pyx_n_s_p_result, __pyx_n_s_bundle, __pyx_n_s_auth_result, __pyx_n_s_ret); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_authenticate_appraisal_result, 187, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(1, Py_None); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
 
-  /* "quote_appraisal.pyx":204
- * 
+  /* "quote_appraisal.pyx":223
+ *     return <int>auth_result
  * 
  * def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
- * 
+ *     """ - """
  *     cdef:
  */
-  __pyx_tuple__16 = PyTuple_Pack(13, __pyx_n_s_quote_data, __pyx_n_s_appraisal_result, __pyx_n_s_policy_keys, __pyx_n_s_p_quote, __pyx_n_s_quote_size, __pyx_n_s_p_result, __pyx_n_s_p_keys, __pyx_n_s_key_count, __pyx_n_s_auth_result, __pyx_n_s_ret, __pyx_n_s_i, __pyx_n_s_key_refs, __pyx_n_s_key); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(12, __pyx_n_s_quote_data, __pyx_n_s_appraisal_result, __pyx_n_s_policy_keys, __pyx_n_s_p_quote, __pyx_n_s_quote_size, __pyx_n_s_p_result, __pyx_n_s_p_keys, __pyx_n_s_key_count, __pyx_n_s_auth_result, __pyx_n_s_ret, __pyx_n_s_i, __pyx_n_s_use_new_api); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_authenticate_policy_owner, 204, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 12, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_authenticate_policy_owner, 223, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 223, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":251
- * 
+  /* "quote_appraisal.pyx":327
+ *     return <int>auth_result
  * 
  * def check_quote_type(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote """
  *     if len(quote_data) < 8:
  */
-  __pyx_tuple__18 = PyTuple_Pack(3, __pyx_n_s_quote_data, __pyx_n_s_p_data, __pyx_n_s_quote_type); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(3, __pyx_n_s_quote_data, __pyx_n_s_p_data, __pyx_n_s_quote_type); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_check_quote_type, 251, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_check_quote_type, 327, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 327, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":270
+  /* "quote_appraisal.pyx":344
+ *         return -1
  * 
+ * def get_dcap_version_info():             # <<<<<<<<<<<<<<
+ *     """ DCAP """
+ *     has_new_api = check_dcap_version()
+ */
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_n_s_has_new_api); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 344, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_get_dcap_version_info, 344, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 344, __pyx_L1_error)
+
+  /* "quote_appraisal.pyx":353
+ *     }
  * 
  * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,             # <<<<<<<<<<<<<<
  *                      list policy_keys, bint verbose=False):
- * 
+ *     """ ECDSA Quote """
  */
-  __pyx_tuple__20 = PyTuple_Pack(13, __pyx_n_s_quote_data, __pyx_n_s_tenant_policy, __pyx_n_s_platform_policy, __pyx_n_s_policy_keys, __pyx_n_s_verbose, __pyx_n_s_result, __pyx_n_s_quote_type, __pyx_n_s_jwt_token, __pyx_n_s_policies, __pyx_n_s_appraisal_result, __pyx_n_s_auth_result, __pyx_n_s_owner_result, __pyx_n_s_e); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 270, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_ecdsa_quote_verify, 270, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_tuple__22 = PyTuple_Pack(15, __pyx_n_s_quote_data, __pyx_n_s_tenant_policy, __pyx_n_s_platform_policy, __pyx_n_s_policy_keys, __pyx_n_s_verbose, __pyx_n_s_result, __pyx_n_s_version_info, __pyx_n_s_quote_type, __pyx_n_s_jwt_token, __pyx_n_s_policies, __pyx_n_s_appraisal_result, __pyx_n_s_auth_result, __pyx_n_s_owner_result, __pyx_n_s_api_name, __pyx_n_s_e); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 353, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(5, 0, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_quote_appraisal_pyx, __pyx_n_s_ecdsa_quote_verify, 353, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -7428,8 +8508,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 /* #### Code section: init_constants ### */
 
 static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
-  __pyx_umethod_PyBytes_Type_encode.type = (PyObject*)&PyBytes_Type;
-  __pyx_umethod_PyBytes_Type_encode.method_name = &__pyx_n_s_encode;
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -7791,195 +8869,226 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "quote_appraisal.pyx":84
+  /* "quote_appraisal.pyx":87
  * 
- * 
+ * #
  * SGX_QUOTE_TYPE = 0x0             # <<<<<<<<<<<<<<
  * TDX_QUOTE_TYPE = 0x81
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SGX_QUOTE_TYPE, __pyx_int_0) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SGX_QUOTE_TYPE, __pyx_int_0) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":85
- * 
+  /* "quote_appraisal.pyx":88
+ * #
  * SGX_QUOTE_TYPE = 0x0
  * TDX_QUOTE_TYPE = 0x81             # <<<<<<<<<<<<<<
  * 
  * POLICY_DEFAULT_STRICT = 0
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TDX_QUOTE_TYPE, __pyx_int_129) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TDX_QUOTE_TYPE, __pyx_int_129) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":87
+  /* "quote_appraisal.pyx":90
  * TDX_QUOTE_TYPE = 0x81
  * 
  * POLICY_DEFAULT_STRICT = 0             # <<<<<<<<<<<<<<
  * POLICY_CUSTOMIZED = 1
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_POLICY_DEFAULT_STRICT, __pyx_int_0) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_POLICY_DEFAULT_STRICT, __pyx_int_0) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":88
+  /* "quote_appraisal.pyx":91
  * 
  * POLICY_DEFAULT_STRICT = 0
  * POLICY_CUSTOMIZED = 1             # <<<<<<<<<<<<<<
  * 
- * 
+ * AUTH_SUCCESS = 0
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_POLICY_CUSTOMIZED, __pyx_int_1) < 0) __PYX_ERR(0, 88, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_POLICY_CUSTOMIZED, __pyx_int_1) < 0) __PYX_ERR(0, 91, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":91
- * 
+  /* "quote_appraisal.pyx":93
+ * POLICY_CUSTOMIZED = 1
  * 
  * AUTH_SUCCESS = 0             # <<<<<<<<<<<<<<
  * AUTH_FAILURE = 1
  * AUTH_INCOMPLETE = -1
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AUTH_SUCCESS, __pyx_int_0) < 0) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AUTH_SUCCESS, __pyx_int_0) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":92
+  /* "quote_appraisal.pyx":94
  * 
  * AUTH_SUCCESS = 0
  * AUTH_FAILURE = 1             # <<<<<<<<<<<<<<
  * AUTH_INCOMPLETE = -1
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AUTH_FAILURE, __pyx_int_1) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AUTH_FAILURE, __pyx_int_1) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
 
-  /* "quote_appraisal.pyx":93
+  /* "quote_appraisal.pyx":95
  * AUTH_SUCCESS = 0
  * AUTH_FAILURE = 1
  * AUTH_INCOMPLETE = -1             # <<<<<<<<<<<<<<
  * 
+ * #
+ */
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AUTH_INCOMPLETE, __pyx_int_neg_1) < 0) __PYX_ERR(0, 95, __pyx_L1_error)
+
+  /* "quote_appraisal.pyx":98
+ * 
+ * #
+ * cdef bint _version_checked = False             # <<<<<<<<<<<<<<
+ * cdef bint _has_policy_owner_func = False
  * 
  */
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_AUTH_INCOMPLETE, __pyx_int_neg_1) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_v_15quote_appraisal__version_checked = 0;
 
-  /* "quote_appraisal.pyx":97
+  /* "quote_appraisal.pyx":99
+ * #
+ * cdef bint _version_checked = False
+ * cdef bint _has_policy_owner_func = False             # <<<<<<<<<<<<<<
  * 
+ * class QuoteVerifyError(Exception):
+ */
+  __pyx_v_15quote_appraisal__has_policy_owner_func = 0;
+
+  /* "quote_appraisal.pyx":101
+ * cdef bint _has_policy_owner_func = False
  * 
  * class QuoteVerifyError(Exception):             # <<<<<<<<<<<<<<
- *     """Quote verfication error"""
+ *     """Quote verification error"""
  *     pass
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0]));
   __Pyx_GIVEREF((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0]));
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])))) __PYX_ERR(0, 97, __pyx_L1_error);
-  __pyx_t_3 = __Pyx_PEP560_update_bases(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])))) __PYX_ERR(0, 101, __pyx_L1_error);
+  __pyx_t_3 = __Pyx_PEP560_update_bases(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_CalculateMetaclass(NULL, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CalculateMetaclass(NULL, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_Py3MetaclassPrepare(__pyx_t_4, __pyx_t_3, __pyx_n_s_QuoteVerifyError, __pyx_n_s_QuoteVerifyError, (PyObject *) NULL, __pyx_n_s_quote_appraisal, __pyx_kp_s_Quote_verfication_error); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3MetaclassPrepare(__pyx_t_4, __pyx_t_3, __pyx_n_s_QuoteVerifyError, __pyx_n_s_QuoteVerifyError, (PyObject *) NULL, __pyx_n_s_quote_appraisal, __pyx_kp_s_Quote_verification_error); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   if (__pyx_t_3 != __pyx_t_2) {
-    if (unlikely((PyDict_SetItemString(__pyx_t_5, "__orig_bases__", __pyx_t_2) < 0))) __PYX_ERR(0, 97, __pyx_L1_error)
+    if (unlikely((PyDict_SetItemString(__pyx_t_5, "__orig_bases__", __pyx_t_2) < 0))) __PYX_ERR(0, 101, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_Py3ClassCreate(__pyx_t_4, __pyx_n_s_QuoteVerifyError, __pyx_t_3, __pyx_t_5, NULL, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Py3ClassCreate(__pyx_t_4, __pyx_n_s_QuoteVerifyError, __pyx_t_3, __pyx_t_5, NULL, 0, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_QuoteVerifyError, __pyx_t_2) < 0) __PYX_ERR(0, 97, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_QuoteVerifyError, __pyx_t_2) < 0) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "quote_appraisal.pyx":102
- * 
+  /* "quote_appraisal.pyx":118
+ *     return _has_policy_owner_func
  * 
  * def verify_quote_qvt(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote  JWT token"""
  *     cdef:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_1verify_quote_qvt, 0, __pyx_n_s_verify_quote_qvt, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__11)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_1verify_quote_qvt, 0, __pyx_n_s_verify_quote_qvt, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_verify_quote_qvt, __pyx_t_3) < 0) __PYX_ERR(0, 102, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_verify_quote_qvt, __pyx_t_3) < 0) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "quote_appraisal.pyx":123
- * 
+  /* "quote_appraisal.pyx":138
+ *         tee_free_verify_quote_qvt(p_jwt, &jwt_size)
  * 
  * def appraise_verification_token(bytes jwt_token, list policy_files, time_t check_date=0):             # <<<<<<<<<<<<<<
- * 
+ *     """ token"""
  *     cdef:
  */
-  __pyx_t_3 = __Pyx_PyInt_From_time_t(((time_t)0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_time_t(((time_t)0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_3appraise_verification_token, 0, __pyx_n_s_appraise_verification_token, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__13)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_3appraise_verification_token, 0, __pyx_n_s_appraise_verification_token, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_3, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_appraise_verification_token, __pyx_t_3) < 0) __PYX_ERR(0, 123, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_appraise_verification_token, __pyx_t_3) < 0) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "quote_appraisal.pyx":173
+  /* "quote_appraisal.pyx":187
+ *         free(p_qaps)
  * 
- * 
- * def authenticate_appraisal_result(bytes appraisal_result, bytes tenant_policy, bytes platform_policy):             # <<<<<<<<<<<<<<
- * 
+ * def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platform_policy=None):             # <<<<<<<<<<<<<<
+ *     """"""
  *     cdef:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_5authenticate_appraisal_result, 0, __pyx_n_s_authenticate_appraisal_result, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_5authenticate_appraisal_result, 0, __pyx_n_s_authenticate_appraisal_result, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_authenticate_appraisal_result, __pyx_t_3) < 0) __PYX_ERR(0, 173, __pyx_L1_error)
+  __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_3, __pyx_tuple__15);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_authenticate_appraisal_result, __pyx_t_3) < 0) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "quote_appraisal.pyx":204
- * 
+  /* "quote_appraisal.pyx":223
+ *     return <int>auth_result
  * 
  * def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):             # <<<<<<<<<<<<<<
- * 
+ *     """ - """
  *     cdef:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_7authenticate_policy_owner, 0, __pyx_n_s_authenticate_policy_owner, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_7authenticate_policy_owner, 0, __pyx_n_s_authenticate_policy_owner, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_authenticate_policy_owner, __pyx_t_3) < 0) __PYX_ERR(0, 204, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_authenticate_policy_owner, __pyx_t_3) < 0) __PYX_ERR(0, 223, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "quote_appraisal.pyx":251
- * 
+  /* "quote_appraisal.pyx":327
+ *     return <int>auth_result
  * 
  * def check_quote_type(bytes quote_data):             # <<<<<<<<<<<<<<
- * 
+ *     """ Quote """
  *     if len(quote_data) < 8:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_9check_quote_type, 0, __pyx_n_s_check_quote_type, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_9check_quote_type, 0, __pyx_n_s_check_quote_type, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_check_quote_type, __pyx_t_3) < 0) __PYX_ERR(0, 251, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_check_quote_type, __pyx_t_3) < 0) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "quote_appraisal.pyx":271
+  /* "quote_appraisal.pyx":344
+ *         return -1
+ * 
+ * def get_dcap_version_info():             # <<<<<<<<<<<<<<
+ *     """ DCAP """
+ *     has_new_api = check_dcap_version()
+ */
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_11get_dcap_version_info, 0, __pyx_n_s_get_dcap_version_info, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 344, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_get_dcap_version_info, __pyx_t_3) < 0) __PYX_ERR(0, 344, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+
+  /* "quote_appraisal.pyx":354
  * 
  * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,
  *                      list policy_keys, bint verbose=False):             # <<<<<<<<<<<<<<
- * 
+ *     """ ECDSA Quote """
  *     result = {
  */
-  __pyx_t_3 = __Pyx_PyBool_FromLong(((int)0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBool_FromLong(((int)0)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "quote_appraisal.pyx":270
- * 
+  /* "quote_appraisal.pyx":353
+ *     }
  * 
  * def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy,             # <<<<<<<<<<<<<<
  *                      list policy_keys, bint verbose=False):
- * 
+ *     """ ECDSA Quote """
  */
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_3);
-  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error);
+  if (__Pyx_PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error);
   __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_11ecdsa_quote_verify, 0, __pyx_n_s_ecdsa_quote_verify, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__21)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_15quote_appraisal_13ecdsa_quote_verify, 0, __pyx_n_s_ecdsa_quote_verify, NULL, __pyx_n_s_quote_appraisal, __pyx_d, ((PyObject *)__pyx_codeobj__23)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_CyFunction_SetDefaultsTuple(__pyx_t_3, __pyx_t_4);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ecdsa_quote_verify, __pyx_t_3) < 0) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ecdsa_quote_verify, __pyx_t_3) < 0) __PYX_ERR(0, 353, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "quote_appraisal.pyx":1
@@ -9763,206 +10872,6 @@ bad:
 #endif
 }
 
-/* UnpackUnboundCMethod */
-static PyObject *__Pyx_SelflessCall(PyObject *method, PyObject *args, PyObject *kwargs) {
-    PyObject *result;
-    PyObject *selfless_args = PyTuple_GetSlice(args, 1, PyTuple_Size(args));
-    if (unlikely(!selfless_args)) return NULL;
-    result = PyObject_Call(method, selfless_args, kwargs);
-    Py_DECREF(selfless_args);
-    return result;
-}
-static PyMethodDef __Pyx_UnboundCMethod_Def = {
-     "CythonUnboundCMethod",
-     __PYX_REINTERPRET_FUNCION(PyCFunction, __Pyx_SelflessCall),
-     METH_VARARGS | METH_KEYWORDS,
-     NULL
-};
-static int __Pyx_TryUnpackUnboundCMethod(__Pyx_CachedCFunction* target) {
-    PyObject *method;
-    method = __Pyx_PyObject_GetAttrStr(target->type, *target->method_name);
-    if (unlikely(!method))
-        return -1;
-    target->method = method;
-#if CYTHON_COMPILING_IN_CPYTHON
-    #if PY_MAJOR_VERSION >= 3
-    if (likely(__Pyx_TypeCheck(method, &PyMethodDescr_Type)))
-    #else
-    if (likely(!__Pyx_CyOrPyCFunction_Check(method)))
-    #endif
-    {
-        PyMethodDescrObject *descr = (PyMethodDescrObject*) method;
-        target->func = descr->d_method->ml_meth;
-        target->flag = descr->d_method->ml_flags & ~(METH_CLASS | METH_STATIC | METH_COEXIST | METH_STACKLESS);
-    } else
-#endif
-#if CYTHON_COMPILING_IN_PYPY
-#else
-    if (PyCFunction_Check(method))
-#endif
-    {
-        PyObject *self;
-        int self_found;
-#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
-        self = PyObject_GetAttrString(method, "__self__");
-        if (!self) {
-            PyErr_Clear();
-        }
-#else
-        self = PyCFunction_GET_SELF(method);
-#endif
-        self_found = (self && self != Py_None);
-#if CYTHON_COMPILING_IN_LIMITED_API || CYTHON_COMPILING_IN_PYPY
-        Py_XDECREF(self);
-#endif
-        if (self_found) {
-            PyObject *unbound_method = PyCFunction_New(&__Pyx_UnboundCMethod_Def, method);
-            if (unlikely(!unbound_method)) return -1;
-            Py_DECREF(method);
-            target->method = unbound_method;
-        }
-    }
-    return 0;
-}
-
-/* CallUnboundCMethod1 */
-#if CYTHON_COMPILING_IN_CPYTHON
-static CYTHON_INLINE PyObject* __Pyx_CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg) {
-    if (likely(cfunc->func)) {
-        int flag = cfunc->flag;
-        if (flag == METH_O) {
-            return (*(cfunc->func))(self, arg);
-        } else if ((PY_VERSION_HEX >= 0x030600B1) && flag == METH_FASTCALL) {
-            #if PY_VERSION_HEX >= 0x030700A0
-                return (*(__Pyx_PyCFunctionFast)(void*)(PyCFunction)cfunc->func)(self, &arg, 1);
-            #else
-                return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
-            #endif
-        } else if ((PY_VERSION_HEX >= 0x030700A0) && flag == (METH_FASTCALL | METH_KEYWORDS)) {
-            return (*(__Pyx_PyCFunctionFastWithKeywords)(void*)(PyCFunction)cfunc->func)(self, &arg, 1, NULL);
-        }
-    }
-    return __Pyx__CallUnboundCMethod1(cfunc, self, arg);
-}
-#endif
-static PyObject* __Pyx__CallUnboundCMethod1(__Pyx_CachedCFunction* cfunc, PyObject* self, PyObject* arg){
-    PyObject *args, *result = NULL;
-    if (unlikely(!cfunc->func && !cfunc->method) && unlikely(__Pyx_TryUnpackUnboundCMethod(cfunc) < 0)) return NULL;
-#if CYTHON_COMPILING_IN_CPYTHON
-    if (cfunc->func && (cfunc->flag & METH_VARARGS)) {
-        args = PyTuple_New(1);
-        if (unlikely(!args)) goto bad;
-        Py_INCREF(arg);
-        PyTuple_SET_ITEM(args, 0, arg);
-        if (cfunc->flag & METH_KEYWORDS)
-            result = (*(PyCFunctionWithKeywords)(void*)(PyCFunction)cfunc->func)(self, args, NULL);
-        else
-            result = (*cfunc->func)(self, args);
-    } else {
-        args = PyTuple_New(2);
-        if (unlikely(!args)) goto bad;
-        Py_INCREF(self);
-        PyTuple_SET_ITEM(args, 0, self);
-        Py_INCREF(arg);
-        PyTuple_SET_ITEM(args, 1, arg);
-        result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
-    }
-#else
-    args = PyTuple_Pack(2, self, arg);
-    if (unlikely(!args)) goto bad;
-    result = __Pyx_PyObject_Call(cfunc->method, args, NULL);
-#endif
-bad:
-    Py_XDECREF(args);
-    return result;
-}
-
-/* RaiseUnexpectedTypeError */
-static int
-__Pyx_RaiseUnexpectedTypeError(const char *expected, PyObject *obj)
-{
-    __Pyx_TypeName obj_type_name = __Pyx_PyType_GetName(Py_TYPE(obj));
-    PyErr_Format(PyExc_TypeError, "Expected %s, got " __Pyx_FMT_TYPENAME,
-                 expected, obj_type_name);
-    __Pyx_DECREF_TypeName(obj_type_name);
-    return 0;
-}
-
-/* bytes_tailmatch */
-static int __Pyx_PyBytes_SingleTailmatch(PyObject* self, PyObject* arg,
-                                         Py_ssize_t start, Py_ssize_t end, int direction) {
-    const char* self_ptr = PyBytes_AS_STRING(self);
-    Py_ssize_t self_len = PyBytes_GET_SIZE(self);
-    const char* sub_ptr;
-    Py_ssize_t sub_len;
-    int retval;
-    Py_buffer view;
-    view.obj = NULL;
-    if ( PyBytes_Check(arg) ) {
-        sub_ptr = PyBytes_AS_STRING(arg);
-        sub_len = PyBytes_GET_SIZE(arg);
-    }
-#if PY_MAJOR_VERSION < 3
-    else if ( PyUnicode_Check(arg) ) {
-        return (int) PyUnicode_Tailmatch(self, arg, start, end, direction);
-    }
-#endif
-    else {
-        if (unlikely(PyObject_GetBuffer(self, &view, PyBUF_SIMPLE) == -1))
-            return -1;
-        sub_ptr = (const char*) view.buf;
-        sub_len = view.len;
-    }
-    if (end > self_len)
-        end = self_len;
-    else if (end < 0)
-        end += self_len;
-    if (end < 0)
-        end = 0;
-    if (start < 0)
-        start += self_len;
-    if (start < 0)
-        start = 0;
-    if (direction > 0) {
-        if (end-sub_len > start)
-            start = end - sub_len;
-    }
-    if (start + sub_len <= end)
-        retval = !memcmp(self_ptr+start, sub_ptr, (size_t)sub_len);
-    else
-        retval = 0;
-    if (view.obj)
-        PyBuffer_Release(&view);
-    return retval;
-}
-static int __Pyx_PyBytes_TailmatchTuple(PyObject* self, PyObject* substrings,
-                                        Py_ssize_t start, Py_ssize_t end, int direction) {
-    Py_ssize_t i, count = PyTuple_GET_SIZE(substrings);
-    for (i = 0; i < count; i++) {
-        int result;
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        result = __Pyx_PyBytes_SingleTailmatch(self, PyTuple_GET_ITEM(substrings, i),
-                                               start, end, direction);
-#else
-        PyObject* sub = PySequence_ITEM(substrings, i);
-        if (unlikely(!sub)) return -1;
-        result = __Pyx_PyBytes_SingleTailmatch(self, sub, start, end, direction);
-        Py_DECREF(sub);
-#endif
-        if (result) {
-            return result;
-        }
-    }
-    return 0;
-}
-static int __Pyx_PyBytes_Tailmatch(PyObject* self, PyObject* substr,
-                                   Py_ssize_t start, Py_ssize_t end, int direction) {
-    if (unlikely(PyTuple_Check(substr))) {
-        return __Pyx_PyBytes_TailmatchTuple(self, substr, start, end, direction);
-    }
-    return __Pyx_PyBytes_SingleTailmatch(self, substr, start, end, direction);
-}
-
 /* DictGetItem */
 #if PY_MAJOR_VERSION >= 3 && !CYTHON_COMPILING_IN_PYPY
 static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
@@ -9986,6 +10895,13 @@ static PyObject *__Pyx_PyDict_GetItem(PyObject *d, PyObject* key) {
     return value;
 }
 #endif
+
+/* PyUnicode_Unicode */
+static CYTHON_INLINE PyObject* __Pyx_PyUnicode_Unicode(PyObject *obj) {
+    if (unlikely(obj == Py_None))
+        obj = __pyx_kp_u_None;
+    return __Pyx_NewRef(obj);
+}
 
 /* FastTypeChecks */
 #if CYTHON_COMPILING_IN_CPYTHON
@@ -12913,22 +13829,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_uint32_t(uint32_t value) {
     }
 }
 
-/* FormatTypeName */
-#if CYTHON_COMPILING_IN_LIMITED_API
-static __Pyx_TypeName
-__Pyx_PyType_GetName(PyTypeObject* tp)
-{
-    PyObject *name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
-                                               __pyx_n_s_name);
-    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
-        PyErr_Clear();
-        Py_XDECREF(name);
-        name = __Pyx_NewRef(__pyx_n_s__22);
-    }
-    return name;
-}
-#endif
-
 /* CIntToPy */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
@@ -12992,6 +13892,22 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
 #endif
     }
 }
+
+/* FormatTypeName */
+#if CYTHON_COMPILING_IN_LIMITED_API
+static __Pyx_TypeName
+__Pyx_PyType_GetName(PyTypeObject* tp)
+{
+    PyObject *name = __Pyx_PyObject_GetAttrStr((PyObject *)tp,
+                                               __pyx_n_s_name);
+    if (unlikely(name == NULL) || unlikely(!PyUnicode_Check(name))) {
+        PyErr_Clear();
+        Py_XDECREF(name);
+        name = __Pyx_NewRef(__pyx_n_s__24);
+    }
+    return name;
+}
+#endif
 
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {

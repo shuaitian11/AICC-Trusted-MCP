@@ -13,6 +13,7 @@ import json
 try:
     from bytedance.tdx_api.tdx_api import (
         DEFAULT_ATTEST_SERVICE_ENDPOINT,
+        appraise_quote_from_files,
         attest_tdx_quote,
         fetch_td_eventlog,
         get_raw_tdx_quote,
@@ -21,6 +22,7 @@ try:
 except ImportError:
     from tdx_api import (  # type: ignore
         DEFAULT_ATTEST_SERVICE_ENDPOINT,
+        appraise_quote_from_files,
         attest_tdx_quote,
         fetch_td_eventlog,
         get_raw_tdx_quote,
@@ -72,27 +74,72 @@ def main() -> int:
         action="store_true",
         help="Exit with code 1 if any call returns a non-200 status",
     )
+    parser.add_argument(
+        "--quote-file",
+        default=None,
+        help="Quote binary path for quote appraisal test",
+    )
+    parser.add_argument(
+        "--tenant-policy-file",
+        default=None,
+        help="Tenant policy file path for quote appraisal test",
+    )
+    parser.add_argument(
+        "--platform-policy-file",
+        default=None,
+        help="Optional platform policy file path for quote appraisal test",
+    )
+    parser.add_argument(
+        "--pubkey-file",
+        default=None,
+        help="Optional public key file for policy owner authentication",
+    )
+    parser.add_argument(
+        "--skip-appraisal",
+        action="store_true",
+        help="Skip quote appraisal call",
+    )
+    parser.add_argument(
+        "--appraisal-only",
+        action="store_true",
+        help="Run only quote appraisal test and skip other API calls",
+    )
     args = parser.parse_args()
 
     failures: list[str] = []
 
-    raw_quote = get_raw_tdx_quote()
-    _print_section("get_raw_tdx_quote", raw_quote)
-    _check_result("get_raw_tdx_quote", raw_quote, args.strict, failures)
+    if not args.appraisal_only:
+        raw_quote = get_raw_tdx_quote()
+        _print_section("get_raw_tdx_quote", raw_quote)
+        _check_result("get_raw_tdx_quote", raw_quote, args.strict, failures)
 
-    tee_status = get_tee_status()
-    _print_section("get_tee_status", tee_status)
-    _check_result("get_tee_status", tee_status, args.strict, failures)
+        tee_status = get_tee_status()
+        _print_section("get_tee_status", tee_status)
+        _check_result("get_tee_status", tee_status, args.strict, failures)
 
-    if not args.skip_attest:
-        attest_result = attest_tdx_quote(args.attest_url)
-        _print_section("attest_tdx_quote", attest_result)
-        _check_result("attest_tdx_quote", attest_result, args.strict, failures)
+        if not args.skip_attest:
+            attest_result = attest_tdx_quote(args.attest_url)
+            _print_section("attest_tdx_quote", attest_result)
+            _check_result("attest_tdx_quote", attest_result, args.strict, failures)
 
-    if not args.skip_eventlog:
-        eventlog_result = fetch_td_eventlog(output_file=args.eventlog_file)
-        _print_section("fetch_td_eventlog", eventlog_result)
-        _check_result("fetch_td_eventlog", eventlog_result, args.strict, failures)
+        if not args.skip_eventlog:
+            eventlog_result = fetch_td_eventlog(output_file=args.eventlog_file)
+            _print_section("fetch_td_eventlog", eventlog_result)
+            _check_result("fetch_td_eventlog", eventlog_result, args.strict, failures)
+
+    if not args.skip_appraisal:
+        if args.quote_file and args.tenant_policy_file:
+            appraisal_result = appraise_quote_from_files(
+                quote_file=args.quote_file,
+                tenant_policy_file=args.tenant_policy_file,
+                platform_policy_file=args.platform_policy_file,
+                pubkey_file=args.pubkey_file,
+                verbose=True,
+            )
+            _print_section("appraise_quote_from_files", appraisal_result)
+            _check_result("appraise_quote_from_files", appraisal_result, args.strict, failures)
+        else:
+            print("\n[SKIP] appraise_quote_from_files: provide --quote-file and --tenant-policy-file")
 
     if failures:
         print(f"\nCompleted with {len(failures)} failure(s): {', '.join(failures)}")
