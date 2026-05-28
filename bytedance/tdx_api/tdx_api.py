@@ -380,6 +380,18 @@ def appraise_quote_from_raw(
     verbose: bool = False,
 ) -> Dict[str, Any]:
     """Run quote appraisal using in-memory bytes payloads."""
+    result: Dict[str, Any] = {
+        "verify_success": False,
+        "appraisal_success": False,
+        "auth_success": None,
+        "owner_auth_success": None,
+        "overall_success": False,
+    }
+    if not policy_pubkeys:
+        result["warning"] = (
+            "Skipped policy owner authentication because policy_pubkeys were not provided."
+        )
+
     try:
         quote_appraisal = _import_quote_appraisal()
 
@@ -437,7 +449,13 @@ def appraise_quote_from_raw(
             "result": result,
         }
     except Exception as exc:
-        return {"status": 500, "error": f"Quote appraisal failed: {str(exc)}"}
+        error_message = f"Quote appraisal failed: {str(exc)}"
+        result["error"] = error_message
+        return {
+            "status": 500,
+            "error": error_message,
+            "result": result,
+        }
 
 
 __all__ = [

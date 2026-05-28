@@ -90,12 +90,22 @@ async def http_get_tee_status() -> Dict[str, Any]:
 
 @app.post("/api/quoteAppraisal")
 async def http_quote_appraisal(request: QuoteAppraisalRequest) -> Dict[str, Any]:
+    default_result: Dict[str, Any] = {
+        "verify_success": False,
+        "appraisal_success": False,
+        "auth_success": None,
+        "owner_auth_success": None,
+        "overall_success": False,
+        "warning": "Skipped policy owner authentication because policy_pubkeys were not provided.",
+    }
+
     try:
         quote_data = _decode_base64_payload(request.quote)
     except Exception as exc:
         return {
             "status": 400,
             "error": f"Invalid base64 quote payload: {str(exc)}",
+            "result": default_result,
         }
 
     policy_pubkeys = None
@@ -108,6 +118,10 @@ async def http_quote_appraisal(request: QuoteAppraisalRequest) -> Dict[str, Any]
             return {
                 "status": 400,
                 "error": f"Invalid base64 policy_pubkeys payload: {str(exc)}",
+                "result": {
+                    **default_result,
+                    "warning": None,
+                },
             }
 
     return appraise_quote_from_raw(
