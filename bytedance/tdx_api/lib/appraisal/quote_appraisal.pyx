@@ -9,7 +9,7 @@ from libc.stdlib cimport malloc, free
 from libc.time cimport time, time_t
 from libc.string cimport memset, memcpy
 
-# 版本检测相关
+# check version
 cdef extern from "dlfcn.h":
     void* dlsym(void* handle, const char* symbol)
     void* RTLD_DEFAULT
@@ -70,7 +70,7 @@ cdef extern from "sgx_dcap_qal.h":
         tee_policy_auth_result_t *result
     )
 
-    # 新版本函数 (DCAP 1.22+)
+    # new version api (DCAP 1.22+)
     quote3_error_t tee_authenticate_policy_owner(
         const uint8_t *p_quote,
         uint32_t quote_size,
@@ -83,7 +83,7 @@ cdef extern from "sgx_dcap_qal.h":
         void *p_qae_report_info
     )
 
-# 常量定义
+
 SGX_QUOTE_TYPE = 0x0
 TDX_QUOTE_TYPE = 0x81
 
@@ -94,7 +94,7 @@ AUTH_SUCCESS = 0
 AUTH_FAILURE = 1
 AUTH_INCOMPLETE = -1
 
-# 全局变量用于缓存版本检测结果
+
 cdef bint _version_checked = False
 cdef bint _has_policy_owner_func = False
 
@@ -103,7 +103,7 @@ class QuoteVerifyError(Exception):
     pass
 
 cdef bint check_dcap_version():
-    """检测 DCAP 版本，判断是否支持 tee_authenticate_policy_owner 函数"""
+    """check DCAP version, make sure it is dupport tee_authenticate_policy_owner or not"""
     global _version_checked, _has_policy_owner_func
     
     if _version_checked:
@@ -116,7 +116,6 @@ cdef bint check_dcap_version():
     return _has_policy_owner_func
 
 def verify_quote_qvt(bytes quote_data):
-    """验证 Quote 并返回 JWT token"""
     cdef:
         const uint8_t* p_quote = <const uint8_t*>quote_data
         uint32_t quote_size = len(quote_data)
@@ -136,7 +135,6 @@ def verify_quote_qvt(bytes quote_data):
         tee_free_verify_quote_qvt(p_jwt, &jwt_size)
 
 def appraise_verification_token(bytes jwt_token, list policy_files, time_t check_date=0):
-    """评估验证 token"""
     cdef:
         const uint8_t* p_jwt = <const uint8_t*>jwt_token
         uint8_t** p_qaps = NULL
@@ -185,7 +183,6 @@ def appraise_verification_token(bytes jwt_token, list policy_files, time_t check
         free(p_qaps)
 
 def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platform_policy=None):
-    """认证评估结果"""
     cdef:
         const uint8_t* p_result = <const uint8_t*>appraisal_result
         tee_policy_bundle_t bundle
@@ -221,7 +218,6 @@ def authenticate_appraisal_result(bytes appraisal_result, tenant_policy, platfor
     return <int>auth_result
 
 def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list policy_keys):
-    """认证策略所有者 - 兼容新旧版本"""
     cdef:
         const uint8_t* p_quote = <const uint8_t*>quote_data
         uint32_t quote_size = len(quote_data)
@@ -236,16 +232,14 @@ def authenticate_policy_owner(bytes quote_data, bytes appraisal_result, list pol
     if key_count == 0:
         raise ValueError("At least one policy key is required")
     
-    # 检查版本并选择合适的实现
     if use_new_api:
-        # 使用新版本 API (DCAP 1.22+)
+        # new version API (DCAP 1.22+)
         return _authenticate_policy_owner_new(quote_data, appraisal_result, policy_keys)
     else:
-        # 使用旧版本 API (DCAP < 1.22)
+        # old API (DCAP < 1.22)
         return _authenticate_policy_owner_legacy(appraisal_result, policy_keys)
 
 cdef int _authenticate_policy_owner_new(bytes quote_data, bytes appraisal_result, list policy_keys):
-    """新版本 API 实现"""
     cdef:
         const uint8_t* p_quote = <const uint8_t*>quote_data
         uint32_t quote_size = len(quote_data)
@@ -288,25 +282,14 @@ cdef int _authenticate_policy_owner_new(bytes quote_data, bytes appraisal_result
         free(p_keys)
 
 cdef int _authenticate_policy_owner_legacy(bytes appraisal_result, list policy_keys):
-    """旧版本 API 实现 - 使用 tee_authenticate_appraisal_result 的替代方案"""
-    # 对于旧版本，我们可能需要使用不同的逻辑
-    # 这里提供一个基本的实现，你可能需要根据实际需求调整
-    
-    # 方案1: 直接返回成功（如果旧版本不支持策略所有者认证）
-    # return AUTH_SUCCESS
-    
-    # 方案2: 使用 tee_authenticate_appraisal_result 作为替代
-    # 注意：这可能不是完全等价的功能，需要根据实际需求调整
     cdef:
         const uint8_t* p_result = <const uint8_t*>appraisal_result
         tee_policy_bundle_t bundle
         tee_policy_auth_result_t auth_result
         quote3_error_t ret
     
-    # 创建一个基本的策略包
     memset(&bundle, 0, sizeof(tee_policy_bundle_t))
     
-    # 如果有策略密钥，可以尝试将第一个作为租户策略
     if len(policy_keys) > 0:
         key = policy_keys[0]
         if isinstance(key, str):
@@ -325,7 +308,6 @@ cdef int _authenticate_policy_owner_legacy(bytes appraisal_result, list policy_k
     return <int>auth_result
 
 def check_quote_type(bytes quote_data):
-    """检查 Quote 类型"""
     if len(quote_data) < 8:
         return -1
     
@@ -342,7 +324,6 @@ def check_quote_type(bytes quote_data):
         return -1
 
 def get_dcap_version_info():
-    """获取 DCAP 版本信息"""
     has_new_api = check_dcap_version()
     return {
         'has_policy_owner_function': has_new_api,
@@ -352,7 +333,6 @@ def get_dcap_version_info():
 
 def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_policy, 
                      list policy_keys, bint verbose=False):
-    """完整的 ECDSA Quote 验证流程"""
     result = {
         'quote_type': None,
         'verify_success': False,
@@ -364,7 +344,6 @@ def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_pol
     }
     
     try:
-        # 添加版本信息
         version_info = get_dcap_version_info()
         result['dcap_version'] = version_info
         
@@ -372,7 +351,7 @@ def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_pol
             print(f"Info: DCAP API version - {version_info['api_version']}")
             print(f"Info: Using function - {version_info['recommended_function']}")
 
-        # 检查 Quote 类型
+        # check Quote type
         quote_type = check_quote_type(quote_data)
         if quote_type == SGX_QUOTE_TYPE:
             result['quote_type'] = 'SGX'
@@ -384,14 +363,14 @@ def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_pol
         if verbose:
             print(f"Info: Quote type - {result['quote_type']} quote")
         
-        # 验证 Quote
+        # verify Quote
         jwt_token = verify_quote_qvt(quote_data)
         result['verify_success'] = True
         
         if verbose:
             print("Info: tee_verify_quote_qvt successfully returned")
 
-        # 评估验证 token
+        # appraisal token
         policies = [tenant_policy, platform_policy]
         appraisal_result = appraise_verification_token(jwt_token, policies)
         result['appraisal_success'] = True
@@ -399,7 +378,6 @@ def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_pol
         if verbose:
             print("Info: tee_appraise_verification_token successfully returned")
         
-        # 认证评估结果
         auth_result = authenticate_appraisal_result(appraisal_result, tenant_policy, platform_policy)
         result['auth_result'] = auth_result
         
@@ -412,7 +390,6 @@ def ecdsa_quote_verify(bytes quote_data, bytes tenant_policy, bytes platform_pol
         else:
             raise QuoteVerifyError("There are some policies un-authenticated")
         
-        # 认证策略所有者（兼容新旧版本）
         owner_result = authenticate_policy_owner(quote_data, appraisal_result, policy_keys)
         result['owner_auth_result'] = owner_result
         

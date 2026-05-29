@@ -1,189 +1,274 @@
-"""HTTP API wrapper for the shared TDX helpers.
+# MCP TDX Demo
 
-This server mirrors ``mcp_server_sse_tdx.py`` but exposes plain HTTP endpoints
-for the same three tools backed by ``bytedance.tdx_api.tdx_api``.
-"""
+This directory contains the HTTP and MCP/Server-Sent Events demo for the shared
+TDX helpers. It wraps the reusable API bundle in `../../bytedance/tdx_api`
+with server routing and tool registration.
 
-from __future__ import annotations
+## Overview
 
-import base64
-import datetime
-import sys
-from pathlib import Path
-from typing import Any, Callable, Dict
+The server implementations provide the same four TDX-oriented tools:
 
-from fastapi import FastAPI
-from pydantic import BaseModel
+- `fetchTDEventlog`: read the TD event log from the current environment
+- `getRawTDXQuote`: generate a TDX quote and return JSON-serializable data
+- `getTEEStatus`: detect whether the host is running as a TDX guest
+- `quoteVerify`: run quote appraisal with a base64-encoded quote and policies
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
+The HTTP and SSE entry points are implemented in `mcp_http.py` and
+`mcp_server_sse_tdx.py`.
 
-from bytedance.tdx_api.tdx_api import (
-    appraise_quote_from_raw,
-    fetch_td_eventlog,
-    get_raw_tdx_quote,
-    get_tee_status,
-)
+## Relationship to the API bundle
 
+This demo depends on the reusable TDX API bundle in
+`../../bytedance/tdx_api`. That bundle provides the lower-level quote
+generation, guest detection, and event-log logic. The demo layer adds the HTTP
+and MCP SSE server interfaces.
 
-TOOL_HANDLERS: Dict[str, Callable[[], Dict[str, Any]]] = {
-    "fetchTDEventlog": fetch_td_eventlog,
-    "getRawTDXQuote": get_raw_tdx_quote,
-    "getTEEStatus": get_tee_status,
-}
+## Requirements
 
-TOOL_DESCRIPTIONS = {
-    "fetchTDEventlog": "Retrieve TD event log data using the shared TDX API bundle.",
-    "getRawTDXQuote": "Retrieve raw TDX quote data using the shared TDX API bundle.",
-    "getTEEStatus": "Check whether the current host is running as a TDX guest using the shared TDX API bundle.",
-    "quoteAppraisal": "Run quote appraisal via appraise_quote_from_raw using a base64-encoded quote.",
-}
+- Python 3.11
+- The Python dependencies listed in `requirement.txt`
+- Access to the native `quote_generator` extension from the API bundle
+- The runtime libraries used by the event-log path, including `cctrusted_base`
+  and `cctrusted_vm`
 
-TOOL_ENDPOINTS = {
-    "fetchTDEventlog": "/api/fetchTDEventlog",
-    "getRawTDXQuote": "/api/getRawTDXQuote",
-    "getTEEStatus": "/api/getTEEStatus",
-    "quoteAppraisal": "/api/quoteAppraisal",
-}
+## Local Setup
 
-app = FastAPI(
-    title="TDX Tools HTTP API",
-    description="HTTP API for the shared TDX helper tools",
-)
+Use a project-local virtual environment so the demo server runs with the same
+packages every time:
 
+```bash
+cd /home/yunge/AICC-Trusted-MCP/demo/mcp_tdx_demo
+/usr/bin/python3 -m venv .venv
+.venv/bin/python -m pip install -r requirement.txt
+.venv/bin/python -m pip install fastapi
+```
 
-def _invoke_tool(name: str) -> Dict[str, Any]:
-    return TOOL_HANDLERS[name]()
+Notes:
 
+- `requirement.txt` covers the shared MCP/TDX runtime dependencies.
+- `fastapi` is needed by `mcp_http.py`, even though it is not listed in
+  `requirement.txt`.
+- Run the servers with `.venv/bin/python` so the installed packages are used.
 
-def _decode_base64_payload(payload: str) -> bytes:
-    payload = payload.strip()
-    padding_needed = (-len(payload)) % 4
-    if padding_needed:
-        payload += "=" * padding_needed
-    return base64.b64decode(payload, validate=True)
+## Installation
 
+1. Prepare a Python 3.11 environment.
+2. Create `.venv` and install the requirements as shown above.
+3. If you need to import the reusable API bundle outside these entry points,
+   add the repository root to `PYTHONPATH`, for example:
 
-class QuoteAppraisalRequest(BaseModel):
-    quote: str
-    tenant_policy: str
-    platform_policy: str | None = None
-    policy_pubkeys: list[str] | None = None
-    verbose: bool = False
+```bash
+export PYTHONPATH=/home/yunge/AICC-Trusted-MCP:$PYTHONPATH
+```
 
+4. Start the server entry point you need.
 
-@app.post("/api/fetchTDEventlog")
-async def http_fetch_td_eventlog() -> Dict[str, Any]:
-    return _invoke_tool("fetchTDEventlog")
+## Start HTTP Server
 
+Run the HTTP API with the project-local environment:
 
-@app.post("/api/getRawTDXQuote")
-async def http_get_raw_tdx_quote() -> Dict[str, Any]:
-    return _invoke_tool("getRawTDXQuote")
+```bash
+cd /home/yunge/AICC-Trusted-MCP/demo/mcp_tdx_demo
+.venv/bin/python mcp_http.py
+```
 
+The HTTP server listens on `http://127.0.0.1:8800`.
 
-@app.post("/api/getTEEStatus")
-async def http_get_tee_status() -> Dict[str, Any]:
-    return _invoke_tool("getTEEStatus")
+## Start SSE Server
 
+Run the SSE MCP server with the project-local environment:
 
-@app.post("/api/quoteAppraisal")
-async def http_quote_appraisal(request: QuoteAppraisalRequest) -> Dict[str, Any]:
-    try:
-        quote_data = _decode_base64_payload(request.quote)
-    except Exception as exc:
-        return {
-            "status": 400,
-            "error": f"Invalid base64 quote payload: {str(exc)}",
-        }
+```bash
+cd /home/yunge/AICC-Trusted-MCP/demo/mcp_tdx_demo
+.venv/bin/python mcp_server_sse_tdx.py
+```
 
-    policy_pubkeys = None
-    if request.policy_pubkeys:
-        try:
-            policy_pubkeys = [
-                _decode_base64_payload(pubkey_b64) for pubkey_b64 in request.policy_pubkeys
-            ]
-        except Exception as exc:
-            return {
-                "status": 400,
-                "error": f"Invalid base64 policy_pubkeys payload: {str(exc)}",
-            }
+The SSE server also listens on `http://127.0.0.1:8800`.
 
-    return appraise_quote_from_raw(
-        quote_data=quote_data,
-        tenant_policy=request.tenant_policy.encode("utf-8"),
-        platform_policy=(
-            request.platform_policy.encode("utf-8") if request.platform_policy is not None else None
-        ),
-        policy_pubkeys=policy_pubkeys,
-        verbose=request.verbose,
-    )
+## Running the demo
 
+Each demo server listens on `0.0.0.0:8800` by default. Start one at a time, or
+override the port when running them side by side.
 
-@app.get("/api/tools")
-async def list_available_tools() -> list[dict[str, Any]]:
-    tools = [
-        {
-            "name": name,
-            "description": TOOL_DESCRIPTIONS[name],
-            "endpoint": TOOL_ENDPOINTS[name],
-            "method": "POST",
-            "required_params": [],
-            "example_request": {},
-        }
-        for name in TOOL_HANDLERS
-    ]
+## HTTP Verification
 
-    tools.append(
-        {
-            "name": "quoteAppraisal",
-            "description": TOOL_DESCRIPTIONS["quoteAppraisal"],
-            "endpoint": TOOL_ENDPOINTS["quoteAppraisal"],
-            "method": "POST",
-            "required_params": ["quote", "tenant_policy"],
-            "example_request": {
-                "quote": "<base64-encoded-quote>",
-                "tenant_policy": "<tenant-policy-jwt-text>",
-                "platform_policy": "<optional-platform-policy-jwt-text>",
-                "policy_pubkeys": ["<optional-base64-pubkey>"],
-                "verbose": False,
-            },
-        }
-    )
-    return tools
+Use these commands to verify the HTTP server:
 
+```bash
+curl -s http://127.0.0.1:8800/
+curl -s http://127.0.0.1:8800/health
+curl -s http://127.0.0.1:8800/api/tools
+curl -s -X POST http://127.0.0.1:8800/api/fetchTDEventlog
+curl -s -X POST http://127.0.0.1:8800/api/getTEEStatus
+curl -s -X POST http://127.0.0.1:8800/api/getRawTDXQuote
+curl -s -X POST http://127.0.0.1:8800/api/quoteVerify -H "Content-Type: application/json" -d '{"quote": "<base64-quote>", "tenant_policy": "<tenant-policy-jwt-text>", "platform_policy": "<optional-platform-policy-jwt-text>", "policy_pubkeys": ["<optional-base64-pubkey>"]}'
+```
 
-@app.get("/health")
-async def health_check() -> Dict[str, str]:
-    return {"status": "healthy", "timestamp": datetime.datetime.now().isoformat()}
+Expected behavior:
 
+- `/` returns server metadata
+- `/health` returns a healthy status
+- `/api/tools` lists the available HTTP endpoints
+- `/api/fetchTDEventlog` returns the event log output when the environment
+  supports it
+- `/api/getTEEStatus` returns the TEE detection result from `tdx_api.py`
+- `/api/getRawTDXQuote` returns the raw quote payload from `tdx_api.py`
+- `/api/quoteVerify` returns the appraisal result for a given base64 quote and policy
 
-@app.get("/")
-async def root() -> Dict[str, Any]:
-    return {
-        "name": "TDX Tools HTTP API",
-        "version": "1.0.0",
-        "description": "HTTP API for the shared TDX helper tools",
-        "endpoints": {
-            "tools": "/api/tools",
-            "health": "/health",
-            **{name: endpoint for name, endpoint in TOOL_ENDPOINTS.items()},
-        },
+To run the automated HTTP client test:
+
+```bash
+cd /home/yunge/AICC-Trusted-MCP/demo/mcp_tdx_demo
+.venv/bin/python test_mcp_http_client.py
+```
+
+## SSE Verification
+
+The SSE server uses the MCP message flow. First open the SSE stream and copy
+the `session_id` from the returned endpoint line:
+
+```bash
+curl -N http://127.0.0.1:8800/sse
+```
+
+Example response:
+
+```text
+data: /messages/?session_id=YOUR_SESSION_ID
+```
+
+Then use that `session_id` to send JSON-RPC requests to `/messages/`.
+
+Initialize the session:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":1,
+    "method":"initialize",
+    "params":{
+      "protocolVersion":"2025-11-25",
+      "capabilities":{},
+      "clientInfo":{"name":"curl","version":"0.1"}
     }
+  }'
+```
 
+Notify initialization completion:
 
-if __name__ == "__main__":
-    import uvicorn
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "method":"notifications/initialized"
+  }'
+```
 
-    print("Starting TDX Tools HTTP API server...")
-    print("Available endpoints:")
-    print("  GET  /                 - API information")
-    print("  GET  /health           - Health check")
-    print("  GET  /api/tools        - List available tools")
-    print("  POST /api/fetchTDEventlog - Retrieve TD Eventlog")
-    print("  POST /api/getRawTDXQuote  - Get raw TDX Quote")
-    print("  POST /api/getTEEStatus    - Check TEE status")
-    print("  POST /api/quoteAppraisal  - Quote appraisal with base64 quote")
-    print("\nServer starting on http://0.0.0.0:8800")
-    uvicorn.run(app, host="0.0.0.0", port=8800)
+List tools:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":2,
+    "method":"tools/list",
+    "params":{}
+  }'
+```
+
+Call `fetchTDEventlog`:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":3,
+    "method":"tools/call",
+    "params":{
+      "name":"fetchTDEventlog",
+      "arguments":{}
+    }
+  }'
+```
+
+Call `getTEEStatus`:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":4,
+    "method":"tools/call",
+    "params":{
+      "name":"getTEEStatus",
+      "arguments":{}
+    }
+  }'
+```
+
+Call `getRawTDXQuote`:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":5,
+    "method":"tools/call",
+    "params":{
+      "name":"getRawTDXQuote",
+      "arguments":{}
+    }
+  }'
+```
+
+Call `quoteVerify`:
+
+```bash
+curl -s -X POST "http://127.0.0.1:8800/messages/?session_id=YOUR_SESSION_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "jsonrpc":"2.0",
+    "id":6,
+    "method":"tools/call",
+    "params":{
+      "name":"quoteVerify",
+      "arguments":{
+        "quote": "<base64-encoded-quote>",
+        "tenant_policy": "<tenant-policy-jwt-text>",
+        "platform_policy": "<optional-platform-policy-jwt-text>",
+        "policy_pubkeys": ["<optional-base64-pubkey>"]
+      }
+    }
+  }'
+```
+
+To run the automated SSE client test:
+
+```bash
+cd /home/yunge/AICC-Trusted-MCP/demo/mcp_tdx_demo
+.venv/bin/python test_mcp_server_sse_tdx_client.py
+```
+
+## Example curl checks
+
+```bash
+curl -s http://localhost:8800/
+curl -s http://localhost:8800/health
+curl -s http://localhost:8800/api/tools
+curl -s -X POST -H "Content-Type: application/json" http://localhost:8800/api/fetchTDEventlog
+curl -s -X POST -H "Content-Type: application/json" http://localhost:8800/api/getRawTDXQuote
+curl -s -X POST -H "Content-Type: application/json" http://localhost:8800/api/getTEEStatus
+curl -s -X POST -H "Content-Type: application/json" -d '{"quote": "<base64-quote>", "tenant_policy": "<tenant-policy-jwt-text>", "platform_policy": "<optional-platform-policy-jwt-text>", "policy_pubkeys": ["<optional-base64-pubkey>"]}' http://localhost:8800/api/quoteVerify
+```
+
+## Error handling
+
+- Import failures for the native quote module are surfaced immediately
+- Tool failures are returned as JSON responses with an error message

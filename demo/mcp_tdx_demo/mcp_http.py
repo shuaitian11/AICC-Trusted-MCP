@@ -37,14 +37,14 @@ TOOL_DESCRIPTIONS = {
     "fetchTDEventlog": "Retrieve TD event log data using the shared TDX API bundle.",
     "getRawTDXQuote": "Retrieve raw TDX quote data using the shared TDX API bundle.",
     "getTEEStatus": "Check whether the current host is running as a TDX guest using the shared TDX API bundle.",
-    "quoteAppraisal": "Run quote appraisal via appraise_quote_from_raw using a base64-encoded quote.",
+    "quoteVerify": "Run quote appraisal via appraise_quote_from_raw using a base64-encoded quote.",
 }
 
 TOOL_ENDPOINTS = {
     "fetchTDEventlog": "/api/fetchTDEventlog",
     "getRawTDXQuote": "/api/getRawTDXQuote",
     "getTEEStatus": "/api/getTEEStatus",
-    "quoteAppraisal": "/api/quoteAppraisal",
+    "quoteVerify": "/api/quoteVerify",
 }
 
 app = FastAPI(
@@ -65,7 +65,7 @@ def _decode_base64_payload(payload: str) -> bytes:
     return base64.b64decode(payload, validate=True)
 
 
-class QuoteAppraisalRequest(BaseModel):
+class QuoteVerifyRequest(BaseModel):
     quote: str
     tenant_policy: str
     platform_policy: str | None = None
@@ -88,8 +88,8 @@ async def http_get_tee_status() -> Dict[str, Any]:
     return _invoke_tool("getTEEStatus")
 
 
-@app.post("/api/quoteAppraisal")
-async def http_quote_appraisal(request: QuoteAppraisalRequest) -> Dict[str, Any]:
+@app.post("/api/quoteVerify")
+async def http_quote_verify(request: QuoteVerifyRequest) -> Dict[str, Any]:
     default_result: Dict[str, Any] = {
         "verify_success": False,
         "appraisal_success": False,
@@ -151,9 +151,9 @@ async def list_available_tools() -> list[dict[str, Any]]:
 
     tools.append(
         {
-            "name": "quoteAppraisal",
-            "description": TOOL_DESCRIPTIONS["quoteAppraisal"],
-            "endpoint": TOOL_ENDPOINTS["quoteAppraisal"],
+            "name": "quoteVerify",
+            "description": TOOL_DESCRIPTIONS["quoteVerify"],
+            "endpoint": TOOL_ENDPOINTS["quoteVerify"],
             "method": "POST",
             "required_params": ["quote", "tenant_policy"],
             "example_request": {
@@ -198,6 +198,6 @@ if __name__ == "__main__":
     print("  POST /api/fetchTDEventlog - Retrieve TD Eventlog")
     print("  POST /api/getRawTDXQuote  - Get raw TDX Quote")
     print("  POST /api/getTEEStatus    - Check TEE status")
-    print("  POST /api/quoteAppraisal  - Quote appraisal with base64 quote")
+    print("  POST /api/quoteVerify     - Quote appraisal with base64 quote")
     print("\nServer starting on http://0.0.0.0:8800")
     uvicorn.run(app, host="0.0.0.0", port=8800)
